@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   CSS VARIABLES - LIGHT THEME
+   ========================================== */
+
+.nav-links {
+  display: flex;
+}
+
+.nav-cta {
+  display: flex;
+}
+
+.hamburger {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+  }
+
+  .nav-cta {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+}
+
+:root {
+  --background: #ffffff;
+  --foreground: #0F1114;
+  --primary: #5E5CE6;
+  --primary-foreground: #ffffff;
+  --muted: #F8F9FA;
+  --muted-foreground: #6B707A;
+  --border: #E2E4E8;
+  --ring: #5E5CE6;
+  --radius: 0.5rem;
+
+  --surface-muted: #F8F9FA;
+  --surface-ai: #F1F1FF;
+  --surface-elevated: #ffffff;
+  --border-subtle: #F0F1F3;
+  --border-strong: #D1D4D9;
+
+  --color-ai-thinking: #5E5CE6;
+  --color-ai-surface: #EEF2FF;
+  --color-ai-border: #C7D2FE;
+  --color-ai-confidence-high: #16A34A;
+  --color-ai-confidence-mid: #F59E0B;
+  --color-ai-confidence-low: #EF4444;
+
+  --color-indigo-100: #E0E7FF;
+  --color-indigo-200: #C7D2FE;
+  --color-indigo-800: #3730A3;
+  --color-indigo-900: #312E81;
+}
+
+/* ==========================================
+   CSS VARIABLES - DARK THEME
+   ========================================== */
+.dark {
+  --background: #0F1114;
+  --foreground: #F8F9FA;
+  --primary: #818CF8;
+  --muted: #2E3238;
+  --muted-foreground: #B0B4BC;
+  --border: #4A4F57;
+  --ring: #818CF8;
+  --surface-muted: #1C1F24;
+  --surface-ai: #1E1B4B;
+  --surface-elevated: #2E3238;
+  --border-subtle: #2E3238;
+  --border-strong: #4A4F57;
+}
+
+/* ==========================================
+   BASE STYLES
+   ========================================== */
+@layer base {
+  * {
+    border-color: var(--border);
+
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::selection {
+    background-color: var(--color-indigo-200);
+    color: var(--color-indigo-900);
+  }
+
+  .dark ::selection {
+    background-color: var(--color-indigo-800);
+    color: var(--color-indigo-100);
+  }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: var(--surface-muted);
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #B0B4BC;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #8C919A;
+  }
+}
+
+/* ==========================================
+   COMPONENT CLASSES
+   ========================================== */
+@layer components {
+  .focus-ring {
+    outline: none;
+  }
+
+  .focus-ring:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  .ai-thinking {
+    color: var(--color-ai-thinking);
+    animation: aiPulse 2s ease-in-out infinite;
+  }
+
+  .ai-surface {
+    background-color: var(--color-ai-surface);
+    border: 1px solid var(--color-ai-border);
+    border-radius: 12px;
+  }
+
+  .ai-confidence-high {
+    color: var(--color-ai-confidence-high);
+  }
+
+  .ai-confidence-mid {
+    color: var(--color-ai-confidence-mid);
+  }
+
+  .ai-confidence-low {
+    color: var(--color-ai-confidence-low);
+  }
+
+  .surface-muted {
+    background-color: var(--surface-muted);
+  }
+
+  .surface-ai {
+    background-color: var(--surface-ai);
+  }
+
+  .surface-elevated {
+    background-color: var(--surface-elevated);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  }
+
+  .border-subtle {
+    border-color: var(--border-subtle);
+  }
+
+  .border-strong {
+    border-color: var(--border-strong);
+  }
+}
