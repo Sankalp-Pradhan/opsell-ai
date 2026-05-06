@@ -23,9 +23,9 @@ function useCountUp(target: number, start: boolean, duration = 1.4, decimals = 0
 
 const DATA = [
   { label: "Footwear", before: 18, after: 28 },
-  { label: "Apparel", before: 22, after: 32 },
-  { label: "Beauty", before: 16, after: 30 },
-  { label: "Bags", before: 19, after: 26 },
+  { label: "Apparel",  before: 22, after: 32 },
+  { label: "Beauty",   before: 16, after: 30 },
+  { label: "Bags",     before: 19, after: 26 },
 ];
 
 const MAX = 40;
@@ -33,9 +33,9 @@ const MAX = 40;
 export default function MarginsCard() {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
-  const margin = useCountUp(12, inView);
+  const margin       = useCountUp(12, inView);
   const beforeMargin = useCountUp(18, inView, 1.1);
-  const afterMargin = useCountUp(30, inView, 1.5);
+  const afterMargin  = useCountUp(30, inView, 1.5);
 
   return (
     <motion.div
@@ -44,28 +44,28 @@ export default function MarginsCard() {
       animate={inView ? { opacity: 1, y: 0 } : {}}
       transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       whileHover={{ y: -4 }}
-      className="group relative w-full overflow-hidden rounded-[2rem] border border-white/[0.06] bg-[#10122b] p-6 md:p-8 shadow-2xl transition-all duration-500"
+      className="group relative w-full overflow-hidden rounded-[2rem] border border-white/[0.06] bg-[#10122b] p-5 sm:p-6 md:p-8 shadow-2xl transition-all duration-500"
     >
       {/* Heading */}
-      <div className="mb-6">
+      <div className="mb-5 sm:mb-6">
         <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.22em] text-brand-mid">
           Improve Margins
         </p>
         <div className="flex items-baseline gap-2 mb-1">
-          <h3 className="text-5xl font-bold tracking-tight text-white">+{margin}%</h3>
+          <h3 className="text-4xl sm:text-5xl font-bold tracking-tight text-white">+{margin}%</h3>
         </div>
-        <p className="text-lg text-n-300 font-medium">higher profit margins</p>
-        <p className="mt-3 text-sm leading-6 text-n-500">
+        <p className="text-base sm:text-lg text-n-300 font-medium">higher profit margins</p>
+        <p className="mt-2 sm:mt-3 text-sm leading-6 text-n-500">
           Smarter discounts and pricing decisions that protect margins while still increasing sales.
         </p>
       </div>
 
       {/* Horizontal Bar Chart */}
-      <div className="rounded-2xl border border-white/[0.05] bg-[#0b0d1e] p-5">
-        <div className="flex flex-col gap-4">
+      <div className="rounded-2xl border border-white/[0.05] bg-[#0b0d1e] p-4 sm:p-5">
+        <div className="flex flex-col gap-3 sm:gap-4">
           {DATA.map((item, index) => (
-            <div key={item.label} className="flex items-center gap-4">
-              <span className="w-16 text-[10px] font-bold uppercase tracking-[0.14em] text-n-600 shrink-0">
+            <div key={item.label} className="flex items-center gap-3 sm:gap-4">
+              <span className="w-14 sm:w-16 text-[10px] font-bold uppercase tracking-[0.14em] text-n-600 shrink-0">
                 {item.label}
               </span>
               <div className="flex flex-1 flex-col gap-1.5">
@@ -87,7 +87,7 @@ export default function MarginsCard() {
         </div>
 
         {/* Legend */}
-        <div className="mt-5 flex items-center gap-6 text-[10px] font-semibold uppercase tracking-wide">
+        <div className="mt-4 sm:mt-5 flex items-center gap-4 sm:gap-6 text-[10px] font-semibold uppercase tracking-wide">
           <span className="flex items-center gap-2 text-n-500">
             <span className="h-[6px] w-5 rounded-full bg-n-700" />
             Before
@@ -99,18 +99,18 @@ export default function MarginsCard() {
         </div>
       </div>
 
-      {/* Before vs After */}
-      <div className="mt-4 grid grid-cols-2 gap-3">
+      {/* Before vs After — stack on very small screens, side-by-side on sm+ */}
+      <div className="mt-4 grid grid-cols-1 gap-3 xs:grid-cols-2 sm:grid-cols-2">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.8 }}
-          className="rounded-xl border border-white/[0.05] bg-[#0b0d1e] p-4"
+          className="rounded-xl border border-white/[0.05] bg-[#0b0d1e] p-3 sm:p-4"
         >
           <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-n-500">Before Opsell</p>
           <div className="flex items-end justify-between gap-2">
             <div>
-              <p className="text-2xl font-bold text-white">{beforeMargin}%</p>
+              <p className="text-xl sm:text-2xl font-bold text-white">{beforeMargin}%</p>
               <p className="mt-1 text-[10px] text-n-500">Random discounts</p>
             </div>
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-error/10 text-error">
@@ -123,12 +123,12 @@ export default function MarginsCard() {
           initial={{ opacity: 0, y: 10 }}
           animate={inView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.95 }}
-          className="rounded-xl border border-brand/20 bg-brand/10 p-4"
+          className="rounded-xl border border-brand/20 bg-brand/10 p-3 sm:p-4"
         >
           <p className="mb-2 text-[9px] font-bold uppercase tracking-[0.18em] text-brand-mid">With Opsell</p>
           <div className="flex items-end justify-between gap-2">
             <div>
-              <p className="text-2xl font-bold text-white">{afterMargin}%</p>
+              <p className="text-xl sm:text-2xl font-bold text-white">{afterMargin}%</p>
               <p className="mt-1 text-[10px] text-n-500">Smarter pricing</p>
             </div>
             <div className="flex h-7 w-7 items-center justify-center rounded-full bg-brand text-white">

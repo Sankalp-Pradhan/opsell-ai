@@ -17,7 +17,7 @@ export const GMVCard = () => {
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
       whileHover={{ y: -4 }}
-      className="group relative h-full overflow-hidden rounded-[28px] border border-white/[0.06] bg-[#10122b] p-6 md:p-7 shadow-2xl transition-all duration-500"
+      className="group relative w-full overflow-hidden rounded-[28px] border border-white/[0.06] bg-[#10122b] p-5 sm:p-6 md:p-7 shadow-2xl transition-all duration-500"
     >
       {/* Arrow badge */}
       <div className="absolute right-5 top-5 z-10 flex h-8 w-8 items-center justify-center rounded-md bg-brand shadow-[0_0_24px_rgba(80,70,229,0.5)] transition-transform duration-500 group-hover:scale-110">
@@ -30,12 +30,12 @@ export const GMVCard = () => {
         </span>
 
         <div className="mb-1 flex items-baseline gap-2">
-          <h3 className="text-5xl md:text-6xl font-bold leading-none text-white">
+          <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-none text-white">
             +18%
           </h3>
         </div>
 
-        <p className="mb-1 text-lg font-medium text-n-300">average GMV growth</p>
+        <p className="mb-1 text-base sm:text-lg font-medium text-n-300">average GMV growth</p>
 
         <p className="mb-5 text-sm leading-6 text-n-500">
           Smarter pricing, AI-powered bundles, and optimized listings drive sales and faster growth.
@@ -43,7 +43,7 @@ export const GMVCard = () => {
       </div>
 
       {/* Chart */}
-      <div className="relative z-10 rounded-xl border border-white/[0.05] bg-[#0b0d1e] p-3 h-40 md:h-48">
+      <div className="relative z-10 rounded-xl border border-white/[0.05] bg-[#0b0d1e] p-3 h-36 sm:h-40 md:h-48">
         <svg viewBox="0 0 400 200" className="h-full w-full" preserveAspectRatio="none">
           <defs>
             <linearGradient id="lineGradGMV" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -61,8 +61,7 @@ export const GMVCard = () => {
               stroke="rgba(255,255,255,0.05)" strokeWidth="1" strokeDasharray="3 5" />
           ))}
 
-          {/* X-axis labels area */}
-          <text x="10" y="195" fill="rgba(107,112,122,0.8)" fontSize="16">Day 0</text>
+          <text x="10"  y="195" fill="rgba(107,112,122,0.8)" fontSize="16">Day 0</text>
           <text x="145" y="195" fill="rgba(107,112,122,0.8)" fontSize="16">Day 30</text>
           <text x="285" y="195" fill="rgba(107,112,122,0.8)" fontSize="16">Day 60</text>
 
@@ -110,7 +109,7 @@ export const GMVCard = () => {
       </div>
 
       {/* Chips */}
-      <div className="mt-5 flex flex-wrap gap-2">
+      <div className="mt-4 flex flex-wrap gap-2">
         {chips.map((chip) => (
           <motion.span
             key={chip.label}

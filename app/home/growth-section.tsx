@@ -352,7 +352,7 @@ export function GrowthSection() {
   return (
     <section ref={ref} className="border-t border-b border-n-border bg-white">
       <div
-        className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-12 lg:py-24"
+        className="mx-auto max-w-7xl px-6 py-20 sm:px-12 sm:py-24 md:px-16 lg:px-24"
         style={{
           opacity: inView ? 1 : 0,
           transform: inView ? "none" : "translateY(32px)",

@@ -376,8 +376,8 @@ export default function RevenueLeakQuiz() {
   }
 
   return (
-    <section className="min-h-screen bg-white px-4 py-16 md:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section className="min-h-screen bg-white px-6 py-20 sm:px-12 sm:py-24 md:px-16 lg:px-24">
+  <div className="mx-auto max-w-6xl">
 
         {/* HEADER */}
         <div className="mb-14">

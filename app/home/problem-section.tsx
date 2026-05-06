@@ -156,8 +156,7 @@ const ProblemSection = () => {
   const translateX = `calc(${-activeIndex * 100}% + ${dragOffset}px)`;
 
   return (
-    <section className="relative overflow-hidden bg-n-900 px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
-      {/* Dot grid — matches GrowthOutcomes density */}
+<section className=" relative overflow-hidden bg-n-900 px-6 py-20 sm:px-12 sm:py-24 md:px-16 lg:px-24">      {/* Dot grid — matches GrowthOutcomes density */}
       <div
         className="pointer-events-none absolute inset-0"
         style={{
