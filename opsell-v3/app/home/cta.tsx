@@ -1,46 +1,55 @@
-"use client";
+import { ArrowRight } from "lucide-react";
 
-import Link from "next/link";
-import { useInView } from "./use-view";
-
-// ─── CTA Section ──────────────────────────────────────────────────────────────
-
-
-export function CtaSection() {
-  const { ref, inView } = useInView();
-
+export default function CTA() {
   return (
-    <section
-      ref={ref as React.RefObject<HTMLElement>}
-      style={{ background: "#0F1114", padding: "100px 40px", textAlign: "center", position: "relative", overflow: "hidden", opacity: inView ? 1 : 0, transform: inView ? "none" : "translateY(32px)", transition: "opacity 0.7s, transform 0.7s" }}
-    >
-      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: 600, height: 600, background: "radial-gradient(ellipse at center, rgba(80,70,229,0.25) 0%, transparent 65%)", pointerEvents: "none" }} />
+    <section className="bg-white px-6 md:px-12 lg:px-20 pb-12">
+      <div className="mx-auto max-w-7xl">
+        <div className="relative overflow-hidden rounded-3xl bg-n-900 px-8 py-16 md:px-16 md:py-20">
+          {/* Glow */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute left-1/2 top-1/2 h-[500px] w-[700px] -translate-x-1/2 -translate-y-1/3"
+            style={{
+              background:
+                "radial-gradient(ellipse at center, rgba(80,70,229,0.45) 0%, transparent 65%)",
+            }}
+          />
 
-      <div style={{ position: "relative", zIndex: 1 }}>
-        <h2 style={{ fontFamily: "var(--font-display)", fontSize: "clamp(32px, 5vw, 64px)", fontWeight: 800, lineHeight: 1.05, letterSpacing: "-0.04em", color: "#fff", maxWidth: 700, margin: "0 auto 16px" }}>
-          Ready to stop <em style={{ fontStyle: "normal", color: "#7B73FF" }}>reacting</em><br />and start winning?
-        </h2>
-        <p style={{ fontFamily: "var(--font-body)", fontSize: 17, color: "rgba(255,255,255,0.5)", marginBottom: 40 }}>
-          Join the brands growing 30%+ faster with Opsell. Early access spots are limited.
-        </p>
+          <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-8">
+              <p className="text-brand text-xs font-semibold tracking-[0.18em] uppercase mb-6">
+                Early Access · 15+ Brands Queued
+              </p>
+              <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight text-white">
+                Stop reacting.{" "}
+                <span className="text-brand-mid">
+                  Start
+                  <br />
+                  recovering revenue.
+                </span>
+              </h2>
+              <p className="mt-6 max-w-xl text-base text-white/55 leading-relaxed">
+                30-minute revenue audit on your live catalog: suppressed listings, margin
+                drift, repricing lag, lost buy-box windows — quantified in ₹ at risk and a
+                90-day recovery plan. No slides.
+              </p>
+            </div>
 
-        <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
-          <Link href="https://opsell.neetocal.com/meeting-with-shaurya-gupta">
-            <button
-              style={{ fontFamily: "var(--font-display)", fontSize: 15, fontWeight: 600, color: "#fff", background: "#5046E5", border: "none", cursor: "pointer", padding: "13px 32px", borderRadius: 10, boxShadow: "0 8px 24px rgba(80,70,229,0.5)", transition: "transform 0.15s" }}
-              onMouseEnter={e => (e.currentTarget.style.transform = "translateY(-2px)")}
-              onMouseLeave={e => (e.currentTarget.style.transform = "")}
-            >
-              Book a Demo
-            </button>
-          </Link> 
-          <button
-            style={{ fontFamily: "var(--font-display)", fontSize: 15, fontWeight: 600, color: "rgba(255,255,255,0.75)", background: "none", border: "1.5px solid rgba(255,255,255,0.2)", cursor: "pointer", padding: "13px 32px", borderRadius: 10, transition: "border-color 0.15s" }}
-            onMouseEnter={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.5)")}
-            onMouseLeave={e => (e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)")}
-          >
-            Get Early Access →
-          </button>
+            <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
+              <a
+                href="https://opsell.neetocal.com/meeting-with-shaurya-gupta"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 font-display text-[15px] font-semibold text-brand shadow-[0_8px_24px_rgba(80,70,229,0.35)] transition-transform hover:-translate-y-0.5 w-full lg:w-auto"
+              >
+                Get my revenue audit <ArrowRight className="h-4 w-4" />
+              </a>
+              <button
+                type="button"
+                className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-transparent px-7 py-4 font-display text-[15px] font-semibold text-white/80 transition-colors hover:border-white/40 hover:text-white w-full lg:w-auto"
+              >
+                See it execute
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

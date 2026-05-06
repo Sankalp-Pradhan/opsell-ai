@@ -10,7 +10,7 @@ export function IntegrateSection() {
   return (
     <section
       ref={ref as React.RefObject<HTMLElement>}
-      className="overflow-hidden bg-[#f8f8f8] px-5 py-14 sm:px-10 sm:py-20"
+      className="overflow-hidden bg-white px-5 py-14 sm:px-10 sm:py-20"
     >
       <div
         className="mx-auto grid max-w-[1200px] grid-cols-1 gap-8 sm:gap-10 lg:grid-cols-2 lg:items-center lg:gap-[60px]"

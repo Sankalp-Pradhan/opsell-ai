@@ -1,7 +1,6 @@
 "use client";
 
 import { GrowthOutcomes } from "./growth/growthoutcomes";
-import { CtaSection } from "./home/cta";
 import FAQ from "./home/faq-section";
 import { GrowthSection } from "./home/growth-section";
 import { Hero } from "./home/hero";
