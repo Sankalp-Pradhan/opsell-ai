@@ -30,7 +30,7 @@ function HeroDashboard() {
   shopify:    { bg: "#FC2779", img: "/assets/shopify.png",    name: "Shopify"    },
 }
   
-const PlatformAvatar = ({ id }: { id: string }) => {
+const PlatformAvatar = ({ id, name  }: { id: string , name : string }) => {
   const p = platforms[id]
   return (
     <span
