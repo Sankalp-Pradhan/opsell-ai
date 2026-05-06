@@ -10,7 +10,7 @@ import {
 import { useEffect, useRef, useState } from "react";
 import {
   ArrowDown, ArrowRight, TrendingDown, TrendingUp,
-  Sparkles, MousePointerClick, Target, BarChart3,
+  MousePointerClick, Target, BarChart3,
 } from "lucide-react";
 import Image from "next/image";
 
@@ -63,64 +63,50 @@ const ProductGlyph = ({ variant }: { variant: "before" | "after" }) => {
 };
 
 const metrics = [
-  { icon: MousePointerClick, label: "Product Clicks", value: "+18%" },
-  { icon: Target, label: "Better CTR", value: "+30%" },
-  { icon: BarChart3, label: "Higher Conversion", value: "+1.2%" },
+  { icon: MousePointerClick, label: "Product Clicks",     value: "+18%" },
+  { icon: Target,            label: "Better CTR",         value: "+30%" },
+  { icon: BarChart3,         label: "Higher Conversion",  value: "+1.2%" },
 ];
 
 const ConversionCard = () => {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const beforeConversion = useCountUp(4.0, inView);
-  const afterConversion = useCountUp(5.2, inView, 1.8);
+  const afterConversion  = useCountUp(5.2, inView, 1.8);
 
   return (
-    <div ref={ref} className="flex h-full w-full max-w-4xl px-2 sm:px-0">
+    <div ref={ref} className="flex h-full w-full">
       <motion.article
         initial={{ opacity: 0, y: 24 }}
         animate={inView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-        className="group/card relative flex h-full w-full flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-[#10122b] p-4 shadow-2xl sm:p-5 md:p-6"
+        className="group/card relative flex h-full w-full flex-col overflow-hidden rounded-[24px] border border-white/[0.06] bg-[#10122b] p-4 sm:p-5 md:p-6 shadow-2xl"
       >
         {/* Header */}
-        {/* <div className="mb-5 flex flex-col gap-2.5">
-          <span className="inline-flex h-6 w-fit items-center gap-1.5 rounded-full bg-brand/12 px-2.5 text-[10px] font-medium text-brand-mid">
-            <Sparkles className="h-3 w-3" />
-            Increase Conversion Rate
-          </span>
-          <div>
-            <h2 className="text-base font-semibold tracking-tight text-white sm:text-lg md:text-xl">
-              Higher Conversion Across Your Listings
-            </h2>
-            <p className="mt-1.5 text-xs leading-5 text-n-500 sm:text-sm">
-              Better titles, stronger images, smarter pricing, and continuous A/B testing turn more visitors into buyers.
-            </p>
-          </div>
-        </div> */}
-
-
-        <div className="relative z-10 pr-12">
+        <div className="relative z-10 pr-10 sm:pr-12">
           <span className="mb-3 inline-block text-[10px] font-semibold uppercase tracking-[0.24em] text-brand-mid">
             Increase conversion rate
-
           </span>
 
           <div className="mb-1 flex items-baseline gap-2">
-            <h3 className="text-5xl md:text-6xl font-bold leading-none text-white">
+            <h3 className="text-4xl sm:text-5xl md:text-6xl font-bold leading-none text-white">
               Listings
             </h3>
           </div>
 
-          <p className="mb-1 text-lg font-medium text-n-300">average GMV growth</p>
+          <p className="mb-1 text-base sm:text-lg font-medium text-n-300">optimised by AI</p>
 
-          <p className="mb-5 text-sm leading-6 text-n-500">
+          <p className="mb-4 sm:mb-5 text-sm leading-6 text-n-500">
             AI-rewritten titles, images, and copy turn more visitors into buyers.
           </p>
         </div>
 
-
-        {/* Comparison */}
+        {/* Before / After comparison
+            - Mobile:   stacked vertically (flex-col)
+            - Desktop:  side-by-side grid
+        */}
         <div className="grid flex-1 grid-cols-1 items-center gap-3 md:grid-cols-[1fr_auto_1fr] md:gap-4">
+
           {/* Before */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -139,29 +125,29 @@ const ConversionCard = () => {
             </div>
           </motion.div>
 
-          {/* Arrow */}
+          {/* Arrow — vertical on mobile, horizontal on desktop */}
           <div className="flex items-center justify-center">
             <motion.div
               initial={{ opacity: 0, scale: 0.85 }}
               animate={inView ? { opacity: 1, scale: 1 } : {}}
               transition={{ delay: 0.45, duration: 0.45 }}
-              className="relative flex flex-col items-center gap-1 md:flex-row"
+              className="relative flex flex-row items-center gap-1 md:flex-row"
             >
               <div className="hidden h-px w-8 bg-gradient-to-r from-transparent via-white/10 to-white/10 md:block" />
               <div className="relative">
                 <motion.div
                   animate={{ y: [0, 3, 0] }}
                   transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
-                  className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white shadow-lg md:h-10 md:w-10"
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white shadow-lg"
                 >
-                  <ArrowDown className="h-4 w-4 md:hidden" strokeWidth={3} />
-                  <ArrowRight className="hidden h-5 w-5 md:block" strokeWidth={3} />
+                  {/* Always show right arrow — on mobile it still means "next/better" */}
+                  <ArrowRight className="h-4 w-4" strokeWidth={3} />
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: -6 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.8 }}
-                  className="absolute -top-7 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-brand/25 bg-[#0b0d1e] pr-2 py-0.5 text-[10px] font-semibold text-brand-mid shadow-sm md:block"
+                  className="absolute -top-7 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-brand/25 bg-[#0b0d1e] px-2 py-0.5 text-[10px] font-semibold text-brand-mid shadow-sm md:block"
                 >
                   +30% Better CTR
                 </motion.div>
@@ -211,22 +197,22 @@ const ConversionCard = () => {
           </span>
         </motion.div>
 
-        {/* Footer Metrics */}
-        <div className="mt-5 grid grid-cols-3 gap-2 border-t border-white/[0.06] pt-4 sm:gap-3">
+        {/* Footer metrics — 3 cols always, but smaller on mobile */}
+        <div className="mt-5 grid grid-cols-3 gap-2 border-t border-white/[0.06] pt-4">
           {metrics.map((metric, index) => (
             <motion.div
               key={metric.label}
               initial={{ opacity: 0, y: 10 }}
               animate={inView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.95 + index * 0.1 }}
-              className="flex flex-col items-start gap-1.5 rounded-lg bg-[#0b0d1e] px-2 py-2 sm:flex-row sm:items-center sm:gap-2 sm:px-3"
+              className="flex flex-col items-start gap-1 rounded-lg bg-[#0b0d1e] px-2 py-2 sm:flex-row sm:items-center sm:gap-2 sm:px-3"
             >
-              <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-brand/12 text-brand-mid sm:h-8 sm:w-8">
+              <div className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-lg bg-brand/12 text-brand-mid sm:h-8 sm:w-8">
                 <metric.icon className="h-3 w-3 sm:h-3.5 sm:w-3.5" />
               </div>
               <div>
-                <div className="text-xs font-bold tabular-nums text-white sm:text-sm">{metric.value}</div>
-                <div className="text-[10px] leading-tight text-n-500 sm:text-[11px]">{metric.label}</div>
+                <div className="text-[11px] font-bold tabular-nums text-white sm:text-sm">{metric.value}</div>
+                <div className="text-[9px] leading-tight text-n-500 sm:text-[11px]">{metric.label}</div>
               </div>
             </motion.div>
           ))}

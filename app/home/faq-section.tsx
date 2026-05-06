@@ -49,11 +49,11 @@ export default function FAQ() {
   const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
 
   return (
-    <section className="bg-white py-24 px-6 md:px-12 lg:px-20">
+   <section className="bg-white py-20 px-6 sm:px-12 sm:py-24 md:px-16 lg:px-24">
       <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
         {/* Left: Header */}
         <div className="lg:col-span-4">
-          <p className="text-brand text-xs font-semibold tracking-[0.18em] uppercase mb-6">
+          <p className="text-brand text-xs font-semibold tracking-[0.18em] uppercase mb-6 mx-2">
             Support
           </p>
           <h2 className="font-display text-5xl md:text-6xl font-extrabold leading-[1.05] tracking-tight text-n-900">
@@ -65,6 +65,9 @@ export default function FAQ() {
           <p className="mt-6 text-n-400 text-base max-w-sm">
             If we missed yours, the team responds personally within 24 hours.
           </p>
+           <button className="rounded-[10px] border-[1.5px] border-n-200 mt-5 bg-brand px-6 py-3 font-display text-[15px] font-bold text-white transition-colors hover:border-n-400 hover:text-n-900">
+            Contact Support
+          </button>
         </div>
 
         {/* Right: Accordion */}

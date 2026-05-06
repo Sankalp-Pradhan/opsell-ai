@@ -30,8 +30,7 @@ const competitors = [
 
 const Hero = () => {
   return (
-    <section className="relative overflow-hidden bg-n-50 px-4 pb-16 pt-16 sm:px-6 sm:pb-20 sm:pt-20 lg:px-8 lg:pb-24 lg:pt-28">
-      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand/10 blur-3xl sm:h-96 sm:w-96" />
+<section className="relative overflow-hidden bg-n-50 px-6 pb-20 pt-16 sm:px-12 sm:pb-24 sm:pt-20 md:px-16 lg:px-24 lg:pt-28">      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-brand/10 blur-3xl sm:h-96 sm:w-96" />
       <div className="pointer-events-none absolute -left-24 top-40 h-64 w-64 rounded-full bg-brand-mid/10 blur-3xl sm:h-80 sm:w-80" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
