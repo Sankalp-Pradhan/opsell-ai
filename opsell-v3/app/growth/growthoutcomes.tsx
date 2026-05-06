@@ -9,10 +9,7 @@ import { LayoutTextFlip } from "@/components/ui/layout-text-flip";
 
 export const GrowthOutcomes = () => {
   return (
-    <section
-      className="relative w-full overflow-hidden py-16 md:px-10 md:py-20"
-      style={{ background: "#080a1a" }}
-    >
+    <section className="relative w-full overflow-hidden py-16 md:px-10 md:py-20 bg-n-900">
       {/* Ambient glows — deep navy-purple atmosphere */}
       <div
         className="pointer-events-none absolute"
@@ -51,7 +48,6 @@ export const GrowthOutcomes = () => {
 
       <div className="container relative z-10 max-w-7xl">
         {/* Section header */}
-        {/* Section header */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -59,14 +55,15 @@ export const GrowthOutcomes = () => {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="relative mb-12 text-center md:mb-20"
         >
-          {/* ✦ Heading glow — centered bloom behind badge + title */}
+          {/* Heading glow — centered bloom behind badge + title */}
           <div
             className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2"
             style={{
               width: 700,
               height: 400,
               borderRadius: "50%",
-              background: "radial-gradient(ellipse, rgba(80,70,229,0.18) 0%, rgba(123,115,255,0.08) 40%, transparent 70%)",
+              background:
+                "radial-gradient(ellipse, rgba(80,70,229,0.18) 0%, rgba(123,115,255,0.08) 40%, transparent 70%)",
               filter: "blur(48px)",
             }}
           />
@@ -92,7 +89,7 @@ export const GrowthOutcomes = () => {
 
           {/* Heading */}
           <motion.div
-            className="relative mx-4 my-2 flex flex-col  items-center justify-center gap-3 text-center sm:mx-0 md:flex-row"
+            className="relative mx-4 my-2 flex flex-col items-center justify-center gap-3 text-center sm:mx-0 md:flex-row"
             style={{ fontWeight: 700 }}
           >
             <LayoutTextFlip
@@ -112,7 +109,6 @@ export const GrowthOutcomes = () => {
             transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
             className="group relative flex h-full overflow-hidden md:col-span-4"
           >
-            {/* Hover glow — top-right corner */}
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#5046E5]/10 opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
             <ImproveMarginsCard />
           </motion.div>
@@ -125,7 +121,6 @@ export const GrowthOutcomes = () => {
             transition={{ duration: 0.6, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
             className="group relative flex h-full overflow-hidden md:col-span-2"
           >
-            {/* Hover glow — top-right corner */}
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#7B73FF]/10 opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
             <GMVCard />
           </motion.div>
@@ -138,7 +133,6 @@ export const GrowthOutcomes = () => {
             transition={{ duration: 0.6, delay: 0.14, ease: [0.16, 1, 0.3, 1] }}
             className="group relative flex h-full overflow-hidden md:col-span-3"
           >
-            {/* Hover glow — top-left corner for variety */}
             <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-[#5046E5]/10 opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
             <TimeSavedCard />
           </motion.div>
@@ -151,7 +145,6 @@ export const GrowthOutcomes = () => {
             transition={{ duration: 0.6, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="group relative flex h-full overflow-hidden md:col-span-3"
           >
-            {/* Hover glow — top-right corner */}
             <div className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-[#7B73FF]/10 opacity-0 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
             <ConversionCard />
           </motion.div>
@@ -172,10 +165,7 @@ export const GrowthOutcomes = () => {
                 "linear-gradient(to right, transparent, rgba(80,70,229,0.35), transparent)",
             }}
           />
-          <p
-            className="text-[11px] font-medium uppercase tracking-[0.18em]"
-            style={{ color: "#4A4F57" }}
-          >
+          <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-n-600">
             Trusted by D2C &amp; marketplace sellers across India
           </p>
         </motion.div>

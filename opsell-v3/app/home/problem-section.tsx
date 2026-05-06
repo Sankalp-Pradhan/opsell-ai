@@ -26,7 +26,7 @@ const brands: Brand[] = [
     multiplier: "1.8x",
     headline: "Conversion Rate boost via AI Content Generation.",
     description:
-      "(Opsell's AI updated all minimalist. listings across Amazon and Flipkart, resulting in faster checkouts).",
+      "(Opsell's AI updated all minimalist listings across Amazon and Flipkart, resulting in faster checkouts).",
     footer:
       "Content score has been surpassed by our AI-generated product descriptions.",
   },
@@ -75,8 +75,8 @@ const BrandLogo = ({ logo, name }: { logo: string; name: string }) => {
 };
 
 const BrandCard = ({ brand }: { brand: Brand }) => (
-  <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-[#1C1F24] to-[#0F1114] p-6 transition-all duration-300 hover:border-[#5E5CE6]/40 hover:shadow-[0_20px_50px_-15px_rgba(94,92,230,0.4)] sm:p-8 h-full flex flex-col">
-    <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#5E5CE6]/10 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
+  <article className="group relative overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-br from-n-800 to-n-900 p-6 transition-all duration-300 hover:border-[#5046E5]/40 hover:shadow-[0_20px_50px_-15px_rgba(80,70,229,0.4)] sm:p-8 h-full flex flex-col">
+    <div className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#5046E5]/10 blur-3xl transition-opacity duration-300 group-hover:opacity-100" />
 
     {/* Logo + headline row */}
     <div className="relative flex items-start justify-between gap-3">
@@ -84,9 +84,9 @@ const BrandCard = ({ brand }: { brand: Brand }) => (
         <BrandLogo logo={brand.logo} name={brand.name} />
       </div>
     </div>
-      <p className="text-xs font-bold   text-white/90 sm:text-lg">
-        {brand.headline}
-      </p>
+    <p className="text-xs font-bold text-white/90 sm:text-lg">
+      {brand.headline}
+    </p>
 
     {/* Description */}
     <p className="relative mt-3 text-xs leading-relaxed text-white/50">
@@ -103,8 +103,8 @@ const BrandCard = ({ brand }: { brand: Brand }) => (
 
     {/* Footer */}
     <div className="relative mt-auto flex items-center gap-2 border-t border-white/10 pt-5 mt-5 sm:pt-6">
-      <Sparkles className="h-4 w-4 shrink-0 text-[#A5B4FC]" />
-      <p className="text-xs text-[#A5B4FC]">{brand.footer}</p>
+      <Sparkles className="h-4 w-4 shrink-0 text-brand-mid" />
+      <p className="text-xs text-brand-mid">{brand.footer}</p>
     </div>
   </article>
 );
@@ -125,7 +125,6 @@ const ProblemSection = () => {
   const prev = () => goTo(activeIndex - 1);
   const next = () => goTo(activeIndex + 1);
 
-  // Touch / mouse drag
   const onDragStart = (clientX: number) => {
     setIsDragging(true);
     setDragStartX(clientX);
@@ -145,7 +144,6 @@ const ProblemSection = () => {
     setDragOffset(0);
   };
 
-  // Keyboard support
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") prev();
@@ -158,38 +156,52 @@ const ProblemSection = () => {
   const translateX = `calc(${-activeIndex * 100}% + ${dragOffset}px)`;
 
   return (
-    <section className="relative overflow-hidden bg-[#0F1114] px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
-      {/* Dot grid */}
+    <section className=" relative overflow-hidden bg-n-900 px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
+      {/* Dot grid — matches GrowthOutcomes density */}
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.15]"
+        className="pointer-events-none absolute inset-0"
         style={{
-          backgroundImage: "radial-gradient(circle, #5E5CE6 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
+          backgroundImage: "radial-gradient(rgba(255,255,255,0.03) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
         }}
       />
-      {/* Glow */}
-      <div className="pointer-events-none absolute -top-32 left-1/2 h-[400px] w-[90vw] max-w-[800px] -translate-x-1/2 rounded-full bg-[#5E5CE6]/20 blur-[120px]" />
 
-      <div className="relative mx-auto max-w-7xl">
+      {/* Top glow */}
+      <div
+        className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 rounded-full"
+        style={{
+          width: "90vw",
+          maxWidth: 800,
+          height: 400,
+          background: "radial-gradient(ellipse, rgba(80,70,229,0.18) 0%, rgba(123,115,255,0.08) 40%, transparent 70%)",
+          filter: "blur(48px)",
+        }}
+      />
+
+      <div className=" relative mx-auto max-w-7xl">
         {/* Heading */}
         <h2 className="mx-auto max-w-4xl text-center font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
           AI{" "}
-          <span className="bg-gradient-to-r from-[#A5B4FC] to-[#5E5CE6] bg-clip-text text-transparent">
+          <span
+            className="bg-clip-text text-transparent"
+            style={{
+              backgroundImage: "linear-gradient(to right, #7B73FF, #5046E5)",
+            }}
+          >
             Growth Engine
           </span>
           {" "}for Sellers
         </h2>
 
-        {/* ── Desktop grid (md+) ── */}
+        {/* Desktop grid (md+) */}
         <div className="mt-10 hidden gap-5 sm:mt-14 sm:gap-6 md:grid md:grid-cols-3 lg:gap-8">
           {brands.map((brand) => (
             <BrandCard key={brand.name} brand={brand} />
           ))}
         </div>
 
-        {/* ── Mobile slider (< md) ── */}
+        {/* Mobile slider (< md) */}
         <div className="md:hidden mt-8" ref={containerRef}>
-          {/* Track */}
           <div
             className="overflow-hidden rounded-2xl"
             style={{ touchAction: "pan-y" }}
@@ -224,12 +236,11 @@ const ProblemSection = () => {
 
           {/* Controls row */}
           <div className="mt-5 flex items-center justify-between px-1">
-            {/* Prev */}
             <button
               onClick={prev}
               disabled={activeIndex === 0}
               aria-label="Previous"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/60 transition-all hover:border-[#5E5CE6]/50 hover:bg-[#5E5CE6]/10 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/60 transition-all hover:border-[#5046E5]/50 hover:bg-[#5046E5]/10 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed"
             >
               <ChevronLeft className="h-4 w-4" />
             </button>
@@ -246,20 +257,20 @@ const ProblemSection = () => {
                     width: i === activeIndex ? 20 : 6,
                     height: 6,
                     borderRadius: 9999,
-                    background: i === activeIndex
-                      ? "linear-gradient(90deg, #A5B4FC, #5E5CE6)"
-                      : "rgba(255,255,255,0.2)",
+                    background:
+                      i === activeIndex
+                        ? "linear-gradient(90deg, #7B73FF, #5046E5)"
+                        : "rgba(255,255,255,0.2)",
                   }}
                 />
               ))}
             </div>
 
-            {/* Next */}
             <button
               onClick={next}
               disabled={activeIndex === brands.length - 1}
               aria-label="Next"
-              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/60 transition-all hover:border-[#5E5CE6]/50 hover:bg-[#5E5CE6]/10 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed"
+              className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white/60 transition-all hover:border-[#5046E5]/50 hover:bg-[#5046E5]/10 hover:text-white disabled:opacity-25 disabled:cursor-not-allowed"
             >
               <ChevronRight className="h-4 w-4" />
             </button>
@@ -270,9 +281,6 @@ const ProblemSection = () => {
             {activeIndex + 1} / {brands.length}
           </p>
         </div>
-
-        {/* CTA */}
-       
       </div>
     </section>
   );
