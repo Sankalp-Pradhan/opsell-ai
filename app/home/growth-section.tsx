@@ -2,8 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useInView } from "./use-view";
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react";
-import { StaggerTestimonials } from "@/components/home/stagger-testimonials";
+import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, TrendingDown, TrendingUp, ArrowRight } from "lucide-react";
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
@@ -29,6 +28,69 @@ const OUTCOMES = [
     desc: "See sales where your margins are thinning — suppressed listings, out-of-stock windows. Buy the losses — before they compound.",
   },
 ];
+
+// ─── Shoe SVG ─────────────────────────────────────────────────────────────────
+
+// Replace ShoeSVGBefore and ShoeSVGAfter with these image-based components:
+
+function ShoeBoxBefore() {
+  return (
+    <div
+      style={{
+        background: "#0e1020",
+        aspectRatio: "4/3",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 8,
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      <img
+        src="/assets/shoe.png"
+        alt="Unoptimized sneaker listing"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          padding: 8,
+          filter: "grayscale(1)",
+          opacity: 0.4,
+          transform: "scale(1.05)",
+        }}
+      />
+    </div>
+  );
+}
+
+function ShoeBoxAfter() {
+  return (
+    <div
+      style={{
+        background: "linear-gradient(135deg, rgba(80,70,229,0.15) 0%, #0b0d1e 100%)",
+        aspectRatio: "4/3",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 8,
+        overflow: "hidden",
+        position: "relative",
+      }}
+    >
+      <img
+        src="/assets/shoe.png"
+        alt="Optimized sneaker listing"
+        style={{
+          width: "100%",
+          height: "100%",
+          objectFit: "contain",
+          padding: 8,
+        }}
+      />
+    </div>
+  );
+}
 
 // ─── Visuals ──────────────────────────────────────────────────────────────────
 
@@ -70,45 +132,106 @@ function PricingVisual() {
   );
 }
 
+// ─── Listing Visual (outcome 02) — before/after comparison ────────────────────
+
 function ListingVisual() {
   return (
     <>
-      <p style={{ fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 700, color: "#6B707A" }}>★★★ AI Optimisation Report</p>
-      {[
-        { label: "Title keyword match", val: "71%", fill: 71, color: "#16A34A" },
-        { label: "Price competitiveness", val: "49%", fill: 49, color: "#F59E0B" },
-        { label: "Image sequence score", val: "22%", fill: 22, color: "#EF4444" },
-        { label: "Overall listing health", val: "78%", fill: 78, color: "#5046E5" },
-      ].map(m => (
-        <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#4A4F57" }}>{m.label}</span>
-            <span style={{ fontFamily: "var(--font-mono)", fontSize: 13, fontWeight: 500, color: "#0F1114" }}>{m.val}</span>
-          </div>
-          <div style={{ height: 6, borderRadius: 3, background: "#F0F1F3", overflow: "hidden" }}>
-            <div style={{ width: `${m.fill}%`, height: "100%", borderRadius: 3, background: m.color, transition: "width 0.5s" }} />
-          </div>
-        </div>
-      ))}
-      <div style={{ textAlign: "center", padding: "20px 0", borderTop: "1px solid #F0F1F3" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: 48, fontWeight: 800, color: "#0F1114", letterSpacing: "-0.04em", lineHeight: 1 }}>+31%</div>
-        <div style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#8C919A", marginTop: 4 }}>avg. uplift across all suggestions</div>
+      {/* Header pill */}
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#F0EFFF", border: "1px solid #C7C4FF", borderRadius: 20, padding: "5px 12px" }}>
+        <span style={{ fontFamily: "var(--font-display)", fontSize: 11, fontWeight: 600, color: "#5046E5", letterSpacing: "0.04em" }}>
+          ✦ Listing engine · A9 + Rufus + COSMO
+        </span>
       </div>
-      <div style={{ background: "#F0EFFF", border: "1px solid #C7C4FF", borderRadius: 10, padding: 16 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
-          <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#5046E5", display: "inline-block", animation: "aiPulse 1.5s ease infinite" }} />
-          <span style={{ fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 700, color: "#5046E5" }}>AI Suggestion</span>
+
+      {/* Comparison row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", gap: 10, alignItems: "center" }}>
+
+        {/* BEFORE card */}
+        <div style={{ background: "#F8F9FA", border: "1px solid #E2E4E8", borderRadius: 12, overflow: "hidden" }}>
+          {/* Image area */}
+          <div style={{ background: "#F0F1F3", aspectRatio: "4/3", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+            {/* Hatching pattern overlay */}
+            <svg style={{ position: "absolute", inset: 0, width: "100%", height: "100%", opacity: 0.35 }} xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="hatch" width="10" height="10" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+                  <line x1="0" y1="0" x2="0" y2="10" stroke="#B0B4BC" strokeWidth="1" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#hatch)" />
+            </svg>
+            <div style={{ position: "relative", width: "72%", height: "72%", opacity: 0.55, filter: "grayscale(1)" }}>
+              <ShoeBoxBefore />
+            </div>
+          </div>
+          {/* Meta */}
+          <div style={{ padding: "10px 12px" }}>
+            <p style={{ fontFamily: "var(--font-body)", fontSize: 12, color: "#4A4F57", marginBottom: 6 }}>
+              men's sneakers — white/black
+            </p>
+            <div style={{ display: "flex", gap: 10, marginBottom: 6 }}>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#6B707A" }}>
+                CTR <strong style={{ color: "#0F1114" }}>0.6%</strong>
+              </span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#6B707A" }}>
+                CVR <strong style={{ color: "#0F1114" }}>1.1%</strong>
+              </span>
+            </div>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#FEF2F2", color: "#B91C1C", fontSize: 10, fontFamily: "var(--font-display)", fontWeight: 500, padding: "3px 8px", borderRadius: 6 }}>
+              <TrendingDown size={10} />
+              Weak title · low engagement
+            </span>
+          </div>
         </div>
-        <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#2E3238", lineHeight: 1.5, marginBottom: 12 }}>
-          Add "Vitamin C Serum" to title — competitor #1 ranks for it and has 23% more units/week.
+
+        {/* Arrow */}
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+          <div style={{ fontSize: 10, fontFamily: "var(--font-display)", fontWeight: 700, color: "#5046E5", whiteSpace: "nowrap", background: "#F0EFFF", border: "1px solid #C7C4FF", borderRadius: 20, padding: "3px 8px" }}>
+            +30% CTR
+          </div>
+          <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#5046E5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <ArrowRight size={14} color="#fff" strokeWidth={2.5} />
+          </div>
+        </div>
+
+        {/* AFTER card */}
+        <div style={{ background: "#fff", border: "1.5px solid #C7C4FF", borderRadius: 12, overflow: "hidden", boxShadow: "0 0 0 3px #F0EFFF" }}>
+          {/* Image area */}
+          <div style={{ background: "linear-gradient(135deg, #F0EFFF 0%, #E8F4FF 100%)", aspectRatio: "4/3", display: "flex", alignItems: "center", justifyContent: "center", position: "relative" }}>
+            <span style={{  zIndex: 1, position : "absolute", top: 8, right: 8, background: "#5046E5", color: "#fff", fontSize: 9, fontFamily: "var(--font-display)", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", padding: "3px 8px", borderRadius: 10 }}>
+              With Opsell
+            </span>
+            <div style={{ width: "76%", height: "76%" }}>
+              <ShoeBoxAfter />
+            </div>
+          </div>
+          {/* Meta */}
+          <div style={{ padding: "10px 12px" }}>
+            <p style={{ fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 600, color: "#0F1114", marginBottom: 6, lineHeight: 1.4 }}>
+              Redtape Men's Low-Top Court Sneakers — Premium Daily Wear
+            </p>
+            <div style={{ display: "flex", gap: 10, marginBottom: 6 }}>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#6B707A" }}>
+                CTR <strong style={{ color: "#5046E5" }}>0.78%</strong>
+              </span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#6B707A" }}>
+                CVR <strong style={{ color: "#5046E5" }}>2.3%</strong>
+              </span>
+            </div>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: 4, background: "#F0EFFF", color: "#4338CA", fontSize: 10, fontFamily: "var(--font-display)", fontWeight: 500, padding: "3px 8px", borderRadius: 6 }}>
+              <TrendingUp size={10} />
+              +30% CTR · +1.2pt CVR
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer callout */}
+      <div style={{ background: "#F8F9FA", border: "1px solid #E2E4E8", borderRadius: 10, padding: 16 }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#2E3238", lineHeight: 1.6, margin: 0 }}>
+          <strong style={{ fontFamily: "var(--font-display)", color: "#0F1114" }}>Triple-algorithm optimisation.</strong>{" "}
+          Platform-specific agents rewrite for Amazon's A9 ranker, Rufus conversational search, and COSMO context graphs — in parallel.
         </p>
-        <div style={{ display: "flex", gap: 8 }}>
-          {["Apply", "Dismiss", "Why?"].map((label, i) => (
-            <button key={label} style={{ padding: "6px 14px", background: i === 0 ? "#5046E5" : i === 1 ? "#F0F1F3" : "none", color: i === 0 ? "#fff" : i === 2 ? "#5046E5" : "#4A4F57", border: i === 2 ? "1px solid #C7C4FF" : "none", borderRadius: 6, fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>
-              {label}
-            </button>
-          ))}
-        </div>
       </div>
     </>
   );
@@ -116,39 +239,45 @@ function ListingVisual() {
 
 function PlatformsVisual() {
   const platforms = [
-    { name: "Amazon", status: "Synced", count: "1,248 SKUs", color: "#16A34A" },
-    { name: "Flipkart", status: "Synced", count: "1,248 SKUs", color: "#16A34A" },
-    { name: "Myntra", status: "Syncing", count: "986 SKUs", color: "#F59E0B" },
-    { name: "Meesho", status: "Synced", count: "742 SKUs", color: "#16A34A" },
-    { name: "Ajio", status: "Synced", count: "612 SKUs", color: "#16A34A" },
+    { name: "Amazon SP-API", sub: "142 ACTIONS / 30D", status: "live" },
+    { name: "Shopify",       sub: "88 ACTIONS / 30D",  status: "live" },
+    { name: "Flipkart",      sub: "BUILDING",           status: "building" },
+    { name: "Myntra",        sub: "BUILDING",           status: "building" },
+    { name: "Meesho",        sub: "ROADMAP",            status: "roadmap" },
+    { name: "Ajio",          sub: "ROADMAP",            status: "roadmap" },
   ];
+
+  const badgeStyle: Record<string, React.CSSProperties> = {
+    live:     { background: "#DCFCE7", color: "#16A34A" },
+    building: { background: "#FEF9EC", color: "#D97706" },
+    roadmap:  { background: "#F0F1F3", color: "#6B707A" },
+  };
+
   return (
     <>
-      <p style={{ fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 700, color: "#6B707A" }}>◆ Unified Channel Control</p>
-      <div style={{ background: "#F0EFFF", border: "1px solid #C7C4FF", borderRadius: 10, padding: 16, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <div>
-          <div style={{ fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 700, color: "#5046E5", marginBottom: 4 }}>ACTIVE RULE</div>
-          <div style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#2E3238" }}>Festive discount: 15% off on selected categories</div>
-        </div>
-        <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: "#fff", background: "#5046E5", padding: "4px 8px", borderRadius: 6, fontWeight: 600 }}>LIVE</span>
+      <div style={{ display: "inline-flex", alignItems: "center", gap: 6, background: "#F0EFFF", border: "1px solid #C7C4FF", borderRadius: 20, padding: "5px 12px", marginBottom: 4 }}>
+        <span style={{ fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 600, color: "#5046E5" }}>
+          ⇌ Execution layer · live API
+        </span>
       </div>
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-        {platforms.map(p => (
-          <div key={p.name} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 14px", background: "#F7F7FB", border: "1px solid #E2E4E8", borderRadius: 8 }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ width: 8, height: 8, borderRadius: "50%", background: p.color, display: "inline-block" }} />
-              <span style={{ fontFamily: "var(--font-display)", fontSize: 14, fontWeight: 600, color: "#0F1114" }}>{p.name}</span>
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+        {platforms.map((p) => (
+          <div key={p.name} style={{ background: "#fff", border: "1px solid #E2E4E8", borderRadius: 12, padding: "16px 18px", display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+              <span style={{ fontFamily: "var(--font-display)", fontSize: 15, fontWeight: 600, color: "#0F1114" }}>{p.name}</span>
+              <span style={{ fontFamily: "var(--font-mono)", fontSize: 10, fontWeight: 500, color: "#8C919A", letterSpacing: "0.06em" }}>{p.sub}</span>
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 12, color: "#6B707A" }}>{p.count}</span>
-              <span style={{ fontFamily: "var(--font-mono)", fontSize: 11, color: p.color, fontWeight: 600, minWidth: 56, textAlign: "right" }}>{p.status}</span>
-            </div>
+            <span style={{ ...badgeStyle[p.status], fontFamily: "var(--font-display)", fontSize: 12, fontWeight: 600, padding: "4px 10px", borderRadius: 20, whiteSpace: "nowrap" }}>
+              {p.status}
+            </span>
           </div>
         ))}
       </div>
-      <div style={{ textAlign: "center", padding: "16px 0", borderTop: "1px solid #F0F1F3" }}>
-        <div style={{ fontFamily: "var(--font-display)", fontSize: 36, fontWeight: 800, color: "#0F1114", letterSpacing: "-0.03em", lineHeight: 1 }}>1 dashboard</div>
-        <div style={{ fontFamily: "var(--font-body)", fontSize: 13, color: "#8C919A", marginTop: 4 }}>5 platforms · 4,836 listings managed</div>
+      <div style={{ background: "#0F1114", borderRadius: 12, padding: "18px 20px", marginTop: 2 }}>
+        <p style={{ fontFamily: "var(--font-body)", fontSize: 14, color: "#fff", lineHeight: 1.6, margin: 0 }}>
+          <span style={{ color: "#7B73FF", fontWeight: 600 }}>One ruleset → many marketplaces.</span>
+          {" "}Set price floors, bundle logic, listing standards once. Opsell executes consistently across every connected channel.
+        </p>
       </div>
     </>
   );
@@ -156,10 +285,10 @@ function PlatformsVisual() {
 
 function LossesVisual() {
   const issues = [
-    { label: "Suppressed listings", count: 12, loss: "₹84,200", color: "#EF4444" },
-    { label: "Out-of-stock windows", count: 7, loss: "₹52,100", color: "#F59E0B" },
-    { label: "Buy Box lost", count: 23, loss: "₹38,400", color: "#F59E0B" },
-    { label: "Margin erosion", count: 5, loss: "₹19,800", color: "#EF4444" },
+    { label: "Suppressed listings",   count: 12, loss: "₹84,200",  color: "#EF4444" },
+    { label: "Out-of-stock windows",  count: 7,  loss: "₹52,100",  color: "#F59E0B" },
+    { label: "Buy Box lost",          count: 23, loss: "₹38,400",  color: "#F59E0B" },
+    { label: "Margin erosion",        count: 5,  loss: "₹19,800",  color: "#EF4444" },
   ];
   return (
     <>
@@ -221,10 +350,7 @@ export function GrowthSection() {
   const goNext = () => handleSelect((active + 1) % OUTCOMES.length);
 
   return (
-    <section
-      ref={ref}
-      className="border-t border-b border-n-border bg-white"
-    >
+    <section ref={ref} className="border-t border-b border-n-border bg-white">
       <div
         className="mx-auto max-w-7xl px-4 py-16 sm:px-6 sm:py-20 lg:px-12 lg:py-24"
         style={{
@@ -241,7 +367,7 @@ export function GrowthSection() {
           Sell more.<br />Manage less.
         </h2>
 
-        {/* ── Desktop layout: side-by-side ── */}
+        {/* ── Desktop layout ── */}
         <div className="mt-12 hidden lg:grid lg:grid-cols-2 lg:items-center lg:gap-16">
 
           {/* Outcome list + vertical arrows */}
@@ -249,7 +375,7 @@ export function GrowthSection() {
             <div className="flex flex-col gap-2 justify-center">
               {[
                 { label: "Previous", fn: goPrev, Icon: ChevronUp },
-                { label: "Next", fn: goNext, Icon: ChevronDown },
+                { label: "Next",     fn: goNext, Icon: ChevronDown },
               ].map(({ label, fn, Icon }) => (
                 <button
                   key={label}
@@ -309,10 +435,8 @@ export function GrowthSection() {
           </div>
         </div>
 
-        {/* ── Mobile layout: stacked with horizontal nav ── */}
+        {/* ── Mobile layout ── */}
         <div className="mt-10 lg:hidden">
-
-          {/* Outcome tabs — horizontal scrollable pills */}
           <div className="mb-5 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
             {OUTCOMES.map((o, i) => (
               <button
@@ -321,8 +445,8 @@ export function GrowthSection() {
                 className="shrink-0 rounded-md px-3 py-1.5 font-display text-ds-caption font-semibold transition-all duration-200"
                 style={{
                   background: active === i ? "#F0EFFF" : "#F0F1F3",
-                  color: active === i ? "#5046E5" : "#6B707A",
-                  border: `1px solid ${active === i ? "#C7C4FF" : "transparent"}`,
+                  color:      active === i ? "#5046E5" : "#6B707A",
+                  border:     `1px solid ${active === i ? "#C7C4FF" : "transparent"}`,
                 }}
               >
                 {o.num} {o.title}
@@ -330,18 +454,11 @@ export function GrowthSection() {
             ))}
           </div>
 
-          {/* Active outcome description */}
           <div className="mb-5 rounded-lg border border-n-border bg-n-50 p-4">
-            <p className="font-body text-ds-body leading-relaxed text-n-500">
-              {OUTCOMES[active].desc}
-            </p>
+            <p className="font-body text-ds-body leading-relaxed text-n-500">{OUTCOMES[active].desc}</p>
           </div>
 
-          {/* Visual panel */}
-          <div
-            className="relative overflow-hidden rounded-xl border border-n-border bg-white shadow-elev-2"
-            style={{ minHeight: 420 }}
-          >
+          <div className="relative overflow-hidden rounded-xl border border-n-border bg-white shadow-elev-2" style={{ minHeight: 420 }}>
             {PrevVisual && (
               <div
                 key={`prev-m-${prev}`}
@@ -360,34 +477,21 @@ export function GrowthSection() {
             </div>
           </div>
 
-          {/* Prev / Next arrow row */}
           <div className="mt-5 flex items-center justify-between">
-            <button
-              onClick={goPrev}
-              className="growth-arrow-btn flex h-9 w-9 items-center justify-center rounded-full border border-n-border bg-white text-brand"
-            >
+            <button onClick={goPrev} className="growth-arrow-btn flex h-9 w-9 items-center justify-center rounded-full border border-n-border bg-white text-brand">
               <ChevronLeft size={18} strokeWidth={2.25} />
             </button>
-
-            {/* Dot indicators */}
             <div className="flex gap-1.5">
               {OUTCOMES.map((_, i) => (
                 <button
                   key={i}
                   onClick={() => handleSelect(i)}
                   className="h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    width: active === i ? 20 : 6,
-                    background: active === i ? "#5046E5" : "#D1D4D9",
-                  }}
+                  style={{ width: active === i ? 20 : 6, background: active === i ? "#5046E5" : "#D1D4D9" }}
                 />
               ))}
             </div>
-
-            <button
-              onClick={goNext}
-              className="growth-arrow-btn flex h-9 w-9 items-center justify-center rounded-full border border-n-border bg-white text-brand"
-            >
+            <button onClick={goNext} className="growth-arrow-btn flex h-9 w-9 items-center justify-center rounded-full border border-n-border bg-white text-brand">
               <ChevronRight size={18} strokeWidth={2.25} />
             </button>
           </div>
@@ -440,11 +544,6 @@ export function GrowthSection() {
         .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
         .scrollbar-none::-webkit-scrollbar { display: none; }
       `}</style>
-
-{/* 
-      <div className="flex w-full h-screen justify-center items-center">
-        <StaggerTestimonials />
-      </div> */}
     </section>
   );
 }

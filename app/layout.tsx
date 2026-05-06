@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
 import { Plus_Jakarta_Sans, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { Footer } from "./home/footer";
-import { CtaSection } from "./home/cta";
+
 import Navbar from "./home/nav";
+import CTA from "./home/cta";
+import Footer from "./home/footer";
 
 const plusJakarta = Plus_Jakarta_Sans({
   variable: "--font-display",
@@ -41,7 +42,7 @@ export default function RootLayout({
       <body className="min-h-screen flex flex-col antialiased bg-white text-n-900 font-body">
         <Navbar />
         <main className="flex-1">{children}</main>
-        <CtaSection/>
+        <CTA/>
         <Footer />
       </body>
     </html>

@@ -82,14 +82,7 @@ const OrbitApps = () => {
 
       {/* Center hub */}
       <div className="pointer-events-none z-10 flex flex-col items-center gap-2">
-        <div
-          className="h-9 w-9 sm:h-11 sm:w-11 rounded-full bg-[#5B55F5]"
-          style={{
-            boxShadow:
-              "0 0 0 8px rgba(91,85,245,0.12), 0 0 0 16px rgba(91,85,245,0.06)",
-          }}
-        />
-        <span className="text-sm sm:text-base font-bold text-[#0f0f1a] tracking-tight">
+        <span className="text-sm sm:text-5xl p-10 font-bold tracking-tight bg-gradient-to-br from-brand-dark to-black bg-clip-text text-transparent">
           opsell.
         </span>
       </div>
@@ -97,8 +90,9 @@ const OrbitApps = () => {
       {/* Inner orbit — live */}
       <OrbitingCircles radius={inner} duration={20} iconSize={iconSize}>
         <OrbitIcon src="/assets/amazon.png" alt="Amazon" live />
-        <OrbitIcon src="/assets/flipkart.png" alt="Flipkart"  />
+        <OrbitIcon src="/assets/flipkart.png" alt="Flipkart" live />
         <OrbitIcon src="/assets/shopify.png" alt="Shopify" live />
+        <OrbitIcon src="/assets/meesho1.png" alt="Meesho" live />
       </OrbitingCircles>
 
       {/* Outer orbit — mixed */}
@@ -106,7 +100,7 @@ const OrbitApps = () => {
         <OrbitIcon src="/assets/ajio.png" alt="Ajio" />
         <OrbitIcon src="/assets/zepto.png" alt="Zepto" />
         <OrbitIcon src="/assets/blinkit.png" alt="Blinkit" />
-        <OrbitIcon src="/assets/meesho1.png" alt="Meesho" live />
+
         <OrbitIcon src="/assets/myntra.png" alt="Myntra" />
         <OrbitIcon src="/assets/jiomart.png" alt="JioMart" />
         <OrbitIcon src="/assets/instamart.png" alt="inst" />

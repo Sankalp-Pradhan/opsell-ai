@@ -17,7 +17,7 @@ const brands: Brand[] = [
     multiplier: "2.1x",
     headline: "GMV growth via AI suggested Cross-Selling.",
     description:
-      "(Opsell AI detected competitor pricing dip and recommended optimized Adidas bundles, increasing total order value).",
+      "Opsell AI detected competitor pricing dip and recommended optimized Adidas bundles, increasing total order value.",
     footer: "Opsell recommends next optimal bundle.",
   },
   {
@@ -26,7 +26,7 @@ const brands: Brand[] = [
     multiplier: "1.8x",
     headline: "Conversion Rate boost via AI Content Generation.",
     description:
-      "(Opsell's AI updated all minimalist listings across Amazon and Flipkart, resulting in faster checkouts).",
+      "Opsell's AI updated all minimalist listings across Amazon and Flipkart, resulting in faster checkouts.",
     footer:
       "Content score has been surpassed by our AI-generated product descriptions.",
   },
@@ -36,7 +36,7 @@ const brands: Brand[] = [
     multiplier: "1.5x",
     headline: "Margin improvement via automated price testing.",
     description:
-      "(Opsell AI tested higher price in specific regions, maintaining volume and boosting margins for key dot and key serums).",
+      "Opsell AI tested higher price in specific regions, maintaining volume and boosting margins for key dot and key serums.",
     footer: "Regional demand insights implemented in dot and key SKU level pricing.",
   },
 ];
@@ -84,7 +84,7 @@ const BrandCard = ({ brand }: { brand: Brand }) => (
         <BrandLogo logo={brand.logo} name={brand.name} />
       </div>
     </div>
-    <p className="text-xs font-bold text-white/90 sm:text-lg">
+    <p className="text-xs font-bold text-brand-light sm:text-lg">
       {brand.headline}
     </p>
 
@@ -156,7 +156,7 @@ const ProblemSection = () => {
   const translateX = `calc(${-activeIndex * 100}% + ${dragOffset}px)`;
 
   return (
-    <section className=" relative overflow-hidden bg-n-900 px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
+    <section className="relative overflow-hidden bg-n-900 px-5 py-12 sm:px-8 sm:py-16 lg:px-10">
       {/* Dot grid — matches GrowthOutcomes density */}
       <div
         className="pointer-events-none absolute inset-0"
@@ -178,7 +178,7 @@ const ProblemSection = () => {
         }}
       />
 
-      <div className=" relative mx-auto max-w-7xl">
+      <div className="relative mx-auto max-w-7xl">
         {/* Heading */}
         <h2 className="mx-auto max-w-4xl text-center font-display text-2xl font-bold leading-tight text-white sm:text-3xl md:text-4xl lg:text-5xl">
           AI{" "}
