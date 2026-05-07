@@ -30,9 +30,9 @@ const questions = [
     label: "Question 2 of 3",
     title: "Annual revenue range?",
     options: [
-      { label: "$1M – $5M", value: "1to5" },
-      { label: "$5M – $15M", value: "5to15" },
-      { label: "$15M+", value: "15plus" },
+      { label: "₹1Cr – ₹5Cr", value: "1to5" },
+      { label: "₹5Cr – ₹15Cr", value: "5to15" },
+      { label: "₹15Cr+", value: "15plus" },
     ],
   },
   {
@@ -264,18 +264,16 @@ function RightPanel({
                     transition={{
                       delay: i * 0.05,
                     }}
-                    className={`flex items-start gap-3 rounded-2xl border p-4 transition-all ${
-                      active
+                    className={`flex items-start gap-3 rounded-2xl border p-4 transition-all ${active
                         ? "border-brand/40 bg-n-800"
                         : "border-n-700 bg-n-800/40"
-                    }`}
+                      }`}
                   >
                     <div
-                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${
-                        active
+                      className={`flex h-10 w-10 items-center justify-center rounded-xl ${active
                           ? "bg-brand/20"
                           : "bg-n-700"
-                      }`}
+                        }`}
                     >
                       <Icon
                         size={16}
@@ -377,7 +375,7 @@ export default function RevenueLeakQuiz() {
 
   return (
     <section className="min-h-screen bg-white px-6 py-20 sm:px-12 sm:py-24 md:px-16 lg:px-24">
-  <div className="mx-auto max-w-6xl">
+      <div className="mx-auto max-w-6xl">
 
         {/* HEADER */}
         <div className="mb-14">
@@ -416,11 +414,10 @@ export default function RevenueLeakQuiz() {
                     {questions.map((_, i) => (
                       <div
                         key={i}
-                        className={`h-1 flex-1 rounded-full transition-all duration-500 ${
-                          i <= step
+                        className={`h-1 flex-1 rounded-full transition-all duration-500 ${i <= step
                             ? "bg-brand"
                             : "bg-n-200"
-                        }`}
+                          }`}
                       />
                     ))}
                   </div>
@@ -442,18 +439,16 @@ export default function RevenueLeakQuiz() {
                         onClick={() =>
                           handleSelect(opt.value)
                         }
-                        className={`group flex items-center rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-all duration-200 ${
-                          selected === opt.value
+                        className={`group flex items-center rounded-2xl border px-5 py-4 text-left text-sm font-medium transition-all duration-200 ${selected === opt.value
                             ? "border-brand bg-brand text-white shadow-md"
                             : "border-n-border bg-white text-n-800 hover:border-brand hover:bg-brand-light"
-                        }`}
+                          }`}
                       >
                         <span
-                          className={`mr-3 flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all ${
-                            selected === opt.value
+                          className={`mr-3 flex h-5 w-5 items-center justify-center rounded-full border-2 transition-all ${selected === opt.value
                               ? "border-white bg-white"
                               : "border-n-300 group-hover:border-brand"
-                          }`}
+                            }`}
                         >
                           {selected === opt.value && (
                             <span className="h-2 w-2 rounded-full bg-brand" />
