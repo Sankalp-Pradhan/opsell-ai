@@ -1,4 +1,5 @@
 import { ArrowRight } from "lucide-react";
+import Link from "next/link";
 
 export default function CTA() {
   return (
@@ -37,17 +38,16 @@ export default function CTA() {
 
             <div className="lg:col-span-4 flex flex-col gap-3 lg:items-end">
               <a
-                href="https://opsell.neetocal.com/meeting-with-shaurya-gupta"
+                href="https://forms.gle/8oyErGWjoFwyHBub7"
                 className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-7 py-4 font-display text-[15px] font-semibold text-brand shadow-[0_8px_24px_rgba(80,70,229,0.35)] transition-transform hover:-translate-y-0.5 w-full lg:w-auto"
               >
                 Get my revenue audit <ArrowRight className="h-4 w-4" />
               </a>
-              <button
-                type="button"
-                className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-transparent px-7 py-4 font-display text-[15px] font-semibold text-white/80 transition-colors hover:border-white/40 hover:text-white w-full lg:w-auto"
+              <Link
+                href="https://forms.gle/8oyErGWjoFwyHBub7" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-transparent px-7 py-4 font-display text-[15px] font-semibold text-white/80 transition-colors hover:border-white/40 hover:text-white w-full lg:w-auto"
               >
                 See it execute
-              </button>
+              </Link>
             </div>
           </div>
         </div>
