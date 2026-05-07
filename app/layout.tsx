@@ -30,7 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://opsell.ai"), // replace with actual domain
+  metadataBase: new URL("https://opsell.in"), // replace with actual domain
 
   title: {
     default: "Opsell | AI Powered Product Platform",
@@ -79,7 +79,7 @@ export const metadata: Metadata = {
     title: "Opsell | AI Powered Product Platform",
     description:
       "Scale smarter with AI-powered workflows, automation, and insights.",
-    url: "https://opsell.ai",
+    url: "https://opsell.in",
     siteName: "Opsell",
     images: [
       {
