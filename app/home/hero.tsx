@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 // ─── Hero Dashboard ───────────────────────────────────────────────────────────
@@ -23,11 +24,11 @@ function HeroDashboard() {
   ];
 
   const platforms: Record<string, { bg: string; img: string; name: string }> = {
-    amazon:   { bg: "#FF9900", img: "/assets/amazon.png",   name: "Amazon"   },
+    amazon: { bg: "#FF9900", img: "/assets/amazon.png", name: "Amazon" },
     flipkart: { bg: "#2874F0", img: "/assets/flipkart.png", name: "Flipkart" },
-    myntra:   { bg: "#FF3F6C", img: "/assets/myntra.png",   name: "Myntra"   },
-    ajio:     { bg: "#111111", img: "/assets/ajio.png",     name: "Ajio"     },
-    shopify:  { bg: "#FC2779", img: "/assets/shopify.png",  name: "Shopify"  },
+    myntra: { bg: "#FF3F6C", img: "/assets/myntra.png", name: "Myntra" },
+    ajio: { bg: "#111111", img: "/assets/ajio.png", name: "Ajio" },
+    shopify: { bg: "#FC2779", img: "/assets/shopify.png", name: "Shopify" },
   };
 
   const PlatformAvatar = ({ id, name }: { id: string; name: string }) => {
@@ -104,9 +105,8 @@ function HeroDashboard() {
             {navItems.map((item) => (
               <div
                 key={item.label}
-                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg font-display text-[12px] transition-colors ${
-                  item.active ? "font-bold text-brand bg-brand-light" : "font-medium text-n-500"
-                }`}
+                className={`flex items-center gap-2.5 px-2.5 py-2 rounded-lg font-display text-[12px] transition-colors ${item.active ? "font-bold text-brand bg-brand-light" : "font-medium text-n-500"
+                  }`}
               >
                 <span
                   className="w-3.5 h-3.5 rounded-[3px] inline-block shrink-0"
@@ -495,7 +495,7 @@ function ListingsVisual() {
           style={{ opacity: scanned ? 1 : 0, transition: "opacity 0.3s 2.6s", transform: "scale(1)" }}
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-            <path d="M2 5h6M6 3l2 2-2 2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 5h6M6 3l2 2-2 2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
       </div>
@@ -602,8 +602,8 @@ export function PainSection() {
   const next = () => goTo(activeIndex + 1);
 
   const onDragStart = (x: number) => { setIsDragging(true); setDragStartX(x); };
-  const onDragMove  = (x: number) => { if (!isDragging) return; setDragOffset(x - dragStartX); };
-  const onDragEnd   = () => {
+  const onDragMove = (x: number) => { if (!isDragging) return; setDragOffset(x - dragStartX); };
+  const onDragEnd = () => {
     if (!isDragging) return;
     setIsDragging(false);
     if (dragOffset < -60) next();
@@ -667,7 +667,7 @@ export function PainSection() {
             className="flex h-9 w-9 items-center justify-center rounded-full border border-n-200 bg-white text-n-400 transition-all hover:border-brand/40 hover:text-brand disabled:opacity-25 disabled:cursor-not-allowed"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M10 12L6 8l4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
           <div className="flex items-center gap-2">
@@ -690,7 +690,7 @@ export function PainSection() {
             className="flex h-9 w-9 items-center justify-center rounded-full border border-n-200 bg-white text-n-400 transition-all hover:border-brand/40 hover:text-brand disabled:opacity-25 disabled:cursor-not-allowed"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </button>
         </div>
@@ -774,12 +774,21 @@ export function Hero() {
           className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center"
           style={{ animation: "fadeUp 0.55s 0.21s ease both" }}
         >
-          <button className="rounded-[10px] bg-brand px-7 py-3 font-display text-[15px] font-bold text-white shadow-[0_8px_24px_rgba(80,70,229,0.32)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-[0_12px_32px_rgba(80,70,229,0.42)]">
+          <Link
+            href="https://forms.gle/8oyErGWjoFwyHBub7"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="rounded-[10px] bg-brand px-7 py-3 font-display text-[15px] font-bold text-white shadow-[0_8px_24px_rgba(80,70,229,0.32)] transition-all hover:-translate-y-0.5 hover:bg-brand-dark hover:shadow-[0_12px_32px_rgba(80,70,229,0.42)] inline-flex items-center justify-center"
+          >
             Start growing your revenue
-          </button>
-          <button className="rounded-[10px] border-[1.5px] border-n-200 bg-white px-6 py-3 font-display text-[15px] font-semibold text-n-700 transition-colors hover:border-n-400 hover:text-n-900">
+          </Link>
+          <Link
+            href="https://forms.gle/8oyErGWjoFwyHBub7"
+            target="_blank"
+            rel="noopener noreferrer"
+           className="rounded-[10px] text-center border-[1.5px] border-n-200 bg-white px-6 py-3 font-display text-[15px] font-semibold text-n-700 transition-colors hover:border-n-400 hover:text-n-900">
             See it execute →
-          </button>
+          </Link>
         </div>
 
       </div>

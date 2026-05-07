@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Plus, X } from "lucide-react";
+import {  Plus, X } from "lucide-react";
+import Link from "next/link";
 
 const faqs = [
   {
@@ -41,7 +42,7 @@ const faqs = [
     answer:
       "No. Opsell helps businesses of all sizes, but it becomes especially valuable once you manage 50+ products or sell on multiple platforms.",
   },
- 
+
 ];
 
 export default function FAQ() {
@@ -49,7 +50,7 @@ export default function FAQ() {
   const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
 
   return (
-   <section className="bg-white py-20 px-6 sm:px-12 sm:py-24 md:px-16 lg:px-24">
+    <section className="bg-white py-20 px-6 sm:px-12 sm:py-24 md:px-16 lg:px-24">
       <div className="mx-auto max-w-7xl grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
         {/* Left: Header */}
         <div className="lg:col-span-4">
@@ -62,12 +63,15 @@ export default function FAQ() {
             answered{" "}
             <span className="text-brand">straight.</span>
           </h2>
-          <p className="mt-6 text-n-400 text-base max-w-sm">
+          <div className="mt-6 mb-5 text-n-400 text-base max-w-sm">
             If we missed yours, the team responds personally within 24 hours.
-          </p>
-           <button className="rounded-[10px] border-[1.5px] border-n-200 mt-5 bg-brand px-6 py-3 font-display text-[15px] font-bold text-white transition-colors hover:border-n-400 hover:text-n-900">
+          </div>
+
+          <Link
+            href="https://forms.gle/8oyErGWjoFwyHBub7"
+            className="mt-5 rounded-[10px] border-[1.5px] border-n-200  bg-brand px-6 py-3  font-display text-[15px] font-bold text-white transition-colors hover:border-n-400 hover:text-white">
             Contact Support
-          </button>
+          </Link>
         </div>
 
         {/* Right: Accordion */}
@@ -86,9 +90,8 @@ export default function FAQ() {
                       {faq.question}
                     </span>
                     <span
-                      className={`flex-shrink-0 transition-colors ${
-                        isOpen ? "text-brand" : "text-n-400 group-hover:text-n-900"
-                      }`}
+                      className={`flex-shrink-0 transition-colors ${isOpen ? "text-brand" : "text-n-400 group-hover:text-n-900"
+                        }`}
                     >
                       {isOpen ? <X className="h-5 w-5" /> : <Plus className="h-5 w-5" />}
                     </span>
