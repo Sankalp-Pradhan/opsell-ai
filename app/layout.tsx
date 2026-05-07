@@ -83,7 +83,7 @@ export const metadata: Metadata = {
     siteName: "Opsell",
     images: [
       {
-        url: "/opsell-gi.png", // place inside /public
+        url: "https://opsell.in/opsell-gi.png", // place inside /public
         width: 1200,
         height: 630,
         alt: "Opsell",
@@ -99,7 +99,7 @@ export const metadata: Metadata = {
     description:
       "Scale smarter with AI-powered workflows, automation, and insights.",
     creator: "@opsell", // replace if needed
-    images: ["/opsell-gi.png"],
+    images: ["https://opsell.in/opsell-gi.png"],
   },
 
 
