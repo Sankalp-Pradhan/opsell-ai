@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     },
   },
 
-  
+
 
   openGraph: {
     title: "Opsell | AI Powered Product Platform",
@@ -102,7 +102,15 @@ export const metadata: Metadata = {
     images: ["https://opsell.in/opsell-gi.png"],
   },
 
-
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [
+      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
 
 
   appleWebApp: {
