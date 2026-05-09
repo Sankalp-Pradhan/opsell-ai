@@ -68,7 +68,7 @@ export default function FAQ() {
           </div>
 
           <Link
-            href="https://forms.gle/8oyErGWjoFwyHBub7"
+            href="https://forms.gle/v9Tc3wwNqB7JWRXMA"
             className="mt-5 rounded-[10px] border-[1.5px] border-n-200  bg-brand px-6 py-3  font-display text-[15px] font-bold text-white transition-colors hover:border-n-400 hover:text-white">
             Contact Support
           </Link>

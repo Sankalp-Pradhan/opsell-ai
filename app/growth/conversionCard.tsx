@@ -147,7 +147,7 @@ const ConversionCard = () => {
                   initial={{ opacity: 0, y: -6 }}
                   animate={inView ? { opacity: 1, y: 0 } : {}}
                   transition={{ delay: 0.8 }}
-                  className="absolute -top-7 left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-brand/25 bg-[#0b0d1e] px-2 py-0.5 text-[10px] font-semibold text-brand-mid shadow-sm md:block"
+                  className="absolute -top-7 -left-1/2 hidden -translate-x-1/2 whitespace-nowrap rounded-full border border-brand/25 bg-[#0b0d1e] px-2 py-0.5 text-[10px] font-semibold text-brand-mid shadow-sm md:block"
                 >
                   +30% Better CTR
                 </motion.div>

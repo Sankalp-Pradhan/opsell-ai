@@ -91,7 +91,7 @@ export const GrowthOutcomes = () => {
           >
             <LayoutTextFlip
               text="Opsell for"
-              words={["Growth", "Automation", "Optimization"]}
+              words={["Growth", "Margin", "Conversion"]}
             />
           </motion.div>
         </motion.div>

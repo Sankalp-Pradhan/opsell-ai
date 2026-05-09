@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
@@ -444,14 +445,6 @@ function ListingsVisual() {
           90%  { top: 100%; opacity: 1; }
           100% { top: 100%; opacity: 0; }
         }
-        @keyframes scoreUp {
-          from { width: 0% }
-          to   { width: 78% }
-        }
-        @keyframes scoreUpGood {
-          from { width: 0% }
-          to   { width: 94% }
-        }
         @keyframes tagIn {
           from { opacity:0; transform:translateY(4px); }
           to   { opacity:1; transform:translateY(0); }
@@ -460,7 +453,14 @@ function ListingsVisual() {
 
       {/* BEFORE */}
       <div className="relative flex flex-1 flex-col gap-1.5 overflow-hidden rounded-xl border border-n-border bg-n-50 p-2">
-        <div className="relative h-12 w-full overflow-hidden rounded-md bg-n-200">
+        <div className="relative h-12 w-full overflow-hidden rounded-md bg-[#0e1020]">
+          {/* Shoe image — grayscale + blurred like ConversionCard's "before" */}
+          <Image
+            src="/assets/shoe.png"
+            alt="Unoptimized sneaker listing"
+            width={160} height={48}
+            className="absolute inset-0 h-full w-full object-contain p-1 scale-105 grayscale blur-[2px] opacity-40"
+          />
           {/* scan line */}
           <div
             className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent"
@@ -471,7 +471,7 @@ function ListingsVisual() {
         <div className="flex items-center gap-1">
           <div className="h-1 flex-1 overflow-hidden rounded-full bg-n-200">
             <div
-              className="h-full rounded-full bg-warning transition-all"
+              className="h-full rounded-full bg-warning"
               style={{
                 width: scanned ? "42%" : "0%",
                 transition: "width 0.8s 1.4s ease",
@@ -482,7 +482,7 @@ function ListingsVisual() {
         </div>
         <span
           className="inline-flex items-center gap-1 rounded-md bg-error-light px-1.5 py-0.5 font-display text-[8px] font-semibold text-error"
-          style={{ opacity: scanned ? 1 : 0, transition: "opacity 0.4s 2.4s", animation: scanned ? "tagIn 0.4s 2.4s ease both" : "none" }}
+          style={{ opacity: scanned ? 1 : 0, transition: "opacity 0.4s 2.4s" }}
         >
           Weak
         </span>
@@ -492,7 +492,7 @@ function ListingsVisual() {
       <div className="flex items-center self-center">
         <div
           className="flex h-6 w-6 items-center justify-center rounded-full bg-brand"
-          style={{ opacity: scanned ? 1 : 0, transition: "opacity 0.3s 2.6s", transform: "scale(1)" }}
+          style={{ opacity: scanned ? 1 : 0, transition: "opacity 0.3s 2.6s" }}
         >
           <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
             <path d="M2 5h6M6 3l2 2-2 2" stroke="#fff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -502,7 +502,17 @@ function ListingsVisual() {
 
       {/* AFTER */}
       <div className="relative flex flex-1 flex-col gap-1.5 overflow-hidden rounded-xl border bg-white p-2" style={{ borderColor: "#C7C4FF", boxShadow: "0 0 0 3px #F0EFFF" }}>
-        <div className="h-12 w-full rounded-md" style={{ background: "linear-gradient(135deg, #F0EFFF 0%, #E8F4FF 100%)" }} />
+        <div className="relative h-12 w-full overflow-hidden rounded-md bg-gradient-to-br from-brand/15 via-[#0b0d1e] to-[#0b0d1e]">
+          {/* Shoe image — clean like ConversionCard's "after" */}
+          <Image
+            src="/assets/shoe.png"
+            alt="Optimized sneaker listing"
+            width={160} height={48}
+            className="absolute inset-0 h-full w-full object-contain p-1"
+          />
+          {/* Subtle glow orb, matching ConversionCard */}
+          <div className="absolute -right-3 -top-3 h-10 w-10 rounded-full bg-brand/20 blur-xl" />
+        </div>
         <p className="font-display text-[8px] font-semibold leading-[1.3] text-n-800">Redtape Men's Low-Top Court Sneakers</p>
         <div className="flex items-center gap-1">
           <div className="h-1 flex-1 overflow-hidden rounded-full bg-n-200">
@@ -783,7 +793,7 @@ export function Hero() {
             Start growing your revenue
           </Link>
           <Link
-            href="https://forms.gle/8oyErGWjoFwyHBub7"
+            href="Asia%2FKolkata&month=2026-05"
             target="_blank"
             rel="noopener noreferrer"
            className="rounded-[10px] text-center border-[1.5px] border-n-200 bg-white px-6 py-3 font-display text-[15px] font-semibold text-n-700 transition-colors hover:border-n-400 hover:text-n-900">

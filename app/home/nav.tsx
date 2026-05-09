@@ -10,7 +10,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "How it works", href: "/works" },
   { label: "Features", href: "/features" },
-  { label: "Pricing", href: "/pricing" },
+    // { label: "Pricing", href: "/pricing" },
 ]
 
 export default function Navbar() {
@@ -90,7 +90,7 @@ export default function Navbar() {
         {/* Right side */}
         <div className="flex items-center gap-3">
           <Link
-            href="https://opsell.neetocal.com/meeting-with-shaurya-gupta"
+            href="https://forms.gle/XXKAuPXLiKRK7TxW6"
             className="hidden h-[38px] items-center rounded-md bg-brand px-5 text-ds-body font-semibold text-white shadow-[0_4px_14px_rgba(80,70,229,0.35)] transition-all hover:bg-brand-dark hover:shadow-[0_6px_20px_rgba(80,70,229,0.45)] hover:-translate-y-px md:inline-flex"
           >
             Get my revenue audit
@@ -136,7 +136,7 @@ export default function Navbar() {
               )
             })}
             <Link
-              href="https://opsell.neetocal.com/meeting-with-shaurya-gupta"
+              href="https://forms.gle/XXKAuPXLiKRK7TxW6"
               onClick={() => setMobileMenuOpen(false)}
               className="mt-2 flex items-center justify-center rounded-xl bg-brand px-4 py-3 text-ds-body font-semibold text-white transition hover:bg-brand-dark"
             >
