@@ -1,13 +1,25 @@
-import { useMemo, useState } from 'react';
-import { PLATFORMS } from '../data/platforms';
+"use client";
+
+import {
+  useMemo,
+  useState,
+} from "react";
+
+import { PLATFORMS } from "../data/platforms";
+
 import {
   IconSparkle,
   IconCheck,
   IconAlert,
   IconHelp,
-} from './Icon';
+} from "./Icon";
 
-type PlatformKey = string;
+/* -------------------------------------------------------------------------- */
+/* TYPES */
+/* -------------------------------------------------------------------------- */
+
+type PlatformKey =
+  keyof typeof PLATFORMS;
 
 interface Summary {
   hasResults?: boolean;
@@ -21,12 +33,12 @@ interface BeyondFeesDisclaimerProps {
 }
 
 type FactorIconKind =
-  | 'buyers'
-  | 'returns'
-  | 'cashflow'
-  | 'ads'
-  | 'brand'
-  | 'risk';
+  | "buyers"
+  | "returns"
+  | "cashflow"
+  | "ads"
+  | "brand"
+  | "risk";
 
 interface Factor {
   icon: FactorIconKind;
@@ -36,428 +48,581 @@ interface Factor {
 }
 
 interface ContextBanner {
-  tone: 'warning' | 'info';
+  tone: "warning" | "info";
   title: string;
   body: string;
 }
 
-const LOW_FEE_HIGH_RETURN = new Set<PlatformKey>(['meesho', 'shopsy']);
+/* -------------------------------------------------------------------------- */
+/* HELPERS */
+/* -------------------------------------------------------------------------- */
+
+function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
+
+/* -------------------------------------------------------------------------- */
+/* DATA */
+/* -------------------------------------------------------------------------- */
+
+const LOW_FEE_HIGH_RETURN =
+  new Set<PlatformKey>([
+    "meesho",
+    "shopsy",
+  ]);
 
 const FACTORS: Factor[] = [
   {
-    icon: 'buyers',
-    label: 'Buyer intent & average order value',
+    icon: "buyers",
+
+    label:
+      "Buyer intent & average order value",
+
     claim:
-      'Amazon and Flipkart Plus buyers pay 1.5-3x more for the same SKU.',
+      "Amazon and Flipkart Plus buyers often pay 1.5–3× more for the same SKU.",
+
     implication:
-      'A lower fee % on a ₹299 Meesho sale rarely beats a 15% cut of a ₹899 Amazon sale — price elasticity matters.',
+      "Higher buyer trust and AOV can outperform lower commission percentages.",
   },
+
   {
-    icon: 'returns',
-    label: 'Real-world return rate',
+    icon: "returns",
+
+    label:
+      "Real-world return rate",
+
     claim:
-      'Fashion on Meesho/Shopsy averages 25-40% returns; Amazon sits closer to 8-12%.',
+      "Fashion on Meesho/Shopsy commonly experiences higher return rates.",
+
     implication:
-      'Returns double-bill you: reverse logistics + lost SKU. Model your platform-specific return rate, not a flat 5%.',
+      "Returns create reverse logistics costs and destroy net margins quickly.",
   },
+
   {
-    icon: 'cashflow',
-    label: 'Settlement speed & cash-flow',
+    icon: "cashflow",
+
+    label:
+      "Settlement speed & cash-flow",
+
     claim:
-      'Settlement cycles range from T+7 (Amazon) to T+15 (Meesho) to T+21 (COD-heavy SKUs).',
+      "Settlement cycles vary dramatically across marketplaces.",
+
     implication:
-      'Slow settlements choke reorder budgets. "More profit on paper" on a 15-day cycle can starve a fast-moving catalog.',
+      "Slow payouts delay inventory reorders and impact scaling speed.",
   },
+
   {
-    icon: 'ads',
-    label: 'Ads, CPC and discovery',
+    icon: "ads",
+
+    label:
+      "Ads, CPC & discoverability",
+
     claim:
-      'Amazon Ads can eat 10-18% of GMV in competitive categories; Meesho has no formal ads platform.',
+      "Competitive categories often require aggressive ad spend.",
+
     implication:
-      "The calculator's Ads Spend field is your knob — but the realistic CPC per platform is what decides the ranking.",
+      "Real CPC and conversion efficiency matter more than headline fee percentages.",
   },
+
   {
-    icon: 'brand',
-    label: 'Brand equity & repeat customers',
+    icon: "brand",
+
+    label:
+      "Brand equity & repeat customers",
+
     claim:
-      'Only Amazon (Brand Registry) and Flipkart (Brand Store) give you a moat beyond price.',
+      "Marketplace brand tools create long-term discoverability advantages.",
+
     implication:
-      'A commodity seller on Meesho competes on ₹ every day. A branded seller on Amazon compounds organic rank.',
+      "Strong brands compound visibility while commodity sellers compete only on price.",
   },
+
   {
-    icon: 'risk',
-    label: 'Operational risk & account health',
+    icon: "risk",
+
+    label:
+      "Operational risk & deductions",
+
     claim:
-      'Suspension rates, quality claims, SPF deductions, and GST disputes vary 3-5x by platform.',
+      "SPF penalties, disputes, claims, and suspensions vary significantly by platform.",
+
     implication:
-      'A single Amazon suspension or Meesho quality-deduction wave can reset a month of net profit to zero.',
+      "Operational instability can erase profitability despite healthy margins on paper.",
   },
 ];
 
-interface FactorIconProps {
-  kind: FactorIconKind;
-}
+/* -------------------------------------------------------------------------- */
+/* ICON */
+/* -------------------------------------------------------------------------- */
 
-function FactorIcon({ kind }: FactorIconProps) {
-  const colorMap: Record<FactorIconKind, string> = {
-    buyers: 'var(--accent-primary)',
-    returns: 'var(--accent-danger)',
-    cashflow: 'var(--accent-warning)',
-    ads: 'var(--accent-secondary)',
-    brand: 'var(--accent-success)',
-    risk: 'var(--accent-danger)',
+function FactorIcon({
+  kind,
+}: {
+  kind: FactorIconKind;
+}) {
+  const styles: Record<
+    FactorIconKind,
+    string
+  > = {
+    buyers:
+      "bg-brand-light text-brand",
+
+    returns:
+      "bg-error-light text-error",
+
+    cashflow:
+      "bg-warning-light text-warning",
+
+    ads: "bg-brand-light text-brand-mid",
+
+    brand:
+      "bg-success-light text-success",
+
+    risk:
+      "bg-error-light text-error",
   };
 
   return (
-    <span
-      aria-hidden="true"
-      style={{
-        width: 30,
-        height: 30,
-        borderRadius: 8,
-        display: 'inline-flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'rgba(255,255,255,0.03)',
-        border: '1px solid rgba(255,255,255,0.08)',
-        color: colorMap[kind],
-        flexShrink: 0,
-      }}
+    <div
+      className={cn(
+        `
+          flex h-10 w-10 shrink-0
+          items-center justify-center
+          rounded-xl
+          border border-n-border
+        `,
+        styles[kind]
+      )}
     >
-      <IconSparkle size={14} />
-    </span>
+      <IconSparkle size={16} />
+    </div>
   );
 }
+
+/* -------------------------------------------------------------------------- */
+/* COMPONENT */
+/* -------------------------------------------------------------------------- */
 
 export default function BeyondFeesDisclaimer({
   summary,
   onOpenLead,
 }: BeyondFeesDisclaimerProps) {
-  const [expanded, setExpanded] = useState<boolean>(true);
+  const [
+    expanded,
+    setExpanded,
+  ] = useState(true);
 
-  const contextBanner = useMemo<ContextBanner | null>(() => {
-    if (!summary?.hasResults || summary.bestPlatform === '-') {
-      return null;
-    }
+  /* ---------------------------------------------------------------------- */
+  /* CONTEXT BANNER */
+  /* ---------------------------------------------------------------------- */
 
-    if ((summary.uniquePlatformCount || 1) < 2) {
-      return null;
-    }
+  const contextBanner =
+    useMemo<ContextBanner | null>(
+      () => {
+        if (
+          !summary?.hasResults ||
+          !summary.bestPlatform
+        ) {
+          return null;
+        }
 
-    const bestMeta = PLATFORMS[summary.bestPlatform as keyof typeof PLATFORMS];
+        if (
+          (summary.uniquePlatformCount ??
+            1) < 2
+        ) {
+          return null;
+        }
 
-    const name =
-      (bestMeta as { name?: string } | undefined)?.name ||
-      summary.bestPlatform;
+        const platform =
+          PLATFORMS[
+            summary.bestPlatform
+          ];
 
-    if (
-      summary.bestPlatform &&
-      LOW_FEE_HIGH_RETURN.has(summary.bestPlatform)
-    ) {
-      return {
-        tone: 'warning',
-        title: `${name} looks cheapest — but that's only half the story.`,
-        body:
-          `${name} wins on raw fees because commissions are flat and there's no ads auction. ` +
-          `On a typical fashion SKU, returns can reach 25-40%, which flips a 60% paper margin into a 15-20% real margin. ` +
-          `Weigh the factors below before concentrating volume here.`,
-      };
-    }
+        const name =
+          platform?.name ??
+          summary.bestPlatform;
 
-    return {
-      tone: 'info',
-      title: `${name} leads on per-unit profit — here's what fees don't show.`,
-      body:
-        'The comparison above ranks platforms by net payout. In practice, returns, buyer intent, ads, settlement speed, and account risk shift the real winner. Skim the six factors below.',
-    };
-  }, [summary]);
+        if (
+          LOW_FEE_HIGH_RETURN.has(
+            summary.bestPlatform
+          )
+        ) {
+          return {
+            tone: "warning",
+
+            title: `${name} looks cheapest — but that’s only half the story.`,
+
+            body:
+              "Lower commissions don’t always mean higher profitability once return rates, AOV, and operational deductions are considered.",
+          };
+        }
+
+        return {
+          tone: "info",
+
+          title: `${name} leads on per-unit profitability.`,
+
+          body:
+            "Real platform performance depends on returns, buyer quality, ads, cash-flow cycles, and operational stability.",
+        };
+      },
+      [summary]
+    );
 
   if (!contextBanner) {
     return null;
   }
 
-  const bannerStyles =
-    contextBanner.tone === 'warning'
-      ? {
-          background:
-            'linear-gradient(135deg, rgba(245,158,11,0.10) 0%, rgba(245,158,11,0.02) 100%)',
-          border: '1px solid rgba(245,158,11,0.28)',
-          color: 'var(--accent-warning)',
-        }
-      : {
-          background:
-            'linear-gradient(135deg, rgba(34,211,238,0.08) 0%, rgba(99,102,241,0.04) 100%)',
-          border: '1px solid rgba(34,211,238,0.22)',
-          color: 'var(--accent-secondary)',
-        };
+  /* ---------------------------------------------------------------------- */
+  /* BANNER STYLE */
+  /* ---------------------------------------------------------------------- */
+
+  const bannerClass =
+    contextBanner.tone ===
+    "warning"
+      ? "border-warning/20 bg-warning-light"
+      : "border-brand/20 bg-brand-light/30";
+
+  /* ---------------------------------------------------------------------- */
+  /* RENDER */
+  /* ---------------------------------------------------------------------- */
 
   return (
-    <div
-      role="region"
-      aria-label="Factors beyond platform fees"
-      style={{ marginTop: 14, marginBottom: 32 }}
+    <section
+      className="
+        mt-6 space-y-5
+      "
     >
-      {/* Contextual banner */}
+      {/* Banner */}
+
       <div
-        className="animate-pop"
-        style={{
-          padding: '14px 18px',
-          borderRadius: 14,
-          display: 'flex',
-          alignItems: 'flex-start',
-          gap: 12,
-          ...bannerStyles,
-        }}
+        className={cn(
+          `
+            rounded-3xl
+            border
+            p-5
+            shadow-elev-1
+          `,
+          bannerClass
+        )}
       >
-        <span
-          aria-hidden="true"
-          style={{
-            width: 30,
-            height: 30,
-            borderRadius: 8,
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(255,255,255,0.04)',
-            color: bannerStyles.color,
-            flexShrink: 0,
-            marginTop: 2,
-          }}
-        >
-          <IconAlert size={15} />
-        </span>
-
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <p
-            style={{
-              fontFamily: 'Sora',
-              fontWeight: 600,
-              fontSize: 'var(--fs-body, 15px)',
-              color: 'var(--text-primary)',
-              letterSpacing: '-0.01em',
-              marginBottom: 4,
-            }}
+        <div className="flex gap-4">
+          <div
+            className={cn(
+              `
+                flex h-11 w-11 shrink-0
+                items-center justify-center
+                rounded-2xl
+              `,
+              contextBanner.tone ===
+                "warning"
+                ? "bg-warning/10 text-warning"
+                : "bg-brand/10 text-brand"
+            )}
           >
-            {contextBanner.title}
-          </p>
+            <IconAlert size={18} />
+          </div>
 
-          <p
-            style={{
-              fontFamily: 'DM Sans',
-              fontSize: 'var(--fs-label, 13px)',
-              color: 'var(--text-secondary)',
-              lineHeight: 1.55,
-            }}
-          >
-            {contextBanner.body}
-          </p>
+          <div className="min-w-0 flex-1">
+            <h3
+              className="
+                font-display
+                text-ds-h3
+                text-n-900
+              "
+            >
+              {contextBanner.title}
+            </h3>
+
+            <p
+              className="
+                mt-2
+                text-ds-body
+                leading-relaxed
+                text-n-600
+              "
+            >
+              {contextBanner.body}
+            </p>
+          </div>
         </div>
       </div>
 
-      {/* Collapsible header */}
+      {/* Expand Button */}
+
       <button
-        onClick={() => setExpanded((prev) => !prev)}
-        aria-expanded={expanded}
-        aria-controls="beyond-fees-body"
-        style={{
-          marginTop: 14,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          width: '100%',
-          padding: '10px 14px',
-          background: 'transparent',
-          border: '1px solid var(--glass-border)',
-          borderRadius: 12,
-          cursor: 'pointer',
-          color: 'var(--text-secondary)',
-          fontFamily: 'DM Sans',
-          fontSize: 'var(--fs-label, 13px)',
-          fontWeight: 500,
-          justifyContent: 'space-between',
-        }}
+        onClick={() =>
+          setExpanded(
+            (prev) => !prev
+          )
+        }
+        className="
+          flex w-full items-center justify-between
+          rounded-2xl
+          border border-n-border
+          bg-white
+          px-5 py-4
+          shadow-elev-1
+          transition-all
+          hover:border-brand/20
+          hover:bg-brand-light/20
+        "
       >
-        <span
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-          }}
-        >
-          <IconHelp size={14} />
-          6 factors the fee comparison can&rsquo;t see
-        </span>
+        <div className="flex items-center gap-3">
+          <div
+            className="
+              flex h-9 w-9
+              items-center justify-center
+              rounded-xl
+              bg-brand-light
+              text-brand
+            "
+          >
+            <IconHelp size={16} />
+          </div>
+
+          <div className="text-left">
+            <p
+              className="
+                font-medium
+                text-n-900
+              "
+            >
+              6 factors beyond
+              platform fees
+            </p>
+
+            <p
+              className="
+                mt-0.5
+                text-ds-caption
+                text-n-500
+              "
+            >
+              Hidden profitability
+              drivers
+            </p>
+          </div>
+        </div>
 
         <span
-          aria-hidden="true"
-          style={{
-            fontSize: 11,
-            color: 'var(--text-muted)',
-            fontFamily: 'DM Sans',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-          }}
+          className="
+            text-ds-caption
+            font-semibold
+            uppercase tracking-wide
+            text-n-400
+          "
         >
-          {expanded ? 'Hide' : 'Show'}
+          {expanded
+            ? "Hide"
+            : "Show"}
         </span>
       </button>
 
+      {/* Factors */}
+
       {expanded && (
         <div
-          id="beyond-fees-body"
-          className="animate-in"
-          style={{
-            marginTop: 12,
-            display: 'grid',
-            gridTemplateColumns:
-              'repeat(auto-fit, minmax(280px, 1fr))',
-            gap: 10,
-          }}
+          className="
+            grid gap-4
+            md:grid-cols-2
+            xl:grid-cols-3
+          "
         >
-          {FACTORS.map((factor) => (
-            <article
-              key={factor.label}
-              style={{
-                padding: '14px',
-                borderRadius: 12,
-                background: 'var(--glass-bg)',
-                border: '1px solid var(--glass-border)',
-                display: 'flex',
-                gap: 10,
-                alignItems: 'flex-start',
-              }}
-            >
-              <FactorIcon kind={factor.icon} />
+          {FACTORS.map(
+            (factor) => (
+              <article
+                key={
+                  factor.label
+                }
+                className="
+                  rounded-3xl
+                  border border-n-border
+                  bg-white
+                  p-5
+                  shadow-elev-1
+                  transition-all
+                  hover:-translate-y-0.5
+                  hover:shadow-elev-2
+                "
+              >
+                <div className="flex gap-4">
+                  <FactorIcon
+                    kind={
+                      factor.icon
+                    }
+                  />
 
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <p
-                  style={{
-                    fontFamily: 'DM Sans',
-                    fontWeight: 600,
-                    fontSize: 'var(--fs-label, 13px)',
-                    color: 'var(--text-primary)',
-                    marginBottom: 4,
-                  }}
-                >
-                  {factor.label}
-                </p>
+                  <div className="min-w-0 flex-1">
+                    <h4
+                      className="
+                        font-display
+                        text-ds-body
+                        text-n-900
+                      "
+                    >
+                      {
+                        factor.label
+                      }
+                    </h4>
 
-                <p
-                  style={{
-                    fontFamily: 'DM Sans',
-                    fontSize: 12,
-                    color: 'var(--text-secondary)',
-                    lineHeight: 1.5,
-                    marginBottom: 6,
-                  }}
-                >
-                  {factor.claim}
-                </p>
+                    <p
+                      className="
+                        mt-2
+                        text-ds-body-sm
+                        leading-relaxed
+                        text-n-600
+                      "
+                    >
+                      {
+                        factor.claim
+                      }
+                    </p>
 
-                <p
-                  style={{
-                    fontFamily: 'DM Sans',
-                    fontSize: 12,
-                    color: 'var(--text-muted)',
-                    lineHeight: 1.5,
-                    paddingTop: 6,
-                    borderTop:
-                      '1px dashed rgba(255,255,255,0.06)',
-                  }}
-                >
-                  <span
-                    style={{
-                      color: 'var(--accent-primary)',
-                      fontWeight: 600,
-                    }}
-                  >
-                    So what:{' '}
-                  </span>
-
-                  {factor.implication}
-                </p>
-              </div>
-            </article>
-          ))}
+                    <div
+                      className="
+                        mt-4
+                        border-t border-dashed border-n-200
+                        pt-3
+                      "
+                    >
+                      <p
+                        className="
+                          text-ds-body-sm
+                          leading-relaxed
+                          text-n-500
+                        "
+                      >
+                        <span
+                          className="
+                            font-semibold
+                            text-brand
+                          "
+                        >
+                          So what:
+                        </span>{" "}
+                        {
+                          factor.implication
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </article>
+            )
+          )}
         </div>
       )}
 
-      {/* Secondary lead hook */}
+      {/* CTA */}
+
       <div
-        role="complementary"
-        aria-label="Model these factors with Opsell"
-        style={{
-          marginTop: 18,
-          padding: '16px 18px',
-          background:
-            'linear-gradient(135deg, rgba(99,102,241,0.10) 0%, rgba(34,211,238,0.05) 100%)',
-          border: '1px solid rgba(99,102,241,0.24)',
-          borderRadius: 14,
-          display: 'flex',
-          alignItems: 'center',
-          gap: 14,
-          flexWrap: 'wrap',
-        }}
+        className="
+          relative overflow-hidden
+          rounded-3xl
+          border border-brand/20
+          bg-gradient-to-br
+          from-brand-light
+          via-white
+          to-white
+          p-6
+          shadow-elev-2
+        "
       >
-        <span
-          aria-hidden="true"
-          style={{
-            width: 40,
-            height: 40,
-            borderRadius: 12,
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'rgba(99,102,241,0.16)',
-            color: 'var(--accent-primary)',
-            flexShrink: 0,
-          }}
+        {/* Glow */}
+
+        <div
+          className="
+            absolute right-0 top-0
+            h-40 w-40
+            rounded-full
+            bg-brand/10
+            blur-3xl
+          "
+        />
+
+        <div
+          className="
+            relative z-10
+            flex flex-col gap-5
+            lg:flex-row
+            lg:items-center
+            lg:justify-between
+          "
         >
-          <IconSparkle size={20} />
-        </span>
+          <div className="flex gap-4">
+            <div
+              className="
+                flex h-14 w-14 shrink-0
+                items-center justify-center
+                rounded-2xl
+                bg-brand-light
+                text-brand
+              "
+            >
+              <IconSparkle size={24} />
+            </div>
 
-        <div style={{ flex: '1 1 280px', minWidth: 0 }}>
-          <p
-            style={{
-              fontFamily: 'Sora',
-              fontWeight: 600,
-              fontSize: 'var(--fs-body, 15px)',
-              color: 'var(--text-primary)',
-              letterSpacing: '-0.01em',
-              marginBottom: 4,
-            }}
-          >
-            Want the real ranking for <em>your</em> catalog?
-          </p>
+            <div>
+              <h3
+                className="
+                  font-display
+                  text-ds-h2
+                  text-n-900
+                "
+              >
+                Want the real
+                platform ranking?
+              </h3>
 
-          <p
-            style={{
-              fontFamily: 'DM Sans',
-              fontSize: 'var(--fs-label, 13px)',
-              color: 'var(--text-muted)',
-              lineHeight: 1.55,
-            }}
+              <p
+                className="
+                  mt-2
+                  max-w-2xl
+                  text-ds-body-sm
+                  leading-relaxed
+                  text-n-600
+                "
+              >
+                Opsell analyzes
+                your real returns,
+                ad spend,
+                settlement delays,
+                deductions, and
+                operational costs
+                to calculate actual
+                marketplace
+                profitability.
+              </p>
+            </div>
+          </div>
+
+          <button
+            onClick={
+              onOpenLead
+            }
+            className="
+              inline-flex items-center justify-center gap-2
+              rounded-2xl
+              bg-brand
+              px-6 py-3
+              text-ds-body-sm
+              font-semibold
+              text-white
+              shadow-elev-2
+              transition-all
+              hover:bg-brand-dark
+              hover:shadow-elev-3
+            "
           >
-            Opsell pulls your actual returns, settlement, ads,
-            and SPF deductions per SKU and ranks platforms the
-            way your P&amp;L would. Free catalog audit for
-            sellers doing 50+ orders/day.
-          </p>
+            <IconCheck
+              size={15}
+            />
+            Get free catalog
+            audit
+          </button>
         </div>
-
-        <button
-          onClick={onOpenLead}
-          className="btn btn-primary"
-          style={{
-            flex: '0 0 auto',
-            minHeight: 40,
-            padding: '10px 18px',
-            fontSize: 'var(--fs-label, 13px)',
-          }}
-        >
-          <IconCheck size={14} /> Get a free catalog audit
-        </button>
       </div>
-    </div>
+    </section>
   );
 }

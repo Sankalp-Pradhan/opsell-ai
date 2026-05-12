@@ -461,6 +461,8 @@ function ListingsVisual() {
             width={160} height={48}
             className="absolute inset-0 h-full w-full object-contain p-1 scale-105 grayscale blur-[2px] opacity-40"
           />
+
+          
           {/* scan line */}
           <div
             className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-brand to-transparent"

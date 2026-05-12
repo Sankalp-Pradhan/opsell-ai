@@ -1,22 +1,45 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect, useLayoutEffect, useCallback, RefObject } from 'react';
-import { createPortal } from 'react-dom';
-import { PLATFORMS, SELLER_TIERS, SHIPPING_ZONES, EBAY_STORE_TIERS, ORDER_TYPES } from '../data/platforms';
-import { CATEGORIES } from '../data/categories';
-import { IconGear, IconClose, IconAlert, IconHelp, IconPlus, IconMinus } from './Icon';
+import {
+  useState,
+  useRef,
+  useEffect,
+  useLayoutEffect,
+  useCallback,
+  RefObject,
+} from "react";
+import { createPortal } from "react-dom";
 
-/* ── Types ── */
+import {
+  PLATFORMS,
+  SELLER_TIERS,
+  SHIPPING_ZONES,
+  ORDER_TYPES,
+} from "../data/platforms";
+
+import { CATEGORIES } from "../data/categories";
+
+import {
+  IconGear,
+  IconClose,
+  IconAlert,
+  IconHelp,
+  IconPlus,
+  IconMinus,
+} from "./Icon";
+
+/* -------------------------------------------------------------------------- */
+/* TYPES */
+/* -------------------------------------------------------------------------- */
 
 interface Platform {
   name: string;
   color: string;
-  fbxProgram?: string;   // e.g. "FBA", "FBF" — truthy string means the program exists
+  fbxProgram?: string | null;
   hasSellerTier?: boolean;
   hasShippingZone?: boolean;
   hasCOD?: boolean;
   hasWeight?: boolean;
-  [key: string]: unknown; // allow extra fields from the data file
 }
 
 interface PlatformSetting {
@@ -30,221 +53,390 @@ interface PlatformSetting {
 type GlobalSettings = Record<string, PlatformSetting>;
 
 interface Product {
-  sellingPrice: number | '';
-  cogs: number | '';
-  weight: number | '';
-  returnRate: number | '';
-  shippingCostToBuyer: number | '';
-  adsSpend: number | '';
+  sellingPrice: number | "";
+  cogs: number | "";
+  weight: number | "";
+  returnRate: number | "";
+  shippingCostToBuyer: number | "";
+  adsSpend: number | "";
   selectedPlatforms: string[];
 }
 
-/* ── Reusable Input Components ── */
+/* -------------------------------------------------------------------------- */
+/* HELPERS */
+/* -------------------------------------------------------------------------- */
 
-interface TipProps {
-  text: string;
+function cn(...classes: (string | boolean | undefined)[]) {
+  return classes.filter(Boolean).join(" ");
 }
 
-function Tip({ text }: TipProps) {
+/* -------------------------------------------------------------------------- */
+/* TOOLTIP */
+/* -------------------------------------------------------------------------- */
+
+function Tip({ text }: { text: string }) {
   return (
-    <span className="tooltip-wrap" style={{ marginLeft: 6 }}>
+    <div className="group relative inline-flex">
       <button
         type="button"
         aria-label={text}
-        tabIndex={0}
-        style={{
-          display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          width: 18, height: 18, borderRadius: '50%',
-          background: 'rgba(255,255,255,0.06)', border: 'none',
-          color: 'var(--text-muted)', cursor: 'help', padding: 0,
-        }}
+        className="
+          ml-1.5
+          flex h-4 w-4 items-center justify-center
+          rounded-full
+          bg-n-100
+          text-n-500
+          transition-colors
+          hover:bg-brand-light
+          hover:text-brand
+        "
       >
-        <IconHelp size={12} />
+        <IconHelp size={10} />
       </button>
-      <span className="tooltip-box">{text}</span>
-    </span>
+
+      <div
+        className="
+          pointer-events-none
+          absolute left-1/2 top-[120%]
+          z-50
+          hidden w-56 -translate-x-1/2
+          rounded-xl
+          border border-n-border
+          bg-white
+          p-3
+          text-ds-caption
+          text-n-600
+          shadow-elev-3
+          group-hover:block
+        "
+      >
+        {text}
+      </div>
+    </div>
   );
 }
 
+/* -------------------------------------------------------------------------- */
+/* INPUT */
+/* -------------------------------------------------------------------------- */
+
 interface InputFieldProps {
   label: string;
-  value: number | '';
-  onChange: (value: number | '') => void;
-  type?: string;
+  value: number | "";
+  onChange: (value: number | "") => void;
   tooltip?: string;
   suffix?: string;
   warning?: string;
-  className?: string;
 }
 
 function InputField({
   label,
   value,
   onChange,
-  type = 'number',
   tooltip,
   suffix,
   warning,
-  className = '',
 }: InputFieldProps) {
   return (
-    <div className={className}>
-      <label
-        className="field-label"
-        style={{ display: 'flex', alignItems: 'center', marginBottom: 8, fontSize: 13, color: 'var(--text-secondary)' }}
-      >
+    <div className="space-y-2">
+      <label className="flex items-center text-ds-body-sm font-medium text-n-600">
         {label}
         {tooltip && <Tip text={tooltip} />}
       </label>
-      <div style={{ position: 'relative' }}>
+
+      <div className="relative">
         <input
-          type={type}
+          type="number"
           value={value}
-          onChange={e => {
-            if (type === 'number') {
-              if (e.target.value === '') return onChange('');
-              onChange(Number(e.target.value));
-            } else {
-              onChange(e.target.value as unknown as number);
-            }
+          onChange={(e) => {
+            if (e.target.value === "") return onChange("");
+            onChange(Number(e.target.value));
           }}
-          className={`input-field mono${warning ? ' warning' : ''}`}
-          style={{
-            ...(warning ? { borderColor: 'rgba(239,68,68,0.5)', background: 'rgba(239,68,68,0.02)' } : {}),
-            padding: '12px 14px', fontSize: 18, background: 'rgba(255,255,255,0.02)',
-          }}
+          className={cn(
+            `
+              h-12 w-full
+              rounded-xl
+              border
+              bg-white
+              px-4
+              font-mono
+              text-ds-body
+              text-n-900
+              outline-none
+              transition-all
+              border-n-border
+              focus:border-brand
+              focus:ring-4
+              focus:ring-brand/10
+            `,
+            warning &&
+              "border-error bg-error-light focus:ring-error/10"
+          )}
           placeholder="0"
         />
+
         {suffix && (
-          <span style={{
-            position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)',
-            fontSize: 14, color: 'var(--text-muted)', fontFamily: 'DM Sans',
-            pointerEvents: 'none',
-          }}>
+          <span
+            className="
+              absolute right-4 top-1/2
+              -translate-y-1/2
+              text-ds-body-sm
+              text-n-400
+            "
+          >
             {suffix}
           </span>
         )}
       </div>
+
       {warning && (
         <p
-          role="alert"
-          style={{
-            fontSize: 12, color: '#ef4444', marginTop: 8, fontFamily: 'DM Sans', fontWeight: 500,
-            display: 'flex', alignItems: 'center', gap: 6,
-          }}
+          className="
+            flex items-center gap-1.5
+            text-ds-caption
+            font-medium
+            text-error
+          "
         >
-          <IconAlert size={12} /> {warning}
+          <IconAlert size={12} />
+          {warning}
         </p>
       )}
     </div>
   );
 }
 
-interface AdsSpendFieldProps {
-  value: number | '';
-  onChange: (value: number) => void;
+/* -------------------------------------------------------------------------- */
+/* SELECT */
+/* -------------------------------------------------------------------------- */
+
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: readonly string[];
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="text-ds-caption font-semibold uppercase tracking-wide text-n-500">
+        {label}
+      </label>
+
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="
+          h-11 w-full
+          rounded-xl
+          border border-n-border
+          bg-white
+          px-3
+          text-ds-body-sm
+          text-n-700
+          outline-none
+          transition-all
+          focus:border-brand
+          focus:ring-4
+          focus:ring-brand/10
+        "
+      >
+        <option value="">Select…</option>
+
+        {options.map((option) => (
+          <option key={option}>{option}</option>
+        ))}
+      </select>
+    </div>
+  );
 }
 
-/**
- * Ads Spend field with an inline helper.
- * TOFU users usually think in monthly budgets, not per-unit — so we give
- * them the per-unit field the engine needs, plus a one-click helper that
- * turns "I'll spend ₹5,000/mo, I expect 100 sales" into a per-unit value.
- */
-function AdsSpendField({ value, onChange }: AdsSpendFieldProps) {
-  const [open, setOpen] = useState(false);
-  const [budget, setBudget] = useState('');
-  const [units, setUnits] = useState('');
+/* -------------------------------------------------------------------------- */
+/* TOGGLE */
+/* -------------------------------------------------------------------------- */
 
-  const perUnit: number | null =
+function ToggleField({
+  label,
+  options,
+  value,
+  onChange,
+}: {
+  label: string;
+  options: readonly string[];
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return (
+    <div className="space-y-2">
+      <label className="text-ds-caption font-semibold uppercase tracking-wide text-n-500">
+        {label}
+      </label>
+
+      <div className="flex rounded-xl border border-n-border bg-n-50 p-1">
+        {options.map((option) => {
+          const active = option === value;
+
+          return (
+            <button
+              key={option}
+              onClick={() => onChange(option)}
+              className={cn(
+                `
+                  flex-1 rounded-lg
+                  px-3 py-2
+                  text-ds-caption
+                  font-semibold
+                  transition-all
+                `,
+                active
+                  ? "bg-brand text-white shadow-elev-1"
+                  : "text-n-500 hover:text-n-800"
+              )}
+            >
+              {option}
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/* ADS SPEND */
+/* -------------------------------------------------------------------------- */
+
+function AdsSpendField({
+  value,
+  onChange,
+}: {
+  value: number | "";
+  onChange: (v: number) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [budget, setBudget] = useState("");
+  const [units, setUnits] = useState("");
+
+  const perUnit =
     Number(budget) > 0 && Number(units) > 0
       ? Math.round(Number(budget) / Number(units))
       : null;
 
   return (
-    <div style={{ gridColumn: '1 / -1' }}>
+    <div className="col-span-full space-y-3">
       <InputField
         label="Ads Spend"
         value={value}
-        onChange={v => onChange(v as number)}
-        warning={typeof value === 'number' && value < 0 ? 'Cannot be negative' : ''}
-        tooltip="Ad cost for ONE sale. Quick math: monthly ad budget ÷ monthly sales. e.g. ₹5,000 ÷ 100 = ₹50/unit."
+        onChange={(v) => onChange(v as number)}
+        tooltip="Monthly ad budget ÷ expected monthly sales."
       />
+
       <button
-        type="button"
-        onClick={() => setOpen(o => !o)}
-        aria-expanded={open}
-        aria-controls="ads-helper-body"
-        style={{
-          marginTop: 6, padding: '4px 0', background: 'transparent', border: 'none',
-          color: 'var(--accent-primary)', cursor: 'pointer',
-          fontFamily: 'DM Sans', fontSize: 12, fontWeight: 600,
-          display: 'inline-flex', alignItems: 'center', gap: 4,
-        }}
+        onClick={() => setOpen(!open)}
+        className="
+          inline-flex items-center gap-2
+          text-ds-caption
+          font-semibold
+          text-brand
+          transition-opacity
+          hover:opacity-80
+        "
       >
-        {open ? <IconMinus size={12} /> : <IconPlus size={12} />}
-        {open ? 'Hide calculator' : 'Not sure? Calculate per-unit spend'}
+        {open ? (
+          <IconMinus size={12} />
+        ) : (
+          <IconPlus size={12} />
+        )}
+
+        {open
+          ? "Hide calculator"
+          : "Calculate per-unit spend"}
       </button>
+
       {open && (
         <div
-          id="ads-helper-body"
-          className="animate-in"
-          style={{
-            marginTop: 8, padding: 12, borderRadius: 10,
-            background: 'rgba(99,102,241,0.06)',
-            border: '1px solid rgba(99,102,241,0.18)',
-          }}
+          className="
+            rounded-2xl
+            border border-ai-border
+            bg-ai-bg
+            p-4
+            animate-fade-up
+          "
         >
-          <p style={{
-            fontSize: 11, color: 'var(--text-muted)', fontFamily: 'DM Sans',
-            textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 8,
-          }}>
-            Monthly ad budget ÷ expected monthly sales
-          </p>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+          <div className="flex flex-wrap items-center gap-3">
             <input
               type="number"
-              min={0}
-              inputMode="numeric"
               value={budget}
-              onChange={e => setBudget(e.target.value)}
+              onChange={(e) =>
+                setBudget(e.target.value)
+              }
               placeholder="5000"
-              aria-label="Monthly ad budget"
-              className="input-field"
-              style={{ width: 92, fontSize: 13, padding: '6px 10px' }}
+              className="
+                h-10 w-28
+                rounded-lg
+                border border-n-border
+                px-3
+                text-sm
+              "
             />
-            <span style={{ color: 'var(--text-muted)', fontFamily: 'DM Mono' }}>÷</span>
+
+            <span className="font-mono text-n-400">
+              ÷
+            </span>
+
             <input
               type="number"
-              min={0}
-              inputMode="numeric"
               value={units}
-              onChange={e => setUnits(e.target.value)}
+              onChange={(e) =>
+                setUnits(e.target.value)
+              }
               placeholder="100"
-              aria-label="Expected monthly sales"
-              className="input-field"
-              style={{ width: 72, fontSize: 13, padding: '6px 10px' }}
+              className="
+                h-10 w-24
+                rounded-lg
+                border border-n-border
+                px-3
+                text-sm
+              "
             />
-            <span style={{ color: 'var(--text-muted)', fontFamily: 'DM Mono' }}>=</span>
-            <span style={{
-              fontFamily: 'DM Mono', fontWeight: 700, fontSize: 14,
-              color: perUnit != null ? 'var(--accent-primary)' : 'var(--text-muted)',
-              fontVariantNumeric: 'tabular-nums', minWidth: 54,
-            }}>
-              {perUnit != null ? `₹${perUnit}` : '—'}
+
+            <span className="font-mono text-n-400">
+              =
             </span>
+
+            <span className="font-mono font-bold text-brand">
+              {perUnit != null
+                ? `₹${perUnit}`
+                : "—"}
+            </span>
+
             <button
-              type="button"
-              onClick={() => { if (perUnit != null) { onChange(perUnit); setOpen(false); } }}
               disabled={perUnit == null}
-              className="btn btn-primary"
-              style={{
-                padding: '6px 12px', fontSize: 12, minHeight: 32,
-                opacity: perUnit == null ? 0.4 : 1,
-                cursor: perUnit == null ? 'not-allowed' : 'pointer',
+              onClick={() => {
+                if (perUnit != null) {
+                  onChange(perUnit);
+                  setOpen(false);
+                }
               }}
+              className="
+                rounded-xl
+                bg-brand
+                px-4 py-2
+                text-ds-caption
+                font-semibold
+                text-white
+                shadow-elev-1
+                transition-all
+                hover:bg-brand-dark
+                disabled:cursor-not-allowed
+                disabled:opacity-40
+              "
             >
-              Use ₹{perUnit ?? '—'}
+              Use value
             </button>
           </div>
         </div>
@@ -253,85 +445,9 @@ function AdsSpendField({ value, onChange }: AdsSpendFieldProps) {
   );
 }
 
-interface SelectOption {
-  value: string;
-  label: string;
-}
-
-interface SelectFieldProps {
-  label: string;
-  value: string;
-  onChange: (value: string) => void;
-  options: readonly (string | SelectOption)[];
-}
-
-function SelectField({ label, value, onChange, options }: SelectFieldProps) {
-  return (
-    <div>
-      <label className="field-label" style={{ fontSize: 11, marginBottom: 4 }}>{label}</label>
-      <select
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        className="input-field select-base"
-        style={{ cursor: 'pointer', fontSize: 13, padding: '8px 28px 8px 12px', background: 'rgba(255,255,255,0.03)' }}
-      >
-        <option value="">Select…</option>
-        {options.map((opt, i) => {
-          const v = typeof opt === 'string' ? opt : opt.value;
-          const l = typeof opt === 'string' ? opt : opt.label;
-          return <option key={`${v}-${i}`} value={v}>{l}</option>;
-        })}
-      </select>
-    </div>
-  );
-}
-
-interface ToggleFieldProps {
-  label: string;
-  options: readonly string[];
-  value: string;
-  onChange: (value: string) => void;
-}
-
-function ToggleField({ label, options, value, onChange }: ToggleFieldProps) {
-  return (
-    <div>
-      <label className="field-label" style={{ fontSize: 11, marginBottom: 4 }}>{label}</label>
-      <div className="toggle-group" style={{ background: 'rgba(255,255,255,0.03)' }}>
-        {options.map((opt, i) => (
-          <button
-            key={`${opt}-${i}`}
-            onClick={() => onChange(opt)}
-            className={`toggle-opt${value === opt ? ' active' : ''}`}
-            style={{ padding: '8px 10px', fontSize: 11 }}
-          >
-            {opt}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Portalled Platform Settings Popover ────────────────────────
-   Renders into document.body to escape every stacking-context /
-   overflow:hidden ancestor. Position: fixed, anchored to the gear
-   button's bounding rect. Viewport-edge aware, ESC + outside-click
-   to close, focus management, ARIA. */
-
-interface PopoverPosition {
-  top: number;
-  left: number;
-}
-
-interface PlatformSettingsPopoverProps {
-  id: string;
-  platform: Platform;
-  anchorRef: RefObject<HTMLButtonElement | null>;
-  onClose: () => void;
-  globalSettings: GlobalSettings;
-  onUpdateSetting: (id: string, setting: Partial<PlatformSetting>) => void;
-}
+/* -------------------------------------------------------------------------- */
+/* POPOVER */
+/* -------------------------------------------------------------------------- */
 
 function PlatformSettingsPopover({
   id,
@@ -340,26 +456,37 @@ function PlatformSettingsPopover({
   onClose,
   globalSettings,
   onUpdateSetting,
-}: PlatformSettingsPopoverProps) {
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const [pos, setPos] = useState<PopoverPosition | null>(null);
+}: {
+  id: string;
+  platform: Platform;
+  anchorRef: RefObject<HTMLButtonElement | null>;
+  onClose: () => void;
+  globalSettings: GlobalSettings;
+  onUpdateSetting: (
+    id: string,
+    setting: Partial<PlatformSetting>
+  ) => void;
+}) {
+  const popoverRef =
+    useRef<HTMLDivElement>(null);
+
+  const [pos, setPos] = useState({
+    top: 0,
+    left: 0,
+  });
 
   const computePosition = useCallback(() => {
-    const anchor = anchorRef?.current;
+    const anchor = anchorRef.current;
+
     if (!anchor) return;
-    const rect = anchor.getBoundingClientRect();
-    const W = 320;
-    const margin = 16;
-    let left = rect.left;
-    if (left + W > window.innerWidth - margin) {
-      left = Math.max(margin, rect.right - W);
-    }
-    const popH = popoverRef.current?.offsetHeight ?? 360;
-    let top = rect.bottom + 8;
-    if (top + popH > window.innerHeight - margin) {
-      top = Math.max(margin, rect.top - popH - 8);
-    }
-    setPos({ top, left });
+
+    const rect =
+      anchor.getBoundingClientRect();
+
+    setPos({
+      top: rect.bottom + 10,
+      left: rect.left,
+    });
   }, [anchorRef]);
 
   useLayoutEffect(() => {
@@ -367,133 +494,151 @@ function PlatformSettingsPopover({
   }, [computePosition]);
 
   useEffect(() => {
-    const onScroll = () => computePosition();
-    const onResize = () => computePosition();
-    window.addEventListener('scroll', onScroll, { passive: true, capture: true });
-    window.addEventListener('resize', onResize);
-    return () => {
-      window.removeEventListener('scroll', onScroll, { capture: true });
-      window.removeEventListener('resize', onResize);
+    const close = (e: MouseEvent) => {
+      if (
+        popoverRef.current &&
+        !popoverRef.current.contains(
+          e.target as Node
+        )
+      ) {
+        onClose();
+      }
     };
-  }, [computePosition]);
 
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') { e.stopPropagation(); onClose(); }
-    };
-    const onMouseDown = (e: MouseEvent) => {
-      const popEl = popoverRef.current;
-      const anchorEl = anchorRef?.current;
-      if (!popEl) return;
-      if (popEl.contains(e.target as Node)) return;
-      if (anchorEl && anchorEl.contains(e.target as Node)) return;
-      onClose();
-    };
-    document.addEventListener('keydown', onKey);
-    document.addEventListener('mousedown', onMouseDown);
-    return () => {
-      document.removeEventListener('keydown', onKey);
-      document.removeEventListener('mousedown', onMouseDown);
-    };
-  }, [onClose, anchorRef]);
+    document.addEventListener(
+      "mousedown",
+      close
+    );
 
-  useEffect(() => {
-    const anchor = anchorRef?.current;
-    const pop = popoverRef.current;
-    if (!pop) return;
-    const first = pop.querySelector<HTMLElement>('select, input, button');
-    first?.focus();
-    return () => { anchor?.focus?.(); };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  if (typeof document === 'undefined') return null;
+    return () =>
+      document.removeEventListener(
+        "mousedown",
+        close
+      );
+  }, [onClose]);
 
   return createPortal(
     <div
       ref={popoverRef}
-      role="dialog"
-      aria-modal={false as unknown as boolean}
-      aria-label={`${platform.name} Settings`}
-      className="animate-in"
+      className="
+        fixed z-50
+        w-80
+        rounded-3xl
+        border border-n-border
+        bg-white
+        p-5
+        shadow-elev-3
+        animate-fade-up
+      "
       style={{
-        position: 'fixed',
-        top: pos?.top ?? -9999,
-        left: pos?.left ?? -9999,
-        width: 320,
-        zIndex: 1000,
-        background: 'var(--bg-surface-3)',
-        border: `1px solid ${platform.color}40`,
-        boxShadow: `0 20px 48px rgba(0,0,0,0.55), 0 0 0 1px ${platform.color}18, 0 12px 32px ${platform.color}24`,
-        borderRadius: 16,
-        padding: '20px',
-        visibility: pos ? 'visible' : 'hidden',
+        top: pos.top,
+        left: pos.left,
       }}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
-        <p style={{ fontFamily: 'Sora', fontSize: 14, fontWeight: 600, color: 'var(--text-primary)' }}>
+      <div className="mb-5 flex items-center justify-between">
+        <h3 className="font-display text-ds-h3 text-n-900">
           {platform.name} Settings
-        </p>
+        </h3>
+
         <button
           onClick={onClose}
-          aria-label="Close settings"
-          style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 28, height: 28,
-            background: 'none', border: 'none', color: 'var(--text-muted)',
-            cursor: 'pointer', borderRadius: 8, lineHeight: 1,
-            transition: 'color 150ms ease, background 150ms ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = 'var(--text-primary)';
-            e.currentTarget.style.background = 'rgba(255,255,255,0.05)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = 'var(--text-muted)';
-            e.currentTarget.style.background = 'transparent';
-          }}
+          className="
+            flex h-8 w-8 items-center justify-center
+            rounded-lg
+            text-n-500
+            transition-colors
+            hover:bg-n-100
+            hover:text-n-900
+          "
         >
           <IconClose size={14} />
         </button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+      <div className="space-y-4">
         <SelectField
           label="Category"
-          value={globalSettings[id]?.category ?? ''}
-          onChange={v => onUpdateSetting(id, { category: v })}
-          options={(CATEGORIES as unknown as Record<string, string[]>)[id] ?? []}
+          value={
+            globalSettings[id]?.category ?? ""
+          }
+          onChange={(v) =>
+            onUpdateSetting(id, {
+              category: v,
+            })
+          }
+          options={
+            (CATEGORIES as Record<
+              string,
+              string[]
+            >)[id] ?? []
+          }
         />
+
         {platform.fbxProgram && (
           <ToggleField
             label="Fulfillment"
-            options={['Self-Ship', 'Platform Fulfillment']}
-            value={globalSettings[id]?.fulfillmentMethod ?? 'Self-Ship'}
-            onChange={v => onUpdateSetting(id, { fulfillmentMethod: v })}
+            options={[
+              "Self-Ship",
+              "Platform Fulfillment",
+            ]}
+            value={
+              globalSettings[id]
+                ?.fulfillmentMethod ??
+              "Self-Ship"
+            }
+            onChange={(v) =>
+              onUpdateSetting(id, {
+                fulfillmentMethod: v,
+              })
+            }
           />
         )}
+
         {platform.hasSellerTier && (
           <SelectField
             label="Tier"
-            value={globalSettings[id]?.sellerTier ?? 'Gold'}
-            onChange={v => onUpdateSetting(id, { sellerTier: v })}
+            value={
+              globalSettings[id]
+                ?.sellerTier ?? "Gold"
+            }
+            onChange={(v) =>
+              onUpdateSetting(id, {
+                sellerTier: v,
+              })
+            }
             options={SELLER_TIERS}
           />
         )}
+
         {platform.hasShippingZone && (
           <SelectField
             label="Zone"
-            value={globalSettings[id]?.shippingZone ?? 'Local'}
-            onChange={v => onUpdateSetting(id, { shippingZone: v })}
+            value={
+              globalSettings[id]
+                ?.shippingZone ?? "Local"
+            }
+            onChange={(v) =>
+              onUpdateSetting(id, {
+                shippingZone: v,
+              })
+            }
             options={SHIPPING_ZONES}
           />
         )}
+
         {platform.hasCOD && (
           <ToggleField
             label="Order Type"
             options={ORDER_TYPES}
-            value={globalSettings[id]?.orderType ?? 'Prepaid'}
-            onChange={v => onUpdateSetting(id, { orderType: v })}
+            value={
+              globalSettings[id]
+                ?.orderType ?? "Prepaid"
+            }
+            onChange={(v) =>
+              onUpdateSetting(id, {
+                orderType: v,
+              })
+            }
           />
         )}
       </div>
@@ -502,13 +647,18 @@ function PlatformSettingsPopover({
   );
 }
 
-/* ── Main Form ── */
+/* -------------------------------------------------------------------------- */
+/* MAIN FORM */
+/* -------------------------------------------------------------------------- */
 
 interface CalculatorFormProps {
   product: Product;
-  onUpdate: (updates: Partial<Product>) => void;
+  onUpdate: (u: Partial<Product>) => void;
   globalSettings: GlobalSettings;
-  onUpdateSetting: (id: string, setting: Partial<PlatformSetting>) => void;
+  onUpdateSetting: (
+    id: string,
+    setting: Partial<PlatformSetting>
+  ) => void;
 }
 
 export default function CalculatorForm({
@@ -517,279 +667,313 @@ export default function CalculatorForm({
   globalSettings,
   onUpdateSetting,
 }: CalculatorFormProps) {
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [expandedConfig, setExpandedConfig] = useState<string | null>(null);
-  const gearRefs = useRef<Record<string, HTMLButtonElement>>({});
+  const [showAdvanced, setShowAdvanced] =
+    useState(false);
 
-  const { selectedPlatforms } = product;
+  const [expandedConfig, setExpandedConfig] =
+    useState<string | null>(null);
+
+  const gearRefs =
+    useRef<
+      Record<string, HTMLButtonElement>
+    >({});
 
   const warnings: string[] = [];
+
   if (
-    typeof product.sellingPrice === 'number' &&
-    typeof product.cogs === 'number' &&
-    product.sellingPrice > 0 &&
+    typeof product.sellingPrice ===
+      "number" &&
+    typeof product.cogs === "number" &&
     product.cogs > product.sellingPrice
   ) {
-    warnings.push('Selling below cost');
+    warnings.push("Selling below cost");
   }
 
-  const togglePlatform = (platformId: string) => {
-    const current = [...selectedPlatforms];
-    const idx = current.indexOf(platformId);
-    if (idx >= 0) {
-      current.splice(idx, 1);
-      if (expandedConfig === platformId) setExpandedConfig(null);
+  const togglePlatform = (
+    platformId: string
+  ) => {
+    const current = [
+      ...product.selectedPlatforms,
+    ];
+
+    const index =
+      current.indexOf(platformId);
+
+    if (index >= 0) {
+      current.splice(index, 1);
     } else {
       current.push(platformId);
     }
-    onUpdate({ selectedPlatforms: current });
+
+    onUpdate({
+      selectedPlatforms: current,
+    });
   };
 
   return (
-    <div style={{
-      background: 'var(--bg-surface-2)',
-      border: '1px solid var(--glass-border)',
-      borderRadius: '24px',
-      padding: '40px 32px',
-      marginBottom: '32px',
-      boxShadow: '0 12px 48px rgba(0,0,0,0.5)',
-      position: 'relative',
-      zIndex: 10,
-    }}>
-      {/* Title */}
-      <div style={{ marginBottom: 32, textAlign: 'center' }}>
-        <h2 style={{ fontFamily: 'Sora', fontSize: 24, fontWeight: 700, color: 'var(--text-primary)' }}>
+    <section
+      className="
+        rounded-3xl
+        border border-n-border
+        bg-white
+        p-8
+        shadow-elev-3
+      "
+    >
+      {/* Header */}
+      <div className="mb-8 text-center">
+        <h2 className="font-display text-ds-h1 text-n-900">
           Calculate Profitability
         </h2>
-        <p style={{ color: 'var(--text-muted)', fontSize: 15, marginTop: 6 }}>
-          Enter your numbers below to instantly see the real margins across platforms.
+
+        <p className="mt-2 text-ds-body text-n-500">
+          Compare real platform margins instantly.
         </p>
       </div>
 
+      {/* Warnings */}
       {warnings.length > 0 && (
         <div
-          role="alert"
-          className="animate-in"
-          style={{
-            marginBottom: 24, padding: '12px 16px',
-            borderRadius: 12, background: 'rgba(239,68,68,0.08)',
-            border: '1px solid rgba(239,68,68,0.2)',
-            display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center',
-          }}
+          className="
+            mb-6
+            rounded-2xl
+            border border-error/20
+            bg-error-light
+            p-4
+          "
         >
-          {warnings.map((w, i) => (
-            <p
-              key={i}
-              style={{
-                fontSize: 13, color: '#ef4444', fontFamily: 'DM Sans', fontWeight: 600,
-                display: 'flex', alignItems: 'center', gap: 6,
-              }}
+          {warnings.map((warning) => (
+            <div
+              key={warning}
+              className="
+                flex items-center gap-2
+                text-ds-body-sm
+                font-semibold
+                text-error
+              "
             >
-              <IconAlert size={14} /> {w}
-            </p>
+              <IconAlert size={14} />
+              {warning}
+            </div>
           ))}
         </div>
       )}
 
-      {/* Core Inputs */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: 24,
-        marginBottom: 20,
-      }}>
+      {/* Core */}
+      <div className="grid gap-6 md:grid-cols-2">
         <InputField
           label="Selling Price"
           value={product.sellingPrice}
-          onChange={v => onUpdate({ sellingPrice: v })}
-          warning={typeof product.sellingPrice === 'number' && product.sellingPrice < 0 ? 'Price cannot be negative' : ''}
+          onChange={(v) =>
+            onUpdate({ sellingPrice: v })
+          }
         />
+
         <InputField
-          label="Cost of Goods (COGS)"
+          label="Cost of Goods"
           value={product.cogs}
-          onChange={v => onUpdate({ cogs: v })}
-          warning={typeof product.cogs === 'number' && product.cogs < 0 ? 'Cost cannot be negative' : ''}
+          onChange={(v) =>
+            onUpdate({ cogs: v })
+          }
         />
       </div>
 
-      {/* Advanced Options Toggle */}
-      <div style={{ textAlign: 'center', marginBottom: showAdvanced ? 24 : 32 }}>
+      {/* Advanced Toggle */}
+      <div className="my-8 flex justify-center">
         <button
-          onClick={() => setShowAdvanced(!showAdvanced)}
-          aria-expanded={showAdvanced}
-          aria-controls="advanced-options-panel"
-          style={{
-            background: 'transparent',
-            border: '1px solid var(--glass-border)',
-            color: 'var(--text-secondary)',
-            fontFamily: 'DM Sans',
-            fontSize: 13,
-            fontWeight: 600,
-            cursor: 'pointer',
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '8px 16px',
-            borderRadius: 10,
-            minHeight: 36,
-            transition: 'all 150ms ease',
-          }}
-          onMouseEnter={e => {
-            e.currentTarget.style.color = 'var(--text-primary)';
-            e.currentTarget.style.borderColor = 'rgba(255,255,255,0.16)';
-          }}
-          onMouseLeave={e => {
-            e.currentTarget.style.color = 'var(--text-secondary)';
-            e.currentTarget.style.borderColor = 'var(--glass-border)';
-          }}
+          onClick={() =>
+            setShowAdvanced(!showAdvanced)
+          }
+          className="
+            inline-flex items-center gap-2
+            rounded-xl
+            border border-n-border
+            px-4 py-2
+            text-ds-body-sm
+            font-semibold
+            text-n-600
+            transition-all
+            hover:border-brand/30
+            hover:bg-brand-light/30
+            hover:text-brand
+          "
         >
+          {showAdvanced ? (
+            <IconMinus size={14} />
+          ) : (
+            <IconPlus size={14} />
+          )}
+
           {showAdvanced
-            ? (<><IconMinus size={14} /> Hide Advanced Options</>)
-            : (<><IconPlus size={14} /> Show Advanced Options</>)}
+            ? "Hide Advanced Options"
+            : "Show Advanced Options"}
         </button>
       </div>
 
-      {/* Advanced Inputs */}
+      {/* Advanced */}
       {showAdvanced && (
         <div
-          id="advanced-options-panel"
-          className="animate-open"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: 20,
-            marginBottom: 32,
-            padding: '24px',
-            background: 'rgba(255,255,255,0.015)',
-            borderRadius: 16,
-            border: '1px solid rgba(255,255,255,0.03)',
-          }}
+          className="
+            mb-8
+            grid gap-5
+            rounded-3xl
+            border border-n-border
+            bg-n-50
+            p-6
+            md:grid-cols-2
+          "
         >
           <InputField
             label="Weight"
             value={product.weight}
-            onChange={v => onUpdate({ weight: v })}
-            suffix="g"
-            warning={
-              typeof product.weight === 'number' && product.weight < 0
-                ? 'Cannot be negative'
-                : product.weight === 0 && selectedPlatforms.some(p => (PLATFORMS as unknown as Record<string, Platform>)[p]?.hasWeight)
-                  ? 'Required for weight-based fees'
-                  : ''
+            onChange={(v) =>
+              onUpdate({ weight: v })
             }
+            suffix="g"
           />
+
           <InputField
             label="Return Rate"
             value={product.returnRate}
-            onChange={v => onUpdate({ returnRate: v })}
-            suffix="%"
-            tooltip="Share of orders that come back. Enter 5 for 5%. Fashion typically runs 20-40%; electronics 2-5%."
-            warning={
-              typeof product.returnRate === 'number' && product.returnRate < 0
-                ? 'Cannot be negative'
-                : typeof product.returnRate === 'number' && product.returnRate > 100
-                  ? 'Cap at 100%'
-                  : ''
+            onChange={(v) =>
+              onUpdate({ returnRate: v })
             }
+            suffix="%"
           />
+
           <InputField
             label="Shipping to Buyer"
-            value={product.shippingCostToBuyer}
-            onChange={v => onUpdate({ shippingCostToBuyer: v })}
-            warning={typeof product.shippingCostToBuyer === 'number' && product.shippingCostToBuyer < 0 ? 'Cannot be negative' : ''}
-            tooltip="Cost strictly charged to the buyer, if any."
+            value={
+              product.shippingCostToBuyer
+            }
+            onChange={(v) =>
+              onUpdate({
+                shippingCostToBuyer: v,
+              })
+            }
           />
+
           <AdsSpendField
             value={product.adsSpend}
-            onChange={v => onUpdate({ adsSpend: v })}
+            onChange={(v) =>
+              onUpdate({
+                adsSpend: v,
+              })
+            }
           />
         </div>
       )}
 
-      <hr style={{ borderTop: '1px solid var(--glass-border)', borderBottom: 'none', margin: '0 0 28px 0', opacity: 0.5 }} />
-
-      {/* Platform Selection */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 12, marginBottom: 16 }}>
-          <h3 style={{ fontFamily: 'Sora', fontSize: 16, fontWeight: 600, color: 'var(--text-primary)' }}>
-            Compare Across Platforms
+      {/* Platforms */}
+      <div className="border-t border-n-border pt-6">
+        <div className="mb-4 flex items-end gap-3">
+          <h3 className="font-display text-ds-h3 text-n-900">
+            Compare Platforms
           </h3>
-          <span style={{ fontSize: 13, color: 'var(--text-muted)', fontFamily: 'DM Sans' }}>
-            Toggle to include in calculations
+
+          <span className="text-ds-caption text-n-500">
+            Toggle platforms to include
           </span>
         </div>
 
-        <div className="chip-row-scroll" style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
-          {Object.entries(PLATFORMS as unknown as Record<string, Platform>).map(([id, platform]) => {
-            const active = selectedPlatforms.includes(id);
-            const isExpanded = expandedConfig === id;
-            return (
-              <div key={id} style={{ position: 'relative' }}>
-                <div style={{ display: 'flex', alignItems: 'stretch' }}>
-                  <button
-                    onClick={() => togglePlatform(id)}
-                    className={`chip${active ? ' active' : ''}`}
-                    style={{
-                      padding: '10px 16px', fontSize: 14,
-                      borderTopRightRadius: active ? 0 : 999,
-                      borderBottomRightRadius: active ? 0 : 999,
-                      ...(active ? {
-                        borderColor: platform.color,
-                        background: `${platform.color}15`,
-                        color: platform.color,
-                        borderRight: 'none',
-                      } : {}),
-                    }}
-                  >
-                    {platform.name}
-                  </button>
+        <div className="flex flex-wrap gap-3">
+          {Object.entries(
+            PLATFORMS as Record<
+              string,
+              Platform
+            >
+          ).map(([id, platform]) => {
+            const active =
+              product.selectedPlatforms.includes(
+                id
+              );
 
-                  {active && (
+            return (
+              <div
+                key={id}
+                className="relative flex"
+              >
+                <button
+                  onClick={() =>
+                    togglePlatform(id)
+                  }
+                  className={cn(
+                    `
+                      rounded-full
+                      border
+                      px-4 py-2
+                      text-ds-body-sm
+                      font-semibold
+                      transition-all
+                    `,
+                    active
+                      ? "border-brand bg-brand-light text-brand"
+                      : "border-n-border bg-white text-n-600 hover:border-brand/30 hover:bg-brand-light/20"
+                  )}
+                >
+                  {platform.name}
+                </button>
+
+                {active && (
+                  <>
                     <button
-                      ref={el => {
-                        if (el) gearRefs.current[id] = el;
-                        else delete gearRefs.current[id];
+                      ref={(el) => {
+                        if (el)
+                          gearRefs.current[id] =
+                            el;
                       }}
-                      onClick={() => setExpandedConfig(isExpanded ? null : id)}
-                      aria-expanded={isExpanded}
-                      aria-controls={`platform-settings-${id}`}
-                      aria-haspopup="dialog"
-                      aria-label={`${platform.name} settings`}
-                      style={{
-                        padding: '0 12px',
-                        minWidth: 40,
-                        background: isExpanded ? `${platform.color}25` : `${platform.color}15`,
-                        border: `1px solid ${platform.color}`,
-                        borderLeft: `1px solid ${platform.color}40`,
-                        borderTopRightRadius: 999,
-                        borderBottomRightRadius: 999,
-                        color: platform.color,
-                        cursor: 'pointer',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        transition: 'background 150ms',
-                      }}
-                      title={`${platform.name} settings`}
+                      onClick={() =>
+                        setExpandedConfig(
+                          expandedConfig === id
+                            ? null
+                            : id
+                        )
+                      }
+                      className="
+                        ml-2
+                        flex h-10 w-10 items-center justify-center
+                        rounded-full
+                        border border-brand/20
+                        bg-brand-light
+                        text-brand
+                        transition-all
+                        hover:bg-brand
+                        hover:text-white
+                      "
                     >
                       <IconGear size={14} />
                     </button>
-                  )}
-                </div>
 
-                {isExpanded && active && (
-                  <PlatformSettingsPopover
-                    id={id}
-                    platform={platform}
-                    anchorRef={{ current: gearRefs.current[id] ?? null }}
-                    onClose={() => setExpandedConfig(null)}
-                    globalSettings={globalSettings}
-                    onUpdateSetting={onUpdateSetting}
-                  />
+                    {expandedConfig === id && (
+                      <PlatformSettingsPopover
+                        id={id}
+                        platform={platform}
+                        anchorRef={{
+                          current:
+                            gearRefs.current[
+                              id
+                            ] ?? null,
+                        }}
+                        onClose={() =>
+                          setExpandedConfig(
+                            null
+                          )
+                        }
+                        globalSettings={
+                          globalSettings
+                        }
+                        onUpdateSetting={
+                          onUpdateSetting
+                        }
+                      />
+                    )}
+                  </>
                 )}
               </div>
             );
           })}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
