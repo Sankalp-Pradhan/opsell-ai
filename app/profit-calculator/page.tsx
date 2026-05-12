@@ -16,6 +16,7 @@ import {
   IconBrand, IconRefresh, IconPlus, IconTrash, IconMail, IconLink, IconCheck,
   IconSparkle, IconArrowDown, IconClose,
 } from './components/Icon';
+import HeroSection from './components/hero';
 
 declare const __BUILD_DATE__: string | undefined;
 
@@ -37,7 +38,7 @@ function App(): ReactElement {
 
   const dismissAiTeaser = useCallback((): void => {
     setAiTeaserDismissed(true);
-    try { localStorage.setItem('opsell-ai-teaser-dismissed', '1'); } catch {}
+    try { localStorage.setItem('opsell-ai-teaser-dismissed', '1'); } catch { }
   }, []);
 
   const [activeProductId, setActiveProductId] = useState<number | undefined>(products[0]?.id);
@@ -77,7 +78,7 @@ function App(): ReactElement {
         JSON.parse(localStorage.getItem('opsell-leads') || '[]');
       leads.push({ email: email.trim(), at: Date.now(), shareUrl });
       localStorage.setItem('opsell-leads', JSON.stringify(leads));
-    } catch {}
+    } catch { }
     setEmailStatus('ok');
   }, [email, shareUrl]);
 
@@ -130,65 +131,10 @@ function App(): ReactElement {
       </a>
 
       {/* ── Sticky Header ── */}
-    
+
 
       {/* ── Hero Band ── */}
-      <section
-        aria-label="Intro"
-        className="relative z-10 max-w-5xl mx-auto
-                   px-4 sm:px-6
-                   pt-10 sm:pt-14 pb-6 sm:pb-10"
-      >
-        {/* Eyebrow badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full
-                        bg-success-light border border-success/20
-                        text-success font-display text-ds-caption font-bold tracking-wide
-                        mb-4">
-          <IconCheck size={11} />
-          Free forever · No signup · Works in your browser
-        </div>
-
-        <h1 className="font-display text-5xl font-extrabold text-n-900 tracking-tight leading-[1.05]
-                        mb-3 max-w-2xl ">
-      Instant real-profit view across all  8 marketplaces
-        </h1>
-
-        <p className="font-body text-n-500 leading-relaxed text-[clamp(13px,2vw,16px)]
-                      max-w-xl mb-6">
-          Enter your selling price and cost. We&rsquo;ll show the real commission, shipping, GST,
-          returns and net payout across Amazon, Flipkart, Meesho, Noon, Walmart, eBay, and more.
-        </p>
-
-        <div className="flex flex-wrap gap-2.5 items-center">
-          <a
-            href="#calculator-form"
-            className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg
-                       bg-brand text-white font-display font-semibold text-ds-body-sm
-                       shadow-[0_4px_14px_rgba(80,70,229,0.35)]
-                       hover:bg-brand-dark transition-colors duration-150 no-underline"
-          >
-            Enter your numbers
-            <IconArrowDown size={13} />
-          </a>
-          <button
-            onClick={() => activeProduct && loadSampleProduct(activeProduct.id)}
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-lg
-                       bg-white border border-n-border text-n-600 font-display font-semibold
-                       text-ds-body-sm hover:bg-n-50 hover:border-n-200 transition-colors duration-150"
-            aria-label="Load sample product data"
-          >
-            <IconSparkle size={13} /> Try with sample product
-          </button>
-        </div>
-
-        {/* Trust strip */}
-        <div className="mt-5 flex flex-wrap gap-x-5 gap-y-1.5 items-center
-                        font-body text-ds-caption text-n-400">
-          <TrustPill color="bg-success" label="Your data never leaves this browser" />
-          <TrustPill color="bg-brand" label={`Fees verified ${typeof __BUILD_DATE__ !== 'undefined' ? __BUILD_DATE__ : 'today'}`} />
-          <TrustPill color="bg-brand-mid" label="Amazon · Flipkart · Meesho · Noon · Walmart · eBay" />
-        </div>
-      </section>
+      <HeroSection />
 
       {/* ── Main Content ── */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 relative z-10">
@@ -212,9 +158,9 @@ function App(): ReactElement {
                     className={`px-4 py-2 rounded-lg flex-shrink-0 min-h-[36px] text-ds-body-sm
                                 font-display font-medium transition-all duration-200 truncate max-w-[180px]
                                 ${active
-                                  ? 'bg-brand text-white shadow-elev-1'
-                                  : 'bg-white border border-n-border text-n-600 hover:border-n-200'
-                                }`}
+                        ? 'bg-brand text-white shadow-elev-1'
+                        : 'bg-white border border-n-border text-n-600 hover:border-n-200'
+                      }`}
                   >
                     {p.name}
                   </button>
@@ -333,9 +279,9 @@ function App(): ReactElement {
                   aria-label="Your top result"
                   className={`mb-5 p-5 rounded-xl border transition-all duration-300
                               ${healthy
-                                ? 'bg-success-light border-success/25'
-                                : 'bg-warning-light border-warning/30'
-                              }`}
+                      ? 'bg-success-light border-success/25'
+                      : 'bg-warning-light border-warning/30'
+                    }`}
                 >
                   <p className="font-display font-bold text-ds-caption uppercase tracking-widest text-n-400 mb-1.5">
                     {(summary.uniquePlatformCount ?? 1) === 1 ? 'Your result' : 'Your top result'}
@@ -541,9 +487,9 @@ function App(): ReactElement {
                                     focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand
                                     transition-colors
                                     ${emailStatus === 'bad'
-                                      ? 'border-error/50 focus:ring-error/20 focus:border-error'
-                                      : 'border-n-border'
-                                    }`}
+                            ? 'border-error/50 focus:ring-error/20 focus:border-error'
+                            : 'border-n-border'
+                          }`}
                       />
                       <button
                         onClick={handleEmailSubmit}
@@ -600,9 +546,9 @@ function App(): ReactElement {
                                 flex items-center justify-center gap-1.5
                                 transition-all duration-200
                                 ${copied
-                                  ? 'bg-success-light border-success/35 text-success'
-                                  : 'bg-white border-n-border text-n-600 hover:bg-n-50'
-                                }`}
+                        ? 'bg-success-light border-success/35 text-success'
+                        : 'bg-white border-n-border text-n-600 hover:bg-n-50'
+                      }`}
                   >
                     {copied
                       ? <><IconCheck size={14} /> Copied</>
