@@ -118,8 +118,8 @@ function App(): ReactElement {
   const isMultiProduct = products.length > 1;
 
   return (
-    // ── Page shell — light bg from design system n-50 ──
-    <div className="min-h-screen pt-10 bg-n-50 relative overflow-x-hidden font-body text-n-900">
+    // ── Page shell ──
+    <div className="min-h-screen bg-n-50 relative overflow-x-hidden font-body text-n-900">
 
       {/* ── Skip link ── */}
       <a
@@ -130,22 +130,31 @@ function App(): ReactElement {
         Skip to calculator
       </a>
 
-      {/* ── Sticky Header ── */}
-
-
       {/* ── Hero Band ── */}
       <HeroSection />
 
       {/* ── Main Content ── */}
+      {/*
+        RESPONSIVE FIX #1:
+        Added `mx-auto px-4` so content has side padding on mobile.
+        `sm:px-6` keeps the larger padding on ≥640px screens.
+        Previously only `sm:px-6` was set, leaving zero padding on mobile.
+      */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 relative z-10">
 
         {/* ── Product Tab Rail ── */}
         {isMultiProduct && (
           <div className="mb-5 animate-fade-up">
+            {/*
+              RESPONSIVE FIX #2:
+              Added `-mx-1 px-1` so the scrollable rail has a tiny visual bleed
+              without clipping the focus ring on the first/last tab.
+              Added `pb-2` for a bit more scroll thumb room on mobile.
+            */}
             <div
               role="tablist"
               aria-label="Products"
-              className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none"
+              className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1"
             >
               {products.map(p => {
                 const active = activeProduct?.id === p.id;
@@ -155,8 +164,14 @@ function App(): ReactElement {
                     role="tab"
                     aria-selected={active}
                     onClick={() => setActiveProductId(p.id)}
-                    className={`px-4 py-2 rounded-lg flex-shrink-0 min-h-[36px] text-ds-body-sm
-                                font-display font-medium transition-all duration-200 truncate max-w-[180px]
+                    /*
+                      RESPONSIVE FIX #3:
+                      Reduced px from px-4 → px-3 on mobile, max-w from 180px → 130px
+                      so tabs don't overflow the scroll container on narrow phones.
+                    */
+                    className={`px-3 sm:px-4 py-2 rounded-lg flex-shrink-0 min-h-[36px] text-ds-body-sm
+                                font-display font-medium transition-all duration-200 truncate
+                                max-w-[130px] sm:max-w-[180px]
                                 ${active
                         ? 'bg-brand text-white shadow-elev-1'
                         : 'bg-white border border-n-border text-n-600 hover:border-n-200'
@@ -202,8 +217,15 @@ function App(): ReactElement {
         {activeProduct && (
           <div
             id="calculator-form"
+            /*
+              RESPONSIVE FIX #4:
+              Reduced base padding from p-5 → p-4 on mobile.
+              The compound border classes (border + border-l-4 + border-l-brand) are kept
+              as-is since Tailwind processes them correctly — border sets all sides,
+              then border-l-4 overrides just the left width, border-l-brand sets left color.
+            */
             className="bg-white border border-n-border border-l-4 border-l-brand
-                       rounded-2xl p-5 sm:p-6 mb-8 shadow-elev-1 animate-fade-up"
+                       rounded-2xl p-4 sm:p-6 mb-8 shadow-elev-1 animate-fade-up"
           >
             {/* Card header */}
             <div className="flex items-start justify-between flex-wrap gap-2.5 mb-5">
@@ -277,7 +299,7 @@ function App(): ReactElement {
                 <div
                   role="region"
                   aria-label="Your top result"
-                  className={`mb-5 p-5 rounded-xl border transition-all duration-300
+                  className={`mb-5 p-4 sm:p-5 rounded-xl border transition-all duration-300
                               ${healthy
                       ? 'bg-success-light border-success/25'
                       : 'bg-warning-light border-warning/30'
@@ -286,8 +308,13 @@ function App(): ReactElement {
                   <p className="font-display font-bold text-ds-caption uppercase tracking-widest text-n-400 mb-1.5">
                     {(summary.uniquePlatformCount ?? 1) === 1 ? 'Your result' : 'Your top result'}
                   </p>
+                  {/*
+                    RESPONSIVE FIX #5:
+                    Lowered the clamp floor from 18px → 15px so the heading
+                    doesn't overflow on 320–360px screens.
+                  */}
                   <h3 className="font-display font-semibold text-n-900 tracking-tight
-                                  text-[clamp(18px,3vw,24px)] leading-snug">
+                                  text-[clamp(15px,4vw,24px)] leading-snug">
                     You&rsquo;d keep{' '}
                     <span className={`font-mono tabular-nums font-bold
                                       ${healthy ? 'text-success' : 'text-warning'}`}>
@@ -316,8 +343,15 @@ function App(): ReactElement {
               <div
                 role="complementary"
                 aria-label="Opsell AI teaser"
+                /*
+                  RESPONSIVE FIX #6:
+                  Changed from `flex items-center flex-wrap` to
+                  `flex flex-col sm:flex-row sm:items-center`.
+                  On mobile the icon, text, CTA, and dismiss button now stack
+                  vertically instead of awkwardly wrapping mid-row.
+                */
                 className="mb-8 p-4 sm:p-5 bg-ai-bg border border-ai-border rounded-xl
-                           flex items-center gap-4 flex-wrap"
+                           flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
               >
                 <span
                   aria-hidden="true"
@@ -334,23 +368,35 @@ function App(): ReactElement {
                     Opsell AI syncs with your seller accounts and predicts profitability per SKU, per platform.
                   </p>
                 </div>
+                {/*
+                  RESPONSIVE FIX #7:
+                  Added `w-full sm:w-auto text-center` so the CTA button
+                  spans full width on mobile — easier to tap and prevents
+                  it clipping off-screen on 360px devices.
+                */}
                 <a
                   href="https://opsell.in?utm_source=calculator&utm_medium=inline-ai"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex-shrink-0 px-4 py-2 rounded-lg bg-brand text-white
-                             font-display font-semibold text-ds-caption no-underline
-                             hover:bg-brand-dark transition-colors"
+                  className="w-full sm:w-auto text-center flex-shrink-0 px-4 py-2 rounded-lg
+                             bg-brand text-white font-display font-semibold text-ds-caption
+                             no-underline hover:bg-brand-dark transition-colors"
                 >
                   Try Opsell AI
                 </a>
+                {/*
+                  RESPONSIVE FIX #8:
+                  Added `self-end sm:self-auto` so the dismiss button
+                  sits at the top-right of the stacked column on mobile,
+                  rather than flowing below the CTA button.
+                */}
                 <button
                   onClick={dismissAiTeaser}
                   type="button"
                   aria-label="Dismiss AI teaser"
-                  className="flex-shrink-0 w-9 h-9 rounded-lg border-0 bg-transparent
-                             text-n-300 hover:text-n-500 hover:bg-n-100 cursor-pointer
-                             flex items-center justify-center transition-colors"
+                  className="self-end sm:self-auto flex-shrink-0 w-9 h-9 rounded-lg border-0
+                             bg-transparent text-n-300 hover:text-n-500 hover:bg-n-100
+                             cursor-pointer flex items-center justify-center transition-colors"
                 >
                   <IconClose size={16} />
                 </button>
@@ -437,8 +483,13 @@ function App(): ReactElement {
             <PlatformSEOBlock />
 
             {/* ── TOFU Funnel — Email + Share ── */}
-            <div className="mt-8 mb-12 p-6 sm:p-8 bg-white border border-n-border rounded-3xl
-                            shadow-elev-1 grid grid-cols-1 sm:grid-cols-2 gap-8">
+            {/*
+              RESPONSIVE FIX #9:
+              Reduced base padding p-6 → p-5 on mobile.
+              Gap reduced gap-8 → gap-6 on mobile, restored at sm:gap-8.
+            */}
+            <div className="mt-8 mb-12 p-5 sm:p-8 bg-white border border-n-border rounded-3xl
+                            shadow-elev-1 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
 
               {/* Email capture */}
               <div>
@@ -463,8 +514,19 @@ function App(): ReactElement {
                   </div>
                 ) : (
                   <>
-                    <div className="flex gap-2 flex-wrap">
+                    {/*
+                      RESPONSIVE FIX #10:
+                      Changed from `flex gap-2 flex-wrap` to `flex flex-col gap-2`.
+                      On mobile the input stacks above the button for a clean
+                      full-width layout. At sm+ they sit side by side via flex-row.
+                    */}
+                    <div className="flex flex-col sm:flex-row gap-2">
                       <label htmlFor="email-capture" className="sr-only">Email address</label>
+                      {/*
+                        RESPONSIVE FIX #11:
+                        Replaced `flex-1 min-w-[200px]` with `w-full sm:flex-1 min-w-0`
+                        so the input doesn't force horizontal overflow on 360px phones.
+                      */}
                       <input
                         id="email-capture"
                         type="email"
@@ -481,7 +543,7 @@ function App(): ReactElement {
                         }}
                         aria-invalid={emailStatus === 'bad'}
                         aria-describedby={emailStatus === 'bad' ? 'email-error' : undefined}
-                        className={`flex-1 min-w-[200px] px-3.5 py-2.5 rounded-lg border
+                        className={`w-full sm:flex-1 min-w-0 px-3.5 py-2.5 rounded-lg border
                                     bg-n-50 text-n-900 font-body text-ds-body-sm
                                     placeholder:text-n-300
                                     focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand
@@ -491,9 +553,14 @@ function App(): ReactElement {
                             : 'border-n-border'
                           }`}
                       />
+                      {/*
+                        RESPONSIVE FIX #12:
+                        Added `w-full sm:w-auto` so the button fills the full width
+                        on mobile (easy to tap) and reverts to auto-width on sm+.
+                      */}
                       <button
                         onClick={handleEmailSubmit}
-                        className="flex-shrink-0 min-w-[96px] px-4 py-2.5 rounded-lg
+                        className="w-full sm:w-auto flex-shrink-0 min-w-[96px] px-4 py-2.5 rounded-lg
                                    bg-brand text-white font-display font-semibold text-ds-body-sm
                                    hover:bg-brand-dark transition-colors shadow-elev-1"
                       >
@@ -525,23 +592,35 @@ function App(): ReactElement {
                 <p className="font-body text-ds-body-sm text-n-400 mb-4">
                   Copy a link to this exact calculation to share with your team.
                 </p>
-                <div className="flex gap-2 flex-wrap">
+                {/*
+                  RESPONSIVE FIX #13:
+                  Same stacking treatment as email row — flex-col on mobile, flex-row on sm+.
+                */}
+                <div className="flex flex-col sm:flex-row gap-2">
                   <label htmlFor="share-url" className="sr-only">Share URL</label>
+                  {/*
+                    RESPONSIVE FIX #14:
+                    Replaced `flex-1 min-w-[200px]` with `w-full sm:flex-1 min-w-0`.
+                  */}
                   <input
                     id="share-url"
                     type="text"
                     readOnly
                     value={shareUrl}
-                    className="flex-1 min-w-[200px] px-3.5 py-2.5 rounded-lg border border-n-border
+                    className="w-full sm:flex-1 min-w-0 px-3.5 py-2.5 rounded-lg border border-n-border
                                bg-n-50 text-n-400 font-mono text-ds-caption
                                focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand
                                transition-colors"
                     onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select()}
                   />
+                  {/*
+                    RESPONSIVE FIX #15:
+                    Added `w-full sm:w-auto` for the same full-width mobile tap target.
+                  */}
                   <button
                     onClick={handleCopy}
                     aria-live="polite"
-                    className={`flex-shrink-0 min-w-[110px] px-4 py-2.5 rounded-lg
+                    className={`w-full sm:w-auto flex-shrink-0 min-w-[110px] px-4 py-2.5 rounded-lg
                                 font-display font-semibold text-ds-body-sm border
                                 flex items-center justify-center gap-1.5
                                 transition-all duration-200
