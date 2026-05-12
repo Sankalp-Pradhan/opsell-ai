@@ -1,13 +1,24 @@
-import { useState } from 'react';
-import PlatformBadge from './PlatformBadge';
-import { PLATFORMS } from '../data/platforms';
-import { IconChevronDown } from './Icon';
-import Tip from './Tip';
-import type { PlatformId } from '../engines';
+"use client";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import { useState } from "react";
+
+import PlatformBadge from "./PlatformBadge";
+
+import { PLATFORMS } from "../data/platforms";
+
+import {
+  IconChevronDown,
+  IconAlert,
+  IconInfo,
+} from "./Icon";
+
+import Tip from "./Tip";
+
+import type { PlatformId } from "../engines";
+
+/* -------------------------------------------------------------------------- */
+/* TYPES */
+/* -------------------------------------------------------------------------- */
 
 interface ResultItem {
   platform: PlatformId;
@@ -63,25 +74,25 @@ interface FeeRowProps {
   label: string;
   amount: number;
   platformId: PlatformId;
-  badge?: 'Reclaimable' | 'Info';
+  badge?: "Reclaimable" | "Info";
   term?:
-    | 'referral'
-    | 'closing'
-    | 'weight'
-    | 'fulfillment'
-    | 'shipping'
-    | 'collection'
-    | 'cod'
-    | 'tcs'
-    | 'gstFees'
-    | 'itc'
-    | 'adsSpend'
-    | 'returnImpact'
-    | 'margin'
-    | 'roi'
-    | 'effectiveFee'
-    | 'netPayout'
-    | 'returnRate';
+    | "referral"
+    | "closing"
+    | "weight"
+    | "fulfillment"
+    | "shipping"
+    | "collection"
+    | "cod"
+    | "tcs"
+    | "gstFees"
+    | "itc"
+    | "adsSpend"
+    | "returnImpact"
+    | "margin"
+    | "roi"
+    | "effectiveFee"
+    | "netPayout"
+    | "returnRate";
 }
 
 interface PlatformPanelProps {
@@ -93,9 +104,13 @@ interface FeeBreakdownCardProps {
   results: ResultItem[];
 }
 
-// ---------------------------------------------------------------------------
-// Currency formatter
-// ---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
+/* HELPERS */
+/* -------------------------------------------------------------------------- */
+
+function cn(...classes: string[]) {
+  return classes.filter(Boolean).join(" ");
+}
 
 function fmt(
   value: number,
@@ -107,68 +122,64 @@ function fmt(
     return value.toFixed(2);
   }
 
-  if (p.currencySymbol === '$') {
+  if (p.currencySymbol === "$") {
     return `$${value.toFixed(2)}`;
   }
 
-  if (p.currencySymbol === 'AED') {
+  if (p.currencySymbol === "AED") {
     return `AED ${value.toFixed(2)}`;
   }
 
   return `₹${value.toFixed(2)}`;
 }
 
-// ---------------------------------------------------------------------------
-// Mini stacked bar
-// ---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
+/* MINI BAR */
+/* -------------------------------------------------------------------------- */
 
 function MiniBar({
   result,
 }: MiniBarProps) {
   const items = [
     {
-      label: 'COGS',
+      label: "COGS",
       value: result.cogs,
-      color: 'var(--text-muted)',
+      color: "bg-n-400",
     },
 
     {
-      label: 'Referral',
+      label: "Referral",
       value: result.referralFee,
-      color:
-        'var(--accent-danger)',
+      color: "bg-error",
     },
 
     {
-      label: 'Shipping',
+      label: "Shipping",
       value:
         result.shippingFee +
         result.weightHandlingFee +
         result.fulfillmentFee,
-      color:
-        'var(--accent-warning)',
+      color: "bg-warning",
     },
 
     {
-      label: 'Other',
+      label: "Other",
       value:
         result.closingFee +
         result.collectionFee +
         result.codFee +
         result.tcs +
         result.otherFees,
-      color:
-        'var(--chart-4, #a855f7)',
+      color: "bg-brand-mid",
     },
 
     {
-      label: 'Profit',
+      label: "Profit",
       value: Math.max(
         0,
         result.netProfit
       ),
-      color:
-        'var(--accent-success)',
+      color: "bg-success",
     },
   ].filter(
     (i) => i.value > 0
@@ -184,107 +195,83 @@ function MiniBar({
   }
 
   return (
-    <div
-      style={{
-        marginBottom: 16,
-      }}
-    >
+    <div className="mb-5">
+      {/* Bar */}
+
       <div
-        style={{
-          display: 'flex',
-          borderRadius: 6,
-          overflow: 'hidden',
-          height: 6,
-          background:
-            'rgba(255,255,255,0.04)',
-        }}
+        className="
+          flex h-2
+          overflow-hidden
+          rounded-full
+          bg-n-100
+        "
       >
-        {items.map(
-          (item, i) => (
-            <div
-              key={i}
-              title={`${item.label}: ${(
-                (item.value /
-                  total) *
+        {items.map((item, i) => (
+          <div
+            key={i}
+            title={`${item.label}: ${(
+              (item.value / total) *
+              100
+            ).toFixed(0)}%`}
+            className={cn(
+              "transition-all",
+              item.color
+            )}
+            style={{
+              width: `${
+                (item.value / total) *
                 100
-              ).toFixed(0)}%`}
-              style={{
-                width: `${
-                  (item.value /
-                    total) *
-                  100
-                }%`,
-                backgroundColor:
-                  item.color,
-                minWidth:
-                  item.value > 0
-                    ? 2
-                    : 0,
-              }}
-            />
-          )
-        )}
+              }%`,
+              minWidth:
+                item.value > 0
+                  ? 6
+                  : 0,
+            }}
+          />
+        ))}
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '4px 12px',
-          marginTop: 8,
-        }}
-      >
-        {items.map(
-          (item, i) => (
-            <div
-              key={i}
-              style={{
-                display: 'flex',
-                alignItems:
-                  'center',
-                gap: 5,
-              }}
-            >
-              <span
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius:
-                    '50%',
-                  background:
-                    item.color,
-                  flexShrink: 0,
-                }}
-              />
+      {/* Legend */}
 
-              <span
-                style={{
-                  fontSize: 10,
-                  color:
-                    'var(--text-muted)',
-                  fontFamily:
-                    'DM Sans',
-                }}
-              >
-                {item.label}{' '}
-                {(
-                  (item.value /
-                    total) *
-                  100
-                ).toFixed(0)}
-                %
-              </span>
-            </div>
-          )
-        )}
+      <div className="mt-3 flex flex-wrap gap-x-4 gap-y-2">
+        {items.map((item, i) => (
+          <div
+            key={i}
+            className="flex items-center gap-2"
+          >
+            <span
+              className={cn(
+                `
+                  h-2 w-2
+                  rounded-full
+                `,
+                item.color
+              )}
+            />
+
+            <span
+              className="
+                text-ds-caption
+                text-n-500
+              "
+            >
+              {item.label}{" "}
+              {(
+                (item.value / total) *
+                100
+              ).toFixed(0)}
+              %
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Fee row
-// ---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
+/* FEE ROW */
+/* -------------------------------------------------------------------------- */
 
 function FeeRow({
   label,
@@ -297,34 +284,23 @@ function FeeRow({
 
   return (
     <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent:
-          'space-between',
-        padding: '7px 0',
-        borderBottom:
-          '1px solid rgba(255,255,255,0.03)',
-      }}
+      className="
+        flex items-center justify-between
+        border-b border-n-100
+        py-3
+        last:border-none
+      "
     >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 7,
-        }}
-      >
+      <div className="flex items-center gap-2">
         <span
-          style={{
-            fontSize: 13,
-            color: isZero
-              ? 'var(--text-muted)'
-              : 'var(--text-secondary)',
-            fontFamily:
-              'DM Sans',
-            fontVariantNumeric:
-              'tabular-nums',
-          }}
+          className={cn(
+            `
+              text-ds-body-sm
+            `,
+            isZero
+              ? "text-n-400"
+              : "text-n-700"
+          )}
         >
           {label}
         </span>
@@ -337,41 +313,58 @@ function FeeRow({
         )}
 
         {badge ===
-          'Reclaimable' && (
+          "Reclaimable" && (
           <span
-            className="badge-reclaimable"
-            title="Reclaimable on your GST return"
+            className="
+              inline-flex items-center
+              rounded-full
+              border border-success/20
+              bg-success-light
+              px-2 py-0.5
+              text-[10px]
+              font-semibold
+              uppercase tracking-wide
+              text-success
+            "
           >
             Reclaimable
           </span>
         )}
 
-        {badge === 'Info' && (
+        {badge === "Info" && (
           <span
-            className="badge-info"
-            title="Input Tax Credit"
+            className="
+              inline-flex items-center gap-1
+              rounded-full
+              border border-brand/20
+              bg-brand-light
+              px-2 py-0.5
+              text-[10px]
+              font-semibold
+              uppercase tracking-wide
+              text-brand
+            "
           >
+            <IconInfo size={10} />
             ITC
           </span>
         )}
       </div>
 
       <span
-        style={{
-          fontSize: 13,
-          fontFamily:
-            'DM Mono',
-          fontWeight: 500,
-          color: isZero
-            ? 'var(--text-muted)'
-            : 'var(--accent-danger)',
-          opacity: isZero
-            ? 0.4
-            : 0.85,
-        }}
+        className={cn(
+          `
+            font-mono
+            text-ds-body-sm
+            font-medium
+          `,
+          isZero
+            ? "text-n-300"
+            : "text-error"
+        )}
       >
         {isZero
-          ? '—'
+          ? "—"
           : `-${fmt(
               amount,
               platformId
@@ -381,54 +374,45 @@ function FeeRow({
   );
 }
 
-// ---------------------------------------------------------------------------
-// Platform panel
-// ---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
+/* PLATFORM PANEL */
+/* -------------------------------------------------------------------------- */
 
 function PlatformPanel({
   r,
 }: PlatformPanelProps) {
   return (
     <div
-      style={{
-        borderRadius: 14,
-        border:
-          '1px solid rgba(255,255,255,0.05)',
-        background:
-          'rgba(255,255,255,0.015)',
-        padding: '16px',
-      }}
+      className="
+        rounded-3xl
+        border border-n-border
+        bg-white
+        p-5
+        shadow-elev-1
+        transition-all
+        hover:shadow-elev-2
+      "
     >
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent:
-            'space-between',
-          marginBottom: 14,
-        }}
-      >
+      {/* Header */}
+
+      <div className="mb-5 flex items-start justify-between">
         <PlatformBadge
           platformId={r.platform}
           size="md"
         />
 
-        <div
-          style={{
-            textAlign: 'right',
-          }}
-        >
+        <div className="text-right">
           <p
-            style={{
-              fontSize: 20,
-              fontFamily:
-                'DM Mono',
-              fontWeight: 600,
-              color:
-                r.netProfit >= 0
-                  ? 'var(--accent-success)'
-                  : 'var(--accent-danger)',
-            }}
+            className={cn(
+              `
+                font-mono
+                text-xl
+                font-bold
+              `,
+              r.netProfit >= 0
+                ? "text-success"
+                : "text-error"
+            )}
           >
             {fmt(
               r.netProfit,
@@ -437,151 +421,158 @@ function PlatformPanel({
           </p>
 
           <p
-            style={{
-              fontSize: 10,
-              color:
-                'var(--text-muted)',
-            }}
+            className="
+              mt-1
+              text-ds-caption
+              uppercase tracking-wide
+              text-n-400
+            "
           >
             Net Profit
           </p>
         </div>
       </div>
 
+      {/* Visual */}
+
       <MiniBar result={r} />
 
-      <FeeRow
-        label="Referral / Commission"
-        amount={r.referralFee}
-        platformId={r.platform}
-        term="referral"
-      />
+      {/* Fees */}
 
-      <FeeRow
-        label="Closing / Fixed Fee"
-        amount={r.closingFee}
-        platformId={r.platform}
-        term="closing"
-      />
-
-      {r.weightHandlingFee >
-        0 && (
+      <div className="space-y-0">
         <FeeRow
-          label="Weight Handling"
-          amount={
-            r.weightHandlingFee
-          }
-          platformId={
-            r.platform
-          }
-          term="weight"
+          label="Referral / Commission"
+          amount={r.referralFee}
+          platformId={r.platform}
+          term="referral"
         />
-      )}
 
-      {r.fulfillmentFee >
-        0 && (
         <FeeRow
-          label="Fulfillment Fee"
-          amount={
-            r.fulfillmentFee
-          }
-          platformId={
-            r.platform
-          }
-          term="fulfillment"
+          label="Closing / Fixed Fee"
+          amount={r.closingFee}
+          platformId={r.platform}
+          term="closing"
         />
-      )}
 
-      {r.shippingFee > 0 && (
-        <FeeRow
-          label="Shipping"
-          amount={r.shippingFee}
-          platformId={
-            r.platform
-          }
-          term="shipping"
-        />
-      )}
+        {r.weightHandlingFee >
+          0 && (
+          <FeeRow
+            label="Weight Handling"
+            amount={
+              r.weightHandlingFee
+            }
+            platformId={
+              r.platform
+            }
+            term="weight"
+          />
+        )}
 
-      {r.collectionFee >
-        0 && (
-        <FeeRow
-          label="Collection Fee"
-          amount={
-            r.collectionFee
-          }
-          platformId={
-            r.platform
-          }
-          term="collection"
-        />
-      )}
+        {r.fulfillmentFee >
+          0 && (
+          <FeeRow
+            label="Fulfillment Fee"
+            amount={
+              r.fulfillmentFee
+            }
+            platformId={
+              r.platform
+            }
+            term="fulfillment"
+          />
+        )}
 
-      {r.codFee > 0 && (
-        <FeeRow
-          label="COD Fee"
-          amount={r.codFee}
-          platformId={
-            r.platform
-          }
-          term="cod"
-        />
-      )}
+        {r.shippingFee > 0 && (
+          <FeeRow
+            label="Shipping"
+            amount={r.shippingFee}
+            platformId={
+              r.platform
+            }
+            term="shipping"
+          />
+        )}
 
-      {r.tcs > 0 && (
-        <FeeRow
-          label="TCS (1%)"
-          amount={r.tcs}
-          platformId={
-            r.platform
-          }
-          badge="Reclaimable"
-          term="tcs"
-        />
-      )}
+        {r.collectionFee >
+          0 && (
+          <FeeRow
+            label="Collection Fee"
+            amount={
+              r.collectionFee
+            }
+            platformId={
+              r.platform
+            }
+            term="collection"
+          />
+        )}
 
-      {r.gstOnFees > 0 && (
-        <FeeRow
-          label="GST on Fees"
-          amount={r.gstOnFees}
-          platformId={
-            r.platform
-          }
-          badge="Info"
-          term="gstFees"
-        />
-      )}
+        {r.codFee > 0 && (
+          <FeeRow
+            label="COD Fee"
+            amount={r.codFee}
+            platformId={
+              r.platform
+            }
+            term="cod"
+          />
+        )}
 
-      {r.adsSpend > 0 && (
-        <FeeRow
-          label="Ads Spend"
-          amount={r.adsSpend}
-          platformId={
-            r.platform
-          }
-          term="adsSpend"
-        />
-      )}
+        {r.tcs > 0 && (
+          <FeeRow
+            label="TCS (1%)"
+            amount={r.tcs}
+            platformId={
+              r.platform
+            }
+            badge="Reclaimable"
+            term="tcs"
+          />
+        )}
 
-      {r.returnImpact > 0 && (
-        <FeeRow
-          label="Return Impact"
-          amount={
-            r.returnImpact
-          }
-          platformId={
-            r.platform
-          }
-          term="returnImpact"
-        />
-      )}
+        {r.gstOnFees > 0 && (
+          <FeeRow
+            label="GST on Fees"
+            amount={r.gstOnFees}
+            platformId={
+              r.platform
+            }
+            badge="Info"
+            term="gstFees"
+          />
+        )}
+
+        {r.adsSpend > 0 && (
+          <FeeRow
+            label="Ads Spend"
+            amount={r.adsSpend}
+            platformId={
+              r.platform
+            }
+            term="adsSpend"
+          />
+        )}
+
+        {r.returnImpact > 0 && (
+          <FeeRow
+            label="Return Impact"
+            amount={
+              r.returnImpact
+            }
+            platformId={
+              r.platform
+            }
+            term="returnImpact"
+          />
+        )}
+      </div>
     </div>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Main component
-// ---------------------------------------------------------------------------
+/* -------------------------------------------------------------------------- */
+/* MAIN */
+/* -------------------------------------------------------------------------- */
 
 export default function FeeBreakdownCard({
   productName,
@@ -600,75 +591,101 @@ export default function FeeBreakdownCard({
   }
 
   return (
-    <div className="breakdown-card">
-      <button
-        className="breakdown-header"
-        onClick={() =>
-          setExpanded(
-            !expanded
-          )
-        }
-      >
-        <div
-          style={{
-            display: 'flex',
-            alignItems:
-              'center',
-            gap: 12,
-          }}
-        >
-          <span>
-            {productName}
-          </span>
+    <section
+      className="
+        overflow-hidden
+        rounded-3xl
+        border border-n-border
+        bg-white
+        shadow-elev-2
+      "
+    >
+      {/* Header */}
 
-          <span>
-            {results.length}{' '}
-            platforms
-          </span>
+      <button
+        onClick={() =>
+          setExpanded(!expanded)
+        }
+        className="
+          flex w-full items-center justify-between
+          border-b border-n-100
+          px-6 py-5
+          transition-all
+          hover:bg-brand-light/20
+        "
+      >
+        <div className="flex items-center gap-3">
+          <div>
+            <h3
+              className="
+                font-display
+                text-ds-h3
+                text-left
+                text-n-900
+              "
+            >
+              {productName}
+            </h3>
+
+            <p
+              className="
+                mt-1
+                text-ds-caption
+                text-left
+                text-n-500
+              "
+            >
+              {results.length} platform
+              comparison
+            </p>
+          </div>
         </div>
 
-        <span
-          className={`chevron${
+        <div
+          className={cn(
+            `
+              flex h-10 w-10
+              items-center justify-center
+              rounded-xl
+              border border-n-border
+              bg-white
+              text-n-500
+              transition-all
+            `,
             expanded
-              ? ' open'
-              : ''
-          }`}
+              ? "rotate-180"
+              : ""
+          )}
         >
           <IconChevronDown
-            size={16}
+            size={18}
           />
-        </span>
+        </div>
       </button>
 
+      {/* Content */}
+
       {expanded && (
-        <div
-          style={{
-            padding:
-              '0 20px 20px',
-          }}
-        >
+        <div className="p-6">
           <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns:
-                results.length ===
-                1
-                  ? '1fr'
-                  : 'repeat(auto-fill, minmax(320px, 1fr))',
-              gap: 14,
-            }}
+            className={cn(
+              `
+                grid gap-5
+              `,
+              results.length === 1
+                ? "grid-cols-1"
+                : "grid-cols-1 xl:grid-cols-2"
+            )}
           >
             {results.map((r) => (
               <PlatformPanel
-                key={
-                  r.platform
-                }
+                key={r.platform}
                 r={r}
               />
             ))}
           </div>
         </div>
       )}
-    </div>
+    </section>
   );
 }

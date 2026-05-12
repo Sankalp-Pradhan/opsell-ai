@@ -1,23 +1,25 @@
-import { useEffect, useRef, useState } from 'react';
-import { IconDollar, IconPayout, IconTrendingUp, IconPercent } from './Icon';
+"use client";
 
-// ---------------------------------------------------------------------------
-// Types
-// ---------------------------------------------------------------------------
+import { useEffect, useRef, useState } from "react";
+import {
+  IconDollar,
+  IconPayout,
+  IconTrendingUp,
+  IconPercent,
+} from "./Icon";
 
 interface AnimatedValueProps {
   value: string;
-  style?: React.CSSProperties;
+  className?: string;
 }
 
 interface MetricCardProps {
   label: string;
   value: string;
   subtext?: string;
-  barClass: string;
+  accent: string;
   Icon: React.ComponentType<{ size?: number }>;
-  valueColor?: string;
-  iconColor: string;
+  valueClass?: string;
 }
 
 export interface SummaryData {
@@ -32,74 +34,97 @@ interface SummaryStripProps {
   summary: SummaryData;
 }
 
-// ---------------------------------------------------------------------------
-// Animated number
-// ---------------------------------------------------------------------------
-
-function AnimatedValue({ value, style }: AnimatedValueProps) {
+function AnimatedValue({
+  value,
+  className,
+}: AnimatedValueProps) {
   const [key, setKey] = useState(0);
   const prevRef = useRef(value);
 
   useEffect(() => {
     if (prevRef.current !== value) {
-      setKey(k => k + 1);
+      setKey((k) => k + 1);
       prevRef.current = value;
     }
   }, [value]);
 
   return (
-    <span key={key} className="animate-number" style={style}>
+    <span
+      key={key}
+      className={`animate-fade-up tabular-nums ${className}`}
+    >
       {value}
     </span>
   );
 }
 
-// ---------------------------------------------------------------------------
-// Metric Card
-// ---------------------------------------------------------------------------
-
-function MetricCard({ label, value, subtext, barClass, Icon, valueColor, iconColor }: MetricCardProps) {
+function MetricCard({
+  label,
+  value,
+  subtext,
+  accent,
+  Icon,
+  valueClass,
+}: MetricCardProps) {
   return (
-    <div className={`metric-card ${barClass}`} role="group" aria-label={label}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 10 }}>
-        <p style={{
-          fontSize: 10, fontWeight: 700, textTransform: 'uppercase',
-          letterSpacing: '0.1em', color: 'var(--text-muted)',
-          fontFamily: 'DM Sans, sans-serif',
-        }}>
-          {label}
-        </p>
-        <span
-          style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 26, height: 26, borderRadius: 8,
-            background: `${iconColor}14`,
-            color: iconColor,
-          }}
-          aria-hidden="true"
+    <div
+      className="
+        group relative overflow-hidden
+        rounded-2xl border border-n-border
+        bg-white
+        p-5
+        shadow-elev-1
+        transition-all duration-300
+        hover:-translate-y-1
+        hover:shadow-elev-3
+      "
+    >
+      {/* Top Accent Bar */}
+      <div
+        className={`absolute inset-x-0 top-0 h-1 ${accent}`}
+      />
+
+      <div className="mb-4 flex items-start justify-between">
+        <div>
+          <p
+            className="
+              font-display
+              text-ds-caption
+              uppercase tracking-[0.14em]
+              text-n-500
+            "
+          >
+            {label}
+          </p>
+        </div>
+
+        <div
+          className={`
+            flex h-11 w-11 items-center justify-center
+            rounded-xl
+            ${accent}
+            bg-opacity-10
+          `}
         >
-          <Icon size={14} />
-        </span>
+          <Icon size={18} />
+        </div>
       </div>
+
       <AnimatedValue
         value={value}
-        style={{
-          display: 'block',
-          fontFamily: 'DM Mono, monospace',
-          fontWeight: 600,
-          fontSize: 24,
-          letterSpacing: '-0.02em',
-          color: valueColor ?? 'var(--text-primary)',
-          lineHeight: 1.1,
-          fontVariantNumeric: 'tabular-nums',
-          fontFeatureSettings: '"tnum", "lnum", "zero" 0',
-        }}
+        className={`
+          block
+          font-mono
+          text-[28px]
+          font-semibold
+          leading-none
+          tracking-[-0.03em]
+          ${valueClass}
+        `}
       />
+
       {subtext && (
-        <p style={{
-          fontSize: 11, color: 'var(--text-muted)', marginTop: 6,
-          fontFamily: 'DM Sans, sans-serif',
-        }}>
+        <p className="mt-2 text-ds-body-sm text-n-500">
           {subtext}
         </p>
       )}
@@ -107,75 +132,101 @@ function MetricCard({ label, value, subtext, barClass, Icon, valueColor, iconCol
   );
 }
 
-// ---------------------------------------------------------------------------
-// SummaryStrip
-// ---------------------------------------------------------------------------
+export default function SummaryStrip({
+  summary,
+}: SummaryStripProps) {
+  const fmt = (v: number) =>
+    v.toLocaleString("en-IN", {
+      maximumFractionDigits: 0,
+    });
 
-export default function SummaryStrip({ summary }: SummaryStripProps) {
   const marginColor =
-    summary.avgMargin >= 20 ? 'var(--accent-success)' :
-    summary.avgMargin >= 10 ? 'var(--accent-warning)' :
-    'var(--accent-danger)';
+    summary.avgMargin >= 20
+      ? "text-success"
+      : summary.avgMargin >= 10
+      ? "text-warning"
+      : "text-error";
 
-  const profitColor = summary.totalNetProfit >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)';
-  const fmt = (v: number) => v.toLocaleString('en-IN', { maximumFractionDigits: 0 });
+  const profitColor =
+    summary.totalNetProfit >= 0
+      ? "text-success"
+      : "text-error";
 
   return (
-    <div
-      className="summary-grid"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(2, 1fr)',
-        gap: 12,
-        marginBottom: 28,
-      }}
+    <section
+      className="
+        grid grid-cols-1 gap-4
+        md:grid-cols-2
+        xl:grid-cols-4
+      "
     >
-      <style>{`
-        @media (min-width: 768px)  { .summary-grid { grid-template-columns: repeat(2,1fr); } }
-        @media (min-width: 1280px) { .summary-grid { grid-template-columns: repeat(4,1fr); } }
-      `}</style>
-
       <MetricCard
         label="Revenue"
-        value={!summary.hasResults ? '—' : fmt(summary.totalRevenue)}
+        value={
+          !summary.hasResults
+            ? "—"
+            : `₹${fmt(summary.totalRevenue)}`
+        }
         subtext="All calculations"
-        barClass="metric-bar-primary"
+        accent="bg-brand text-brand"
         Icon={IconDollar}
-        iconColor="#818cf8"
-        valueColor="var(--text-primary)"
+        valueClass="text-n-900"
       />
+
       <MetricCard
         label="Net Payout"
-        value={!summary.hasResults ? '—' : fmt(summary.totalNetPayout)}
+        value={
+          !summary.hasResults
+            ? "—"
+            : `₹${fmt(summary.totalNetPayout)}`
+        }
         subtext="After platform fees"
-        barClass="metric-bar-cyan"
+        accent="bg-cyan-500 text-cyan-600"
         Icon={IconPayout}
-        iconColor="var(--accent-secondary)"
-        valueColor="var(--accent-secondary)"
+        valueClass="text-cyan-600"
       />
+
       <MetricCard
         label="Net Profit"
-        value={!summary.hasResults ? '—' : fmt(summary.totalNetProfit)}
+        value={
+          !summary.hasResults
+            ? "—"
+            : `₹${fmt(summary.totalNetProfit)}`
+        }
         subtext="After all costs"
-        barClass={!summary.hasResults ? 'metric-bar-muted' : (summary.totalNetProfit >= 0 ? 'metric-bar-success' : 'metric-bar-danger')}
+        accent={
+          summary.totalNetProfit >= 0
+            ? "bg-success text-success"
+            : "bg-error text-error"
+        }
         Icon={IconTrendingUp}
-        iconColor={summary.totalNetProfit >= 0 ? 'var(--accent-success)' : 'var(--accent-danger)'}
-        valueColor={profitColor}
+        valueClass={profitColor}
       />
+
       <MetricCard
         label="Avg Margin"
-        value={!summary.hasResults ? '—' : `${summary.avgMargin.toFixed(1)}%`}
-        subtext={summary.avgMargin >= 20 ? 'Healthy' : summary.avgMargin >= 10 ? 'Tight' : 'At risk'}
-        barClass={
-          !summary.hasResults ? 'metric-bar-muted' :
-          summary.avgMargin >= 20 ? 'metric-bar-success' :
-          summary.avgMargin >= 10 ? 'metric-bar-warning' :
-          'metric-bar-danger'
+        value={
+          !summary.hasResults
+            ? "—"
+            : `${summary.avgMargin.toFixed(1)}%`
+        }
+        subtext={
+          summary.avgMargin >= 20
+            ? "Healthy"
+            : summary.avgMargin >= 10
+            ? "Tight"
+            : "At Risk"
+        }
+        accent={
+          summary.avgMargin >= 20
+            ? "bg-success text-success"
+            : summary.avgMargin >= 10
+            ? "bg-warning text-warning"
+            : "bg-error text-error"
         }
         Icon={IconPercent}
-        iconColor={marginColor}
-        valueColor={marginColor}
+        valueClass={marginColor}
       />
-    </div>
+    </section>
   );
 }

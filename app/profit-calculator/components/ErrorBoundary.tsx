@@ -1,8 +1,16 @@
+"use client";
+
 import React, {
   Component,
   ErrorInfo,
   ReactNode,
-} from 'react';
+} from "react";
+
+import {
+  IconAlert,
+  IconRefresh,
+  IconInfo
+} from "./Icon";
 
 /* -------------------------------------------------------------------------- */
 /* TYPES */
@@ -50,7 +58,7 @@ export default class ErrorBoundary extends Component<
     errorInfo: ErrorInfo
   ): void {
     console.error(
-      'ErrorBoundary caught an error:',
+      "ErrorBoundary caught an error:",
       error,
       errorInfo
     );
@@ -61,7 +69,7 @@ export default class ErrorBoundary extends Component<
       localStorage.clear();
     } catch (err) {
       console.error(
-        'Failed to clear localStorage:',
+        "Failed to clear localStorage:",
         err
       );
     }
@@ -73,120 +81,204 @@ export default class ErrorBoundary extends Component<
     if (this.state.hasError) {
       return (
         <div
-          style={{
-            minHeight: '100vh',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent:
-              'center',
-            background:
-              'var(--bg-base)',
-            padding: 24,
-          }}
+          className="
+            flex min-h-screen
+            items-center justify-center
+            bg-n-50
+            px-6 py-12
+          "
         >
           <div
-            style={{
-              textAlign: 'center',
-              padding: '40px',
-              background:
-                'var(--bg-surface-2)',
-              border:
-                '1px solid var(--accent-danger)',
-              borderRadius: '16px',
-              maxWidth: 520,
-              width: '100%',
-              boxShadow:
-                '0 20px 60px rgba(0,0,0,0.4)',
-            }}
+            className="
+              relative
+              w-full max-w-2xl
+              overflow-hidden
+              rounded-3xl
+              border border-error/20
+              bg-white
+              p-8
+              shadow-elev-3
+            "
           >
-            <h1
-              style={{
-                color:
-                  'var(--accent-danger)',
-                fontFamily: 'Sora',
-                fontSize: 28,
-                fontWeight: 700,
-                marginBottom: 16,
-              }}
-            >
-              Oops, something went
-              wrong.
-            </h1>
+            {/* Glow */}
+            <div
+              className="
+                pointer-events-none
+                absolute inset-x-0 top-0
+                h-1
+                bg-gradient-to-r
+                from-error
+                via-warning
+                to-brand
+              "
+            />
 
-            <p
-              style={{
-                color:
-                  'var(--text-secondary)',
-                fontFamily:
-                  'DM Sans',
-                fontSize: 15,
-                lineHeight: 1.6,
-                marginBottom: 24,
-              }}
-            >
-              We encountered an
-              unexpected error while
-              calculating your
-              numbers.
-            </p>
-
-            {this.state.error && (
-              <pre
-                style={{
-                  textAlign: 'left',
-                  background:
-                    'rgba(255,255,255,0.03)',
-                  border:
-                    '1px solid rgba(255,255,255,0.08)',
-                  padding: 12,
-                  borderRadius: 10,
-                  overflowX: 'auto',
-                  marginBottom: 24,
-                  color:
-                    'var(--text-muted)',
-                  fontSize: 12,
-                  fontFamily:
-                    'DM Mono, monospace',
-                }}
+            {/* Header */}
+            <div className="flex flex-col items-center text-center">
+              <div
+                className="
+                  mb-5
+                  flex h-16 w-16
+                  items-center justify-center
+                  rounded-2xl
+                  bg-error-light
+                  text-error
+                "
               >
-                {
-                  this.state.error
-                    .message
-                }
-              </pre>
+                <IconAlert size={30} />
+              </div>
+
+              <h1
+                className="
+                  font-display
+                  text-ds-display
+                  text-n-900
+                "
+              >
+                Something went wrong
+              </h1>
+
+              <p
+                className="
+                  mt-4
+                  max-w-lg
+                  text-ds-body
+                  leading-relaxed
+                  text-n-500
+                "
+              >
+                Opsell encountered an unexpected
+                error while processing your
+                profitability calculations or
+                analytics dashboard.
+              </p>
+            </div>
+
+            {/* Error Box */}
+            {this.state.error && (
+              <div
+                className="
+                  mt-8
+                  overflow-hidden
+                  rounded-2xl
+                  border border-n-border
+                  bg-n-900
+                  shadow-elev-1
+                "
+              >
+                <div
+                  className="
+                    flex items-center gap-2
+                    border-b border-white/10
+                    px-4 py-3
+                  "
+                >
+                  <IconInfo
+                    size={14}
+                    className="text-warning"
+                  />
+
+                  <span
+                    className="
+                      text-ds-caption
+                      font-semibold
+                      uppercase tracking-wide
+                      text-n-300
+                    "
+                  >
+                    Runtime Error
+                  </span>
+                </div>
+
+                <pre
+                  className="
+                    overflow-x-auto
+                    p-4
+                    font-mono
+                    text-[12px]
+                    leading-relaxed
+                    text-n-200
+                  "
+                >
+                  {this.state.error.message}
+                </pre>
+              </div>
             )}
 
-            <button
-              onClick={
-                this.handleReset
-              }
-              style={{
-                padding:
-                  '10px 24px',
-                background:
-                  'var(--accent-primary)',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '8px',
-                fontFamily:
-                  'DM Sans',
-                fontWeight: 600,
-                cursor: 'pointer',
-                transition:
-                  'opacity 150ms ease',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.opacity =
-                  '0.9';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.opacity =
-                  '1';
-              }}
+            {/* Actions */}
+            <div
+              className="
+                mt-8
+                flex flex-col gap-3
+                sm:flex-row
+                sm:justify-center
+              "
             >
-              Reset Session &
-              Reload
-            </button>
+              <button
+                onClick={this.handleReset}
+                className="
+                  inline-flex items-center justify-center gap-2
+                  rounded-2xl
+                  bg-brand
+                  px-6 py-3
+                  text-ds-body-sm
+                  font-semibold
+                  text-white
+                  shadow-elev-2
+                  transition-all
+                  hover:bg-brand-dark
+                  hover:shadow-elev-3
+                "
+              >
+                <IconRefresh size={16} />
+                Reset Session & Reload
+              </button>
+
+              <button
+                onClick={() =>
+                  window.location.reload()
+                }
+                className="
+                  inline-flex items-center justify-center
+                  rounded-2xl
+                  border border-n-border
+                  bg-white
+                  px-6 py-3
+                  text-ds-body-sm
+                  font-semibold
+                  text-n-700
+                  transition-all
+                  hover:border-brand/30
+                  hover:bg-brand-light/30
+                  hover:text-brand
+                "
+              >
+                Reload Page
+              </button>
+            </div>
+
+            {/* Footer */}
+            <div
+              className="
+                mt-8
+                border-t border-n-100
+                pt-5
+                text-center
+              "
+            >
+              <p
+                className="
+                  text-ds-caption
+                  leading-relaxed
+                  text-n-400
+                "
+              >
+                If this issue keeps happening,
+                verify your product inputs,
+                platform settings, and browser
+                storage permissions.
+              </p>
+            </div>
           </div>
         </div>
       );
