@@ -501,43 +501,97 @@ function WaterfallChart({
   products: Product[];
 }) {
   const reduced = useReducedMotion();
-  const [selectedProductId, setSelectedProductId] = useState<number | null>(null);
-  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(null);
 
-  const activeProductId = selectedProductId || products[0]?.id;
-  
-  // Get platforms available for this product
+  const [selectedProductId, setSelectedProductId] = useState<number | null>(
+    products[0]?.id ?? null
+  );
+
+  const [selectedPlatform, setSelectedPlatform] = useState<string | null>(
+    null
+  );
+
+  const normalize = (value: string) =>
+    value.trim().toLowerCase();
+
+  /* -------------------------------------------------------------------------- */
+  /* ACTIVE PRODUCT */
+  /* -------------------------------------------------------------------------- */
+
+  const activeProduct = useMemo(() => {
+    return (
+      products.find((p) => p.id === selectedProductId) ??
+      products[0] ??
+      null
+    );
+  }, [products, selectedProductId]);
+
+  /* -------------------------------------------------------------------------- */
+  /* MATCHING RESULTS */
+  /* -------------------------------------------------------------------------- */
+
+  const matchingResults = useMemo(() => {
+    if (!activeProduct) return [];
+
+    return results.filter(
+      (r) =>
+        r.productId === activeProduct.id ||
+        normalize(r.productName) === normalize(activeProduct.name)
+    );
+  }, [results, activeProduct]);
+
+  /* -------------------------------------------------------------------------- */
+  /* AVAILABLE PLATFORMS */
+  /* -------------------------------------------------------------------------- */
+
   const availablePlatformsForProduct = useMemo(() => {
     return [
       ...new Set(
-        results
-          .filter((r) => r.productId === activeProductId)
-          .map((r) => r.platform)
+        matchingResults.map((r) => r.platform)
       ),
     ];
-  }, [results, activeProductId]);
+  }, [matchingResults]);
 
-  // Set default platform when product changes or if selected platform is not available
+  /* -------------------------------------------------------------------------- */
+  /* ACTIVE PLATFORM */
+  /* -------------------------------------------------------------------------- */
+
   const activePlatform = useMemo(() => {
-    if (selectedPlatform && availablePlatformsForProduct.includes(selectedPlatform)) {
+    if (
+      selectedPlatform &&
+      availablePlatformsForProduct.includes(selectedPlatform)
+    ) {
       return selectedPlatform;
     }
-    return availablePlatformsForProduct[0] || null;
-  }, [selectedPlatform, availablePlatformsForProduct]);
 
-  // Update selected platform when it's no longer available
+    return availablePlatformsForProduct[0] || null;
+  }, [
+    selectedPlatform,
+    availablePlatformsForProduct,
+  ]);
+
   useEffect(() => {
     if (activePlatform !== selectedPlatform) {
       setSelectedPlatform(activePlatform);
     }
   }, [activePlatform, selectedPlatform]);
 
-  // Get the result for the selected product + platform combination
+  /* -------------------------------------------------------------------------- */
+  /* SELECTED RESULT */
+  /* -------------------------------------------------------------------------- */
+
   const selectedResult = useMemo(() => {
-    return results.find(
-      (r) => r.productId === activeProductId && r.platform === activePlatform
+    if (!matchingResults.length) return null;
+
+    return (
+      matchingResults.find(
+        (r) => r.platform === activePlatform
+      ) || matchingResults[0]
     );
-  }, [results, activeProductId, activePlatform]);
+  }, [matchingResults, activePlatform]);
+
+  /* -------------------------------------------------------------------------- */
+  /* WATERFALL DATA */
+  /* -------------------------------------------------------------------------- */
 
   const data = useMemo(() => {
     if (!selectedResult) return [];
@@ -552,50 +606,82 @@ function WaterfallChart({
       },
       {
         name: "Referral",
-        value: -r.referralFee,
+        value: -Math.abs(r.referralFee || 0),
         fill: TOKENS.danger,
       },
       {
         name: "Closing",
-        value: -(r.closingFee || 0),
+        value: -Math.abs(r.closingFee || 0),
         fill: TOKENS.warning,
       },
       {
         name: "Shipping",
-        value: -(
+        value: -Math.abs(
           (r.shippingFee || 0) +
-          (r.weightHandlingFee || 0) +
-          (r.fulfillmentFee || 0)
+            (r.weightHandlingFee || 0) +
+            (r.fulfillmentFee || 0)
         ),
         fill: TOKENS.chart5,
       },
       {
         name: "Other",
-        value: -(
+        value: -Math.abs(
           (r.collectionFee || 0) +
-          (r.codFee || 0) +
-          (r.tcs || 0) +
-          (r.otherFees || 0)
+            (r.codFee || 0) +
+            (r.tcs || 0) +
+            (r.otherFees || 0)
         ),
         fill: TOKENS.chart4,
       },
       {
         name: "Payout",
-        value: r.netPayout,
+        value: r.netPayout || 0,
         fill: TOKENS.chart2,
       },
       {
         name: "COGS",
-        value: -(r.cogs || 0),
+        value: -Math.abs(r.cogs || 0),
         fill: TOKENS.muted,
       },
       {
         name: "Profit",
-        value: r.netProfit,
-        fill: r.netProfit >= 0 ? TOKENS.success : TOKENS.danger,
+        value: r.netProfit || 0,
+        fill:
+          (r.netProfit || 0) >= 0
+            ? TOKENS.success
+            : TOKENS.danger,
       },
-    ].filter((i) => i.value !== 0 || ["Price", "Payout", "Profit"].includes(i.name));
+    ].filter(
+      (item) =>
+        item.value !== 0 ||
+        ["Price", "Payout", "Profit"].includes(
+          item.name
+        )
+    );
   }, [selectedResult]);
+
+  /* -------------------------------------------------------------------------- */
+  /* EMPTY STATE */
+  /* -------------------------------------------------------------------------- */
+
+  if (!products.length) {
+    return (
+      <ChartCard
+        title="Payout Waterfall"
+        subtitle="Revenue flow from selling price to net profit"
+      >
+        <div className="flex h-[260px] items-center justify-center">
+          <p className="text-ds-body-sm text-n-500">
+            No products available
+          </p>
+        </div>
+      </ChartCard>
+    );
+  }
+
+  /* -------------------------------------------------------------------------- */
+  /* UI */
+  /* -------------------------------------------------------------------------- */
 
   return (
     <ChartCard
@@ -603,81 +689,144 @@ function WaterfallChart({
       subtitle="Revenue flow from selling price to net profit"
     >
       <div className="mb-4 flex flex-col gap-3 sm:flex-row">
-        {/* Product Selector */}
+        {/* PRODUCT SELECT */}
         <div className="flex-1">
-          <label className="block text-xs font-semibold text-n-600 mb-1">
+          <label className="mb-1 block text-xs font-semibold text-n-600">
             Product
           </label>
+
           <select
-            value={activeProductId || ""}
-            onChange={(e) => setSelectedProductId(Number(e.target.value))}
-            aria-label="Select product for waterfall chart"
+            value={activeProduct?.id || ""}
+            onChange={(e) =>
+              setSelectedProductId(
+                Number(e.target.value)
+              )
+            }
             className="w-full rounded-lg border border-n-border bg-white px-3 py-2 text-ds-body-sm text-n-900 transition-colors hover:border-brand/30 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/10"
           >
-            {products.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name}
+            {products.map((product) => (
+              <option
+                key={product.id}
+                value={product.id}
+              >
+                {product.name}
               </option>
             ))}
           </select>
         </div>
 
-        {/* Platform Selector - Only show if multiple platforms available */}
+        {/* PLATFORM SELECT */}
         {availablePlatformsForProduct.length > 1 && (
           <div className="flex-1">
-            <label className="block text-xs font-semibold text-n-600 mb-1">
+            <label className="mb-1 block text-xs font-semibold text-n-600">
               Platform
             </label>
+
             <select
               value={activePlatform || ""}
-              onChange={(e) => setSelectedPlatform(e.target.value)}
-              aria-label="Select platform for waterfall chart"
+              onChange={(e) =>
+                setSelectedPlatform(
+                  e.target.value
+                )
+              }
               className="w-full rounded-lg border border-n-border bg-white px-3 py-2 text-ds-body-sm text-n-900 transition-colors hover:border-brand/30 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/10"
             >
-              {availablePlatformsForProduct.map((pid) => (
-                <option key={pid} value={pid}>
-                  {(PLATFORMS[pid as PlatformId] as any)?.name || pid}
-                </option>
-              ))}
+              {availablePlatformsForProduct.map(
+                (platformId) => (
+                  <option
+                    key={platformId}
+                    value={platformId}
+                  >
+                    {(PLATFORMS[
+                      platformId as PlatformId
+                    ] as any)?.name ||
+                      platformId}
+                  </option>
+                )
+              )}
             </select>
           </div>
         )}
       </div>
 
-      {selectedResult ? (
-        <>
-          {/* Platform info badge */}
-          {availablePlatformsForProduct.length === 1 && (
-            <div className="mb-4 inline-flex items-center gap-2 rounded-lg px-3 py-2" 
-              style={{ 
-                backgroundColor: `${PLATFORM_COLORS[activePlatform!] || '#5046E5'}10`,
-                borderLeft: `3px solid ${PLATFORM_COLORS[activePlatform!] || '#5046E5'}`
-              }}>
-              <span className="text-xs font-semibold text-n-600">
-                {(PLATFORMS[activePlatform as PlatformId] as any)?.name || activePlatform}
-              </span>
-            </div>
-          )}
+      {/* PLATFORM BADGE */}
+      {selectedResult &&
+        availablePlatformsForProduct.length ===
+          1 && (
+          <div
+            className="mb-4 inline-flex items-center gap-2 rounded-lg px-3 py-2"
+            style={{
+              backgroundColor: `${
+                PLATFORM_COLORS[
+                  activePlatform || ""
+                ] || "#5046E5"
+              }10`,
+              borderLeft: `3px solid ${
+                PLATFORM_COLORS[
+                  activePlatform || ""
+                ] || "#5046E5"
+              }`,
+            }}
+          >
+            <span className="text-xs font-semibold text-n-600">
+              {(PLATFORMS[
+                activePlatform as PlatformId
+              ] as any)?.name ||
+                activePlatform}
+            </span>
+          </div>
+        )}
 
-          <ResponsiveContainer width="100%" height={260}>
-            <BarChart data={data} margin={{ top: 4, right: 16, left: 4, bottom: 4 }}>
-              <CartesianGrid {...gridProps} />
-              <XAxis dataKey="name" {...axisProps} />
-              <YAxis {...axisProps} />
-              <Tooltip {...tooltipStyle} />
-              <ReferenceLine y={0} stroke="rgba(255,255,255,0.1)" />
-              <Bar dataKey="value" radius={[6, 6, 0, 0]} {...chartAnim(reduced)}>
-                {data.map((entry: any, i: number) => (
-                  <Cell key={`cell-${i}`} fill={entry.fill} opacity={0.88} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </>
+      {/* CHART */}
+      {selectedResult ? (
+        <ResponsiveContainer
+          width="100%"
+          height={280}
+        >
+          <BarChart
+            data={data}
+            margin={{
+              top: 4,
+              right: 16,
+              left: 4,
+              bottom: 4,
+            }}
+          >
+            <CartesianGrid {...gridProps} />
+
+            <XAxis
+              dataKey="name"
+              {...axisProps}
+            />
+
+            <YAxis {...axisProps} />
+
+            <Tooltip {...tooltipStyle} />
+
+            <ReferenceLine
+              y={0}
+              stroke="rgba(255,255,255,0.1)"
+            />
+
+            <Bar
+              dataKey="value"
+              radius={[6, 6, 0, 0]}
+              {...chartAnim(reduced)}
+            >
+              {data.map((entry, index) => (
+                <Cell
+                  key={index}
+                  fill={entry.fill}
+                  opacity={0.9}
+                />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       ) : (
         <div className="flex h-[260px] items-center justify-center">
           <p className="text-ds-body-sm text-n-500">
-            No data available for this selection
+            No data available for this product
           </p>
         </div>
       )}

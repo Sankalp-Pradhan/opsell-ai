@@ -19,7 +19,7 @@ export default function OpsellHomePage() {
       <GrowthSection />
       <IntegrateSection />
       <RevenueLeakQuiz />
-      <FAQ />
+      <FAQ />w
       
     </>
   );
