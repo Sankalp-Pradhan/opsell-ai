@@ -11,6 +11,7 @@ import BeyondFeesDisclaimer from './components/BeyondFeesDisclaimer';
 import FeeBreakdownCard from './components/FeeBreakdownCard';
 import Dashboard from './components/Dashboard';
 import PlatformSEOBlock from './components/PlatformSEOBlock';
+import CurrencyConverter from './components/CurrencyConverter';
 import { PLATFORMS } from './data/platforms';
 import {
   IconBrand, IconRefresh, IconPlus, IconTrash, IconMail, IconLink, IconCheck,
@@ -378,14 +379,23 @@ function App(): ReactElement {
                     {(summary.uniquePlatformCount ?? 1) === 1 ? 'Your result' : 'Your top result'}
                   </p>
                   <h3 className="font-display font-semibold text-n-900 tracking-tight
-                                  text-[clamp(15px,4vw,24px)] leading-snug">
+                                  text-[clamp(15px,4vw,24px)] leading-snug flex items-center flex-wrap gap-1">
                     You&rsquo;d keep{' '}
                     <span className={`font-mono tabular-nums font-bold
                                       ${healthy ? 'text-success' : 'text-warning'}`}>
                       {profit < 0 ? '-' : ''}{symPrefix}{Math.round(Math.abs(profit)).toLocaleString('en-IN')}
                     </span>
                     {' '}per unit on{' '}
-                    <span className="text-n-900 font-bold">{bestPlatformName}</span>.
+                    <span className="text-n-900 font-bold">{bestPlatformName}</span>
+                    {(summary.uniquePlatformCount ?? 1) > 1 && (
+                      <CurrencyConverter
+                        profit={profit}
+                        selectedPlatforms={activeProduct?.selectedPlatforms ?? []}
+                        basePlatform={summary.bestPlatform}
+                        profitMargin={margin}
+                      />
+                    )}
+                    .
                   </h3>
                   <p className="font-body text-ds-body-sm text-n-500 mt-2">
                     That&rsquo;s a {margin.toFixed(1)}% margin.{' '}
