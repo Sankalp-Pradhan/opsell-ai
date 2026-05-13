@@ -33,7 +33,6 @@ interface ResultItem {
   roi: number;
   effectiveFeePercent: number;
 }
-
 /* -------------------------------------------------------------------------- */
 /* PLATFORM CONFIG */
 /* -------------------------------------------------------------------------- */
@@ -48,50 +47,106 @@ interface PlatformConfig {
   currencySymbol: string;
 }
 
-const PLATFORM_CONFIG: Record<string, PlatformConfig> = {
-  amazon_india: {
-    name: "Amazon India",
-    logoSrc: "/assets/amazon.png",
-    logoAlt: "Amazon",
-    accentColor: "text-[#FF9900]",
-    borderColor: "border-[#FF9900]/20",
-    bgColor: "bg-[#FFFBF0]",
-    currencySymbol: "₹",
-  },
-  flipkart: {
-    name: "Flipkart",
-    logoSrc: "/assets/flipkart.png",
-    logoAlt: "Flipkart",
-    accentColor: "text-[#2874F0]",
-    borderColor: "border-[#2874F0]/20",
-    bgColor: "bg-[#F0F5FF]",
-    currencySymbol: "₹",
-  },
-  meesho: {
-    name: "Meesho",
-    logoSrc: "/assets/meesho.png",
-    logoAlt: "Meesho",
-    accentColor: "text-[#F43397]",
-    borderColor: "border-[#F43397]/20",
-    bgColor: "bg-[#FFF0F7]",
-    currencySymbol: "₹",
-  },
+/* -------------------------------------------------------------------------- */
+/* BASE CONFIGS */
+/* -------------------------------------------------------------------------- */
+
+const AMAZON_CONFIG: PlatformConfig = {
+  name: "Amazon India",
+  logoSrc: "/assets/amazon.png",
+  logoAlt: "Amazon",
+  accentColor: "text-[#FF9900]",
+  borderColor: "border-[#FF9900]/20",
+  bgColor: "bg-[#FFFBF0]",
+  currencySymbol: "₹",
 };
 
+const FLIPKART_CONFIG: PlatformConfig = {
+  name: "Flipkart",
+  logoSrc: "/assets/flipkart.png",
+  logoAlt: "Flipkart",
+  accentColor: "text-[#2874F0]",
+  borderColor: "border-[#2874F0]/20",
+  bgColor: "bg-[#F0F5FF]",
+  currencySymbol: "₹",
+};
+
+const MEESHO_CONFIG: PlatformConfig = {
+  name: "Meesho",
+  logoSrc: "/assets/meesho1.png",
+  logoAlt: "Meesho",
+  accentColor: "text-[#F43397]",
+  borderColor: "border-[#F43397]/20",
+  bgColor: "bg-[#FFF0F7]",
+  currencySymbol: "₹",
+};
+
+const DEFAULT_CONFIG: PlatformConfig = {
+  name: "Unknown Platform",
+  logoSrc: "/assets/default.png",
+  logoAlt: "Platform",
+  accentColor: "text-brand",
+  borderColor: "border-brand/20",
+  bgColor: "bg-brand-light",
+  currencySymbol: "₹",
+};
+
+/* -------------------------------------------------------------------------- */
+/* PLATFORM MAP */
+/* -------------------------------------------------------------------------- */
+
+const PLATFORM_CONFIG: Record<string, PlatformConfig> = {
+  /* AMAZON */
+  /* AMAZON */
+  amazon: AMAZON_CONFIG,
+  amazonindia: AMAZON_CONFIG,
+  amazon_india: AMAZON_CONFIG,
+  amazonin: AMAZON_CONFIG,
+
+  /* AMAZON USA */
+  amazonusa: AMAZON_CONFIG,
+  amazon_us: AMAZON_CONFIG,
+  amazonus: AMAZON_CONFIG,
+  amazoncom: AMAZON_CONFIG,
+  amazon_usa: AMAZON_CONFIG,
+
+  /* FLIPKART */
+  flipkart: FLIPKART_CONFIG,
+  fk: FLIPKART_CONFIG,
+
+  /* MEESHO */
+  meesho: MEESHO_CONFIG,
+  meesho1: MEESHO_CONFIG,
+};
+
+/* -------------------------------------------------------------------------- */
+/* PLATFORM NORMALIZER */
+/* -------------------------------------------------------------------------- */
+
+function normalizePlatformId(platformId: string): string {
+  return platformId
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "")
+    .replace(/-/g, "")
+    .replace(/_/g, "");
+}
+
+/* -------------------------------------------------------------------------- */
+/* GET CONFIG */
+/* -------------------------------------------------------------------------- */
+
 function getPlatformConfig(platformId: PlatformId): PlatformConfig {
+  const normalized = normalizePlatformId(platformId);
+
   return (
-    PLATFORM_CONFIG[platformId] ?? {
+    PLATFORM_CONFIG[normalized] ?? {
+      ...DEFAULT_CONFIG,
       name: platformId,
-      logoSrc: "/assets/default.png",
       logoAlt: platformId,
-      accentColor: "text-brand",
-      borderColor: "border-brand/20",
-      bgColor: "bg-brand-light",
-      currencySymbol: "₹",
     }
   );
 }
-
 /* -------------------------------------------------------------------------- */
 /* HELPERS */
 /* -------------------------------------------------------------------------- */
@@ -739,7 +794,7 @@ interface FeeBreakdownCardProps {
 
 export default function FeeBreakdownCard({
   productName,
-  productImageSrc = "/product-placeholder.png",
+  productImageSrc = "/assets/product.jpg",
   results,
 }: FeeBreakdownCardProps) {
   const [expanded, setExpanded] = useState(true);
