@@ -9,6 +9,7 @@ import {
   type CSSProperties,
   type RefObject,
 } from "react";
+import { createPortal } from "react-dom";
 
 import { supabase } from "@/lib/supabase";
 
@@ -247,6 +248,7 @@ function inputBaseStyle(hasErr: boolean): CSSProperties {
     fontSize: "13.5px",
     outline: "none",
     transition: "border-color 0.15s, box-shadow 0.15s",
+    boxSizing: "border-box",
   };
 }
 
@@ -273,7 +275,6 @@ export default function LeadCapturePopup({
   storageKey = "opsell-lead-popup-dismissed",
   onSubmit,
 }: LeadCapturePopupProps): ReactElement | null {
-  // open===undefined means organic mode; any boolean means controlled mode
   const isControlled = open !== undefined;
 
   const [visible, setVisible] = useState(false);
@@ -283,6 +284,14 @@ export default function LeadCapturePopup({
   const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
   const [errors, setErrors] = useState<FormErrors>({});
   const [submitError, setSubmitError] = useState("");
+
+  // Track whether we're mounted on the client (needed for createPortal)
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
   // organic-mode only
   const entryTime = useRef(Date.now());
@@ -417,7 +426,6 @@ export default function LeadCapturePopup({
       onSubmit?.(values);
 
       if (isControlled && onUnlock) {
-        // Fire unlock — parent will set open=false which triggers the close animation
         onUnlock(values);
         return;
       }
@@ -431,34 +439,48 @@ export default function LeadCapturePopup({
     }
   };
 
-  if (!visible) return null;
+  // Don't render on server or before mount (required for createPortal)
+  if (!isMounted || !visible) return null;
 
-  return (
+  const modalContent = (
     <>
-      {/* Backdrop */}
+      {/* ── Backdrop — rendered via portal so it always covers the full viewport ── */}
       <div
         onClick={dismiss}
         style={{
           position: "fixed",
-          inset: 0,
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
           zIndex: 9998,
           background: "rgba(15,17,20,0.55)",
-          backdropFilter: "blur(3px)",
+          backdropFilter: "blur(4px)",
+          WebkitBackdropFilter: "blur(4px)", // Safari
           opacity: animateIn ? 1 : 0,
           transition: "opacity 0.3s ease",
+          margin: 0,
+          padding: 0,
         }}
       />
 
-      {/* Modal */}
+      {/* ── Modal wrapper ── */}
       <div
         style={{
           position: "fixed",
-          inset: 0,
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
           zIndex: 9999,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           padding: "16px",
+          boxSizing: "border-box",
+          // pointer-events: none on the wrapper so clicks on the transparent
+          // area fall through to the backdrop (which handles dismiss)
+          pointerEvents: "none",
         }}
       >
         <div
@@ -472,6 +494,8 @@ export default function LeadCapturePopup({
             opacity: animateIn ? 1 : 0,
             transform: animateIn ? "translateY(0)" : "translateY(24px)",
             transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+            // Re-enable pointer events only on the card itself
+            pointerEvents: "auto",
           }}
         >
           {/* Header */}
@@ -580,6 +604,7 @@ export default function LeadCapturePopup({
                               color: "#8C919A",
                               display: "flex",
                               alignItems: "center",
+                              pointerEvents: "none",
                             }}
                           >
                             <Icon size={14} />
@@ -667,4 +692,8 @@ export default function LeadCapturePopup({
       </div>
     </>
   );
+
+  // ── Portal renders directly into <body>, escaping any parent
+  //    overflow/transform/filter stacking contexts that clip fixed elements ──
+  return createPortal(modalContent, document.body);
 }
