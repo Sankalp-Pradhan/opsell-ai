@@ -93,8 +93,8 @@ function MarginPill({ value }: { value: number }) {
     value >= 20
       ? "bg-success-light text-success border-success/20"
       : value >= 10
-      ? "bg-warning-light text-warning border-warning/20"
-      : "bg-error-light text-error border-error/20";
+        ? "bg-warning-light text-warning border-warning/20"
+        : "bg-error-light text-error border-error/20";
 
   return (
     <span
@@ -210,25 +210,32 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
   /* ---------------------------------------------------------------------- */
   /* EXPORT BUTTON CLICK — gate behind lead capture                         */
   /* ---------------------------------------------------------------------- */
-
   const handleExportClick = useCallback(() => {
+    // Existing lead → export immediately
     if (isAlreadyCaptured()) {
-      // Already a lead — download directly, no popup
       doExportCSV();
-    } else {
-      // Open the lead-gate popup
-      setExportGateOpen(true);
+      return;
     }
-  }, [doExportCSV]);
 
+    // Reset popup state first
+    setExportGateOpen(false);
+
+    // Re-open cleanly
+    requestAnimationFrame(() => {
+      setExportGateOpen(true);
+    });
+  }, [doExportCSV]);
   /* ---------------------------------------------------------------------- */
   /* AFTER LEAD SUBMITTED — unlock fires, then download                     */
   /* ---------------------------------------------------------------------- */
-
   const handleUnlock = useCallback(() => {
+    // Close popup immediately
     setExportGateOpen(false);
-    // Small delay so the popup closes before the download dialog appears
-    setTimeout(doExportCSV, 300);
+
+    // Export after modal animation finishes
+    setTimeout(() => {
+      doExportCSV();
+    }, 350);
   }, [doExportCSV]);
 
   /* ---------------------------------------------------------------------- */
@@ -255,29 +262,29 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
 
   const columns = [
     { key: "productName", label: "Product" },
-    { key: "platform",    label: "Platform" },
-    { key: "sellingPrice",       label: "Price" },
-    { key: "totalDeductions",    label: "Fees" },
-    { key: "effectiveFeePercent",label: "Fee %" },
-    { key: "netPayout",          label: "Payout" },
-    { key: "netProfit",          label: "Profit" },
-    { key: "profitMargin",       label: "Margin" },
-    { key: "roi",                label: "ROI" },
+    { key: "platform", label: "Platform" },
+    { key: "sellingPrice", label: "Price" },
+    { key: "totalDeductions", label: "Fees" },
+    { key: "effectiveFeePercent", label: "Fee %" },
+    { key: "netPayout", label: "Payout" },
+    { key: "netProfit", label: "Profit" },
+    { key: "profitMargin", label: "Margin" },
+    { key: "roi", label: "ROI" },
   ];
 
   return (
     <>
       {/* ── Lead-gate popup (invisible until exportGateOpen = true) ── */}
-      <LeadCapturePopup
-        open={exportGateOpen}
-        onUnlock={handleUnlock}
-        capturedKey={CAPTURED_KEY}
-        storageKey="opsell-lead-popup-dismissed"
-        // Disable the passive scroll/time trigger — this instance is gate-only
-        scrollThreshold={999}
-        minTimeSeconds={999}
-      />
-
+      {exportGateOpen && (
+        <LeadCapturePopup
+          open={exportGateOpen}
+          onUnlock={handleUnlock}
+          capturedKey={CAPTURED_KEY}
+          storageKey="opsell-lead-popup-dismissed"
+          scrollThreshold={999}
+          minTimeSeconds={999}
+        />
+      )}
       <section className="space-y-5">
         {/* ---------------------------------------------------------------- */}
         {/* TOP CARD */}
@@ -427,8 +434,8 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
                             r.effectiveFeePercent <= 15
                               ? "bg-success-light text-success"
                               : r.effectiveFeePercent <= 25
-                              ? "bg-warning-light text-warning"
-                              : "bg-error-light text-error"
+                                ? "bg-warning-light text-warning"
+                                : "bg-error-light text-error"
                           )}
                         >
                           {r.effectiveFeePercent.toFixed(1)}%
