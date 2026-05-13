@@ -116,10 +116,10 @@ function createProduct(overrides: Partial<Product> = {}): Product {
     isSample: overrides.isSample || false,
     name: overrides.name || `Product ${id}`,
     category: overrides.category || '',
-    sellingPrice: overrides.sellingPrice ?? 999,
-    cogs: overrides.cogs ?? 400,
+    sellingPrice: overrides.sellingPrice ?? 0,
+    cogs: overrides.cogs ?? 0,
     shippingCostToBuyer: overrides.shippingCostToBuyer ?? 0,
-    weight: overrides.weight ?? 500,
+    weight: overrides.weight ?? 0,
     adsSpend: overrides.adsSpend ?? 0,
     returnRate: overrides.returnRate ?? 0,
     selectedPlatforms: overrides.selectedPlatforms || ['amazonIndia'],
@@ -130,63 +130,12 @@ function createProduct(overrides: Partial<Product> = {}): Product {
 // ---------------------------------------------------------------------------
 // Defaults
 // ---------------------------------------------------------------------------
-
 const DEFAULT_PRODUCTS: Product[] = [
   createProduct({
-    isSample: true,
-    name: 'Blue Cotton T-Shirt',
-    sellingPrice: 999,
-    cogs: 350,
-    weight: 250,
+    isSample: false,
     selectedPlatforms: ['amazonIndia'],
-    platformSettings: {
-      amazonIndia: {
-        fulfillmentMethod: 'Self-Ship',
-        orderType: 'Prepaid',
-        shippingZone: 'Local',
-        includeGSTAsFee: false,
-        category: "Apparel – Men's T-Shirts",
-      },
-      amazonUSA: {
-        fulfillmentMethod: 'Self-Ship',
-        category: 'Apparel & Accessories',
-      },
-      flipkart: {
-        fulfillmentMethod: 'Self-Ship',
-        orderType: 'Prepaid',
-        sellerTier: 'Gold',
-        shippingZone: 'Local',
-        includeGSTAsFee: false,
-        category: 'T-Shirts',
-      },
-      shopsy: {
-        fulfillmentMethod: 'Self-Ship',
-        orderType: 'Prepaid',
-        sellerTier: 'Gold',
-        shippingZone: 'Local',
-        includeGSTAsFee: false,
-        category: 'Fashion',
-      },
-      noonUAE: {
-        fulfillmentMethod: 'Platform Fulfillment',
-        category: 'Apparel & Footwear',
-      },
-      walmart: {
-        fulfillmentMethod: 'Self-Ship',
-        category: 'Apparel & Accessories',
-      },
-      ebay: {
-        ebayStoreTier: 'No Store',
-        category: 'Most Categories',
-      },
-      meesho: {
-        orderType: 'Prepaid',
-        category: 'Women Ethnic',
-      },
-    },
   }),
 ];
-
 // ---------------------------------------------------------------------------
 // Local storage
 // ---------------------------------------------------------------------------
@@ -195,7 +144,7 @@ function loadGlobalSettings(): GlobalSettings {
   try {
     const stored = localStorage.getItem(SETTINGS_KEY);
     if (stored) return JSON.parse(stored) as GlobalSettings;
-  } catch {}
+  } catch { }
 
   return DEFAULT_PLATFORM_SETTINGS;
 }
@@ -283,7 +232,7 @@ function loadProducts(): Product[] {
       localStorage.removeItem(SETTINGS_KEY);
       localStorage.setItem(SCHEMA_VERSION_KEY, CURRENT_SCHEMA_VERSION);
     }
-  } catch {}
+  } catch { }
 
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
@@ -302,7 +251,7 @@ function loadProducts(): Product[] {
         return parsed;
       }
     }
-  } catch {}
+  } catch { }
 
   const clonedDefaults = JSON.parse(JSON.stringify(DEFAULT_PRODUCTS)) as Product[];
 
@@ -403,16 +352,16 @@ export function useProducts() {
       prev.map((p) =>
         p.id === id
           ? {
-              ...p,
-              isSample: false,
-              name: p.name.replace(/^Sample: /, ''),
-              sellingPrice: 0,
-              cogs: 0,
-              weight: 0,
-              adsSpend: 0,
-              shippingCostToBuyer: 0,
-              returnRate: 0,
-            }
+            ...p,
+            isSample: false,
+            name: p.name.replace(/^Sample: /, ''),
+            sellingPrice: 0,
+            cogs: 0,
+            weight: 0,
+            adsSpend: 0,
+            shippingCostToBuyer: 0,
+            returnRate: 0,
+          }
           : p
       )
     );
@@ -423,17 +372,17 @@ export function useProducts() {
       prev.map((p) =>
         p.id === id
           ? {
-              ...p,
-              isSample: true,
-              name: 'Blue Cotton T-Shirt',
-              sellingPrice: 999,
-              cogs: 350,
-              weight: 250,
-              adsSpend: 0,
-              shippingCostToBuyer: 0,
-              returnRate: 0,
-              selectedPlatforms: ['amazonIndia'],
-            }
+            ...p,
+            isSample: true,
+            name: 'Blue Cotton T-Shirt',
+            sellingPrice: 999,
+            cogs: 350,
+            weight: 250,
+            adsSpend: 0,
+            shippingCostToBuyer: 0,
+            returnRate: 0,
+            selectedPlatforms: ['amazonIndia'],
+          }
           : p
       )
     );
@@ -456,12 +405,12 @@ export function useProducts() {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(SETTINGS_KEY);
 
-    nextId = 1;
+    nextId = 1; // reset counter first
 
-    setProducts([...DEFAULT_PRODUCTS.map((p, i) => ({ ...p, id: i + 1 }))]);
+    const freshProduct = createProduct({ selectedPlatforms: ['amazonIndia'] }); // gets id: 1
+    setProducts([freshProduct]);
     setGlobalSettings(DEFAULT_PLATFORM_SETTINGS);
-
-    nextId = DEFAULT_PRODUCTS.length + 1;
+    // nextId is now 2, ready for the next addProduct call
   }, []);
 
   return {

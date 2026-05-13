@@ -11,12 +11,14 @@ import BeyondFeesDisclaimer from './components/BeyondFeesDisclaimer';
 import FeeBreakdownCard from './components/FeeBreakdownCard';
 import Dashboard from './components/Dashboard';
 import PlatformSEOBlock from './components/PlatformSEOBlock';
+import CurrencyConverter from './components/CurrencyConverter';
 import { PLATFORMS } from './data/platforms';
 import {
   IconBrand, IconRefresh, IconPlus, IconTrash, IconMail, IconLink, IconCheck,
   IconSparkle, IconArrowDown, IconClose,
 } from './components/Icon';
 import HeroSection from './components/hero';
+import ResetButton from './components/ResetButton';
 
 declare const __BUILD_DATE__: string | undefined;
 
@@ -53,9 +55,26 @@ function App(): ReactElement {
   const { results, summary } = useCalculations(products, globalSettings);
   const [scrolled, setScrolled] = useState<boolean>(false);
 
+  const [renamingId, setRenamingId] = useState<number | null>(null);
+  const [renameValue, setRenameValue] = useState<string>('');
+
+  const startRename = useCallback((id: number, currentName: string): void => {
+    setRenamingId(id);
+    setRenameValue(currentName);
+  }, []);
+
+  const commitRename = useCallback((): void => {
+    if (renamingId === null) return;
+    const trimmed = renameValue.trim();
+    if (trimmed) updateProduct(renamingId, { name: trimmed } as Parameters<typeof updateProduct>[1]);
+    setRenamingId(null);
+  }, [renamingId, renameValue, updateProduct]);
+
   const [email, setEmail] = useState<string>('');
   const [emailStatus, setEmailStatus] = useState<null | 'ok' | 'bad'>(null);
   const [copied, setCopied] = useState<boolean>(false);
+
+  const [confirmDeleteId, setConfirmDeleteId] = useState<number | null>(null);
 
   const shareUrl = useMemo<string>(() => {
     if (!activeProduct) return '';
@@ -115,6 +134,10 @@ function App(): ReactElement {
     if (products.length > 1) setActiveProductId(products[products.length - 1].id);
   }, [products.length]);
 
+  useEffect(() => {
+    setConfirmDeleteId(null);
+  }, [activeProductId]);
+
   const isMultiProduct = products.length > 1;
 
   return (
@@ -134,96 +157,137 @@ function App(): ReactElement {
       <HeroSection />
 
       {/* ── Main Content ── */}
-      {/*
-        RESPONSIVE FIX #1:
-        Added `mx-auto px-4` so content has side padding on mobile.
-        `sm:px-6` keeps the larger padding on ≥640px screens.
-        Previously only `sm:px-6` was set, leaving zero padding on mobile.
-      */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 pb-20 relative z-10">
 
         {/* ── Product Tab Rail ── */}
-        {isMultiProduct && (
-          <div className="mb-5 animate-fade-up">
-            {/*
-              RESPONSIVE FIX #2:
-              Added `-mx-1 px-1` so the scrollable rail has a tiny visual bleed
-              without clipping the focus ring on the first/last tab.
-              Added `pb-2` for a bit more scroll thumb room on mobile.
-            */}
-            <div
-              role="tablist"
-              aria-label="Products"
-              className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1"
-            >
-              {products.map(p => {
-                const active = activeProduct?.id === p.id;
-                return (
+        <div className="mb-5 animate-fade-up">
+          <div
+            role="tablist"
+            aria-label="Products"
+            className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none -mx-1 px-1"
+          >
+            {products.map(p => {
+              const active = activeProduct?.id === p.id;
+              const isRenaming = renamingId === p.id;
+
+              return (
+                <div key={p.id} className="relative flex-shrink-0">
+                  {isRenaming ? (
+                    // ── Inline rename input ──
+                    <input
+                      autoFocus
+                      type="text"
+                      value={renameValue}
+                      onChange={(e) => setRenameValue(e.target.value)}
+                      onBlur={commitRename}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') commitRename();
+                        if (e.key === 'Escape') setRenamingId(null);
+                      }}
+                      className="px-3 py-2 rounded-lg min-h-[36px] max-w-[160px]
+                         border-2 border-brand bg-white text-n-900
+                         font-display font-medium text-ds-body-sm
+                         focus:outline-none focus:ring-2 focus:ring-brand/30"
+                      aria-label="Rename product"
+                    />
+                  ) : (
+                    <button
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => {
+                        if (active) {
+                          // clicking active tab triggers rename
+                          startRename(p.id, p.name);
+                        } else {
+                          setActiveProductId(p.id);
+                        }
+                      }}
+                      title={active ? 'Click to rename' : p.name}
+                      className={`px-3 sm:px-4 py-2 rounded-lg min-h-[36px] text-ds-body-sm
+                          font-display font-medium transition-all duration-200 truncate
+                          max-w-[130px] sm:max-w-[180px]
+                          ${active
+                          ? 'bg-brand text-white shadow-elev-1 cursor-text'
+                          : 'bg-white border border-n-border text-n-600 hover:border-n-200'
+                        }`}
+                    >
+                      {p.name}
+                      {active && (
+                        <span className="ml-1.5 opacity-60 text-[10px] font-body normal-case tracking-normal">
+                          ✎
+                        </span>
+                      )}
+                    </button>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* ── +New always visible ── */}
+            {products.length < 10 && (
+              <button
+                onClick={handleAddProduct}
+                aria-label="Add another product"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg flex-shrink-0
+                   min-h-[36px] bg-ai-bg border border-dashed border-ai-border
+                   text-brand font-display font-semibold text-ds-body-sm
+                   hover:bg-brand-light transition-colors duration-150"
+              >
+                <IconPlus size={14} /> New
+              </button>
+            )}
+
+            {/* ── Remove active tab (only when >1 product) ── */}
+            {products.length > 1 && activeProduct && (
+              <div className="relative flex-shrink-0">
+                {confirmDeleteId === activeProduct.id ? (
+                  // ── Inline confirm popup ──
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                      bg-error-light border border-error/30 shadow-elev-1">
+                    <span className="font-display font-semibold text-ds-caption text-error whitespace-nowrap">
+                      Remove?
+                    </span>
+                    <button
+                      onClick={() => {
+                        deleteProduct(activeProduct.id);
+                        setConfirmDeleteId(null);
+                      }}
+                      className="px-2 py-0.5 rounded-md bg-error text-white
+                     font-display font-semibold text-ds-caption
+                     hover:bg-red-700 transition-colors"
+                    >
+                      Yes
+                    </button>
+                    <button
+                      onClick={() => setConfirmDeleteId(null)}
+                      className="px-2 py-0.5 rounded-md bg-white border border-n-border
+                     text-n-600 font-display font-semibold text-ds-caption
+                     hover:bg-n-50 transition-colors"
+                    >
+                      No
+                    </button>
+                  </div>
+                ) : (
                   <button
-                    key={p.id}
-                    role="tab"
-                    aria-selected={active}
-                    onClick={() => setActiveProductId(p.id)}
-                    /*
-                      RESPONSIVE FIX #3:
-                      Reduced px from px-4 → px-3 on mobile, max-w from 180px → 130px
-                      so tabs don't overflow the scroll container on narrow phones.
-                    */
-                    className={`px-3 sm:px-4 py-2 rounded-lg flex-shrink-0 min-h-[36px] text-ds-body-sm
-                                font-display font-medium transition-all duration-200 truncate
-                                max-w-[130px] sm:max-w-[180px]
-                                ${active
-                        ? 'bg-brand text-white shadow-elev-1'
-                        : 'bg-white border border-n-border text-n-600 hover:border-n-200'
-                      }`}
+                    onClick={() => setConfirmDeleteId(activeProduct.id)}
+                    aria-label={`Remove ${activeProduct.name}`}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg flex-shrink-0
+                   min-h-[36px] bg-error-light border border-error/20
+                   text-error font-display font-semibold text-ds-caption
+                   hover:bg-red-100 transition-colors duration-150"
                   >
-                    {p.name}
+                    <IconTrash size={13} /> Remove
                   </button>
-                );
-              })}
-
-              {products.length < 10 && (
-                <button
-                  onClick={handleAddProduct}
-                  aria-label="Add another product"
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg flex-shrink-0
-                             min-h-[36px] bg-ai-bg border border-dashed border-ai-border
-                             text-brand font-display font-semibold text-ds-body-sm
-                             hover:bg-brand-light transition-colors duration-150"
-                >
-                  <IconPlus size={14} /> New
-                </button>
-              )}
-
-              {products.length > 1 && activeProduct && (
-                <button
-                  onClick={() => {
-                    if (window.confirm(`Remove "${activeProduct.name}"?`)) deleteProduct(activeProduct.id);
-                  }}
-                  aria-label={`Remove ${activeProduct.name}`}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg flex-shrink-0
-                             min-h-[36px] bg-error-light border border-error/20
-                             text-error font-display font-semibold text-ds-caption
-                             hover:bg-red-100 transition-colors duration-150"
-                >
-                  <IconTrash size={13} /> Remove
-                </button>
-              )}
-            </div>
+                )}
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
         {/* ── Calculator Form Card ── */}
         {activeProduct && (
           <div
             id="calculator-form"
-            /*
-              RESPONSIVE FIX #4:
-              Reduced base padding from p-5 → p-4 on mobile.
-              The compound border classes (border + border-l-4 + border-l-brand) are kept
-              as-is since Tailwind processes them correctly — border sets all sides,
-              then border-l-4 overrides just the left width, border-l-brand sets left color.
-            */
             className="bg-white border border-n-border border-l-4 border-l-brand
                        rounded-2xl p-4 sm:p-6 mb-8 shadow-elev-1 animate-fade-up"
           >
@@ -239,32 +303,38 @@ function App(): ReactElement {
                 </h2>
               </div>
 
-              {activeProduct.isSample ? (
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
-                                  bg-warning-light border border-warning/25
-                                  text-warning font-display font-semibold text-ds-caption
-                                  tracking-wide">
-                  <IconSparkle size={11} /> Sample: Cotton T-shirt
+              {/* ── Right-side header actions ── */}
+              <div className="flex items-center gap-2 flex-wrap">
+                {activeProduct.isSample ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full
+                                    bg-warning-light border border-warning/25
+                                    text-warning font-display font-semibold text-ds-caption
+                                    tracking-wide">
+                    <IconSparkle size={11} /> Sample: Cotton T-shirt
+                    <button
+                      onClick={() => clearSampleProduct(activeProduct.id)}
+                      aria-label="Clear sample data"
+                      className="ml-1 text-warning font-bold underline underline-offset-2
+                                 bg-transparent border-0 cursor-pointer font-display text-ds-caption"
+                    >
+                      clear
+                    </button>
+                  </span>
+                ) : (
                   <button
-                    onClick={() => clearSampleProduct(activeProduct.id)}
-                    aria-label="Clear sample data"
-                    className="ml-1 text-warning font-bold underline underline-offset-2
-                               bg-transparent border-0 cursor-pointer font-display text-ds-caption"
+                    onClick={() => loadSampleProduct(activeProduct.id)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg
+                               bg-n-50 border border-n-border text-n-600 font-display
+                               font-semibold text-ds-caption hover:bg-n-100 transition-colors"
+                    aria-label="Load sample product"
                   >
-                    clear
+                    <IconSparkle size={12} /> Load sample
                   </button>
-                </span>
-              ) : (
-                <button
-                  onClick={() => loadSampleProduct(activeProduct.id)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg
-                             bg-n-50 border border-n-border text-n-600 font-display
-                             font-semibold text-ds-caption hover:bg-n-100 transition-colors"
-                  aria-label="Load sample product"
-                >
-                  <IconSparkle size={12} /> Load sample
-                </button>
-              )}
+                )}
+
+                {/* ── Reset All button ── */}
+                <ResetButton onClick={resetAll} />
+              </div>
             </div>
 
             <CalculatorForm
@@ -308,20 +378,24 @@ function App(): ReactElement {
                   <p className="font-display font-bold text-ds-caption uppercase tracking-widest text-n-400 mb-1.5">
                     {(summary.uniquePlatformCount ?? 1) === 1 ? 'Your result' : 'Your top result'}
                   </p>
-                  {/*
-                    RESPONSIVE FIX #5:
-                    Lowered the clamp floor from 18px → 15px so the heading
-                    doesn't overflow on 320–360px screens.
-                  */}
                   <h3 className="font-display font-semibold text-n-900 tracking-tight
-                                  text-[clamp(15px,4vw,24px)] leading-snug">
+                                  text-[clamp(15px,4vw,24px)] leading-snug flex items-center flex-wrap gap-1">
                     You&rsquo;d keep{' '}
                     <span className={`font-mono tabular-nums font-bold
                                       ${healthy ? 'text-success' : 'text-warning'}`}>
                       {profit < 0 ? '-' : ''}{symPrefix}{Math.round(Math.abs(profit)).toLocaleString('en-IN')}
                     </span>
                     {' '}per unit on{' '}
-                    <span className="text-n-900 font-bold">{bestPlatformName}</span>.
+                    <span className="text-n-900 font-bold">{bestPlatformName}</span>
+                    {(summary.uniquePlatformCount ?? 1) > 1 && (
+                      <CurrencyConverter
+                        profit={profit}
+                        selectedPlatforms={activeProduct?.selectedPlatforms ?? []}
+                        basePlatform={summary.bestPlatform}
+                        profitMargin={margin}
+                      />
+                    )}
+                    .
                   </h3>
                   <p className="font-body text-ds-body-sm text-n-500 mt-2">
                     That&rsquo;s a {margin.toFixed(1)}% margin.{' '}
@@ -343,13 +417,6 @@ function App(): ReactElement {
               <div
                 role="complementary"
                 aria-label="Opsell AI teaser"
-                /*
-                  RESPONSIVE FIX #6:
-                  Changed from `flex items-center flex-wrap` to
-                  `flex flex-col sm:flex-row sm:items-center`.
-                  On mobile the icon, text, CTA, and dismiss button now stack
-                  vertically instead of awkwardly wrapping mid-row.
-                */
                 className="mb-8 p-4 sm:p-5 bg-ai-bg border border-ai-border rounded-xl
                            flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4"
               >
@@ -368,12 +435,6 @@ function App(): ReactElement {
                     Opsell AI syncs with your seller accounts and predicts profitability per SKU, per platform.
                   </p>
                 </div>
-                {/*
-                  RESPONSIVE FIX #7:
-                  Added `w-full sm:w-auto text-center` so the CTA button
-                  spans full width on mobile — easier to tap and prevents
-                  it clipping off-screen on 360px devices.
-                */}
                 <a
                   href="https://opsell.in?utm_source=calculator&utm_medium=inline-ai"
                   target="_blank"
@@ -384,12 +445,6 @@ function App(): ReactElement {
                 >
                   Try Opsell AI
                 </a>
-                {/*
-                  RESPONSIVE FIX #8:
-                  Added `self-end sm:self-auto` so the dismiss button
-                  sits at the top-right of the stacked column on mobile,
-                  rather than flowing below the CTA button.
-                */}
                 <button
                   onClick={dismissAiTeaser}
                   type="button"
@@ -483,11 +538,6 @@ function App(): ReactElement {
             <PlatformSEOBlock />
 
             {/* ── TOFU Funnel — Email + Share ── */}
-            {/*
-              RESPONSIVE FIX #9:
-              Reduced base padding p-6 → p-5 on mobile.
-              Gap reduced gap-8 → gap-6 on mobile, restored at sm:gap-8.
-            */}
             <div className="mt-8 mb-12 p-5 sm:p-8 bg-white border border-n-border rounded-3xl
                             shadow-elev-1 grid grid-cols-1 sm:grid-cols-2 gap-6 sm:gap-8">
 
@@ -514,19 +564,8 @@ function App(): ReactElement {
                   </div>
                 ) : (
                   <>
-                    {/*
-                      RESPONSIVE FIX #10:
-                      Changed from `flex gap-2 flex-wrap` to `flex flex-col gap-2`.
-                      On mobile the input stacks above the button for a clean
-                      full-width layout. At sm+ they sit side by side via flex-row.
-                    */}
                     <div className="flex flex-col sm:flex-row gap-2">
                       <label htmlFor="email-capture" className="sr-only">Email address</label>
-                      {/*
-                        RESPONSIVE FIX #11:
-                        Replaced `flex-1 min-w-[200px]` with `w-full sm:flex-1 min-w-0`
-                        so the input doesn't force horizontal overflow on 360px phones.
-                      */}
                       <input
                         id="email-capture"
                         type="email"
@@ -553,11 +592,6 @@ function App(): ReactElement {
                             : 'border-n-border'
                           }`}
                       />
-                      {/*
-                        RESPONSIVE FIX #12:
-                        Added `w-full sm:w-auto` so the button fills the full width
-                        on mobile (easy to tap) and reverts to auto-width on sm+.
-                      */}
                       <button
                         onClick={handleEmailSubmit}
                         className="w-full sm:w-auto flex-shrink-0 min-w-[96px] px-4 py-2.5 rounded-lg
@@ -592,16 +626,8 @@ function App(): ReactElement {
                 <p className="font-body text-ds-body-sm text-n-400 mb-4">
                   Copy a link to this exact calculation to share with your team.
                 </p>
-                {/*
-                  RESPONSIVE FIX #13:
-                  Same stacking treatment as email row — flex-col on mobile, flex-row on sm+.
-                */}
                 <div className="flex flex-col sm:flex-row gap-2">
                   <label htmlFor="share-url" className="sr-only">Share URL</label>
-                  {/*
-                    RESPONSIVE FIX #14:
-                    Replaced `flex-1 min-w-[200px]` with `w-full sm:flex-1 min-w-0`.
-                  */}
                   <input
                     id="share-url"
                     type="text"
@@ -613,10 +639,6 @@ function App(): ReactElement {
                                transition-colors"
                     onFocus={(e: React.FocusEvent<HTMLInputElement>) => e.currentTarget.select()}
                   />
-                  {/*
-                    RESPONSIVE FIX #15:
-                    Added `w-full sm:w-auto` for the same full-width mobile tap target.
-                  */}
                   <button
                     onClick={handleCopy}
                     aria-live="polite"
@@ -641,23 +663,7 @@ function App(): ReactElement {
           <EmptyState message="Select platforms above to see profitability results" />
         )}
 
-        {/* Add another product CTA */}
-        {!isMultiProduct && (
-          <div className="text-center mt-12 pt-8 border-t border-n-border">
-            <p className="font-body text-ds-body-sm text-n-400 mb-3">
-              Want to compare across multiple products?
-            </p>
-            <button
-              onClick={handleAddProduct}
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-lg
-                         bg-transparent border border-dashed border-brand/30 text-brand
-                         font-display font-semibold text-ds-body-sm
-                         hover:bg-ai-bg hover:border-brand/50 transition-all duration-150"
-            >
-              <IconPlus size={14} /> Add Another Product
-            </button>
-          </div>
-        )}
+
       </main>
     </div>
   );
@@ -694,22 +700,22 @@ function SectionHeader({ title, subtitle }: SectionHeaderProps): ReactElement {
 
 interface ResetButtonProps { onClick: () => void; }
 
-function ResetButton({ onClick }: ResetButtonProps): ReactElement {
-  return (
-    <button
-      onClick={() => {
-        if (window.confirm('Clear all settings and start over?')) onClick();
-      }}
-      className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg
-                 bg-error-light border border-error/20 text-error
-                 font-display font-semibold text-ds-caption
-                 hover:bg-red-100 transition-colors duration-150"
-      aria-label="Clear all settings"
-    >
-      <IconRefresh size={14} /> Clear All
-    </button>
-  );
-}
+// function ResetButton({ onClick }: ResetButtonProps): ReactElement {
+//   return (
+//     <button
+//       onClick={() => {
+//         if (window.confirm('Clear all settings and start over?')) onClick();
+//       }}
+//       className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg
+//                  bg-error-light border border-error/20 text-error
+//                  font-display font-semibold text-ds-caption
+//                  hover:bg-red-100 transition-colors duration-150"
+//       aria-label="Clear all settings"
+//     >
+//       <IconRefresh size={14} /> Clear All
+//     </button>
+//   );
+// }
 
 interface EmptyStateProps { message: string; }
 
