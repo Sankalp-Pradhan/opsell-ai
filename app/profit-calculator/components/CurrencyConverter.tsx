@@ -46,7 +46,7 @@ export default function CurrencyConverter({
   currencies.forEach(currency => {
     const rate = EXCHANGE_RATES[currency] ?? 1;
     const baseRate = EXCHANGE_RATES[baseCurrency] ?? 1;
-    const convertedProfit = (profit * rate) / baseRate;
+    const convertedProfit = (profit / rate) * baseRate;
 
     const platformMeta = (PLATFORMS as unknown as Record<string, { currencySymbol?: string }>)[
       Array.from(selectedPlatforms).find(p => {
