@@ -2,11 +2,11 @@
 
 import { useEffect, useRef, useState } from "react";
 import {
-  IconDollar,
   IconPayout,
   IconTrendingUp,
   IconPercent,
 } from "./Icon";
+import { IconMoneybag } from "@tabler/icons-react";
 
 interface AnimatedValueProps {
   value: string;
@@ -168,8 +168,8 @@ export default function SummaryStrip({
             : `₹${fmt(summary.totalRevenue)}`
         }
         subtext="All calculations"
-        accent="bg-brand text-brand"
-        Icon={IconDollar}
+        accent="bg-yellow-500 text-yellow-600"
+        Icon={IconMoneybag}
         valueClass="text-n-900"
       />
 
