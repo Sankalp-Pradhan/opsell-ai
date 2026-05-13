@@ -77,16 +77,12 @@ export interface FlipkartResult {
   effectiveFeePercent: number;
 }
 
-const COMMISSION_RATES: Record<
-  string,
-  number
-> = {
+const COMMISSION_RATES: Record<string, number> = {
   'Mobile Phones': 0.03,
   Laptops: 0.04,
   Tablets: 0.055,
   Televisions: 0.055,
-  'Electronics Accessories':
-    0.1,
+  'Electronics Accessories': 0.1,
   Sarees: 0.045,
   'Ethnic Wear': 0.135,
   'T-Shirts': 0.16,
@@ -99,47 +95,21 @@ const COMMISSION_RATES: Record<
   'Tools & Hardware': 0.11,
   Books: 0.08,
   Grocery: 0.05,
-  'Beauty & Personal Care':
-    0.1,
+  'Beauty & Personal Care': 0.1,
   Toys: 0.15,
   'Sports & Fitness': 0.15,
   'Baby Products': 0.105,
 };
 
-const FIXED_FEE_TABLE: FixedFeeBand[] =
-  [
-    {
-      max: 250,
-      fees: [18, 15, 12, 8, 10],
-    },
-    {
-      max: 500,
-      fees: [28, 23, 18, 12, 15],
-    },
-    {
-      max: 1000,
-      fees: [50, 42, 35, 25, 28],
-    },
-    {
-      max: 5000,
-      fees: [90, 78, 65, 50, 55],
-    },
-    {
-      max: Infinity,
-      fees: [
-        150,
-        130,
-        110,
-        90,
-        95,
-      ],
-    },
-  ];
+const FIXED_FEE_TABLE: FixedFeeBand[] = [
+  { max: 250,      fees: [18,  15,  12,  8,  10] },
+  { max: 500,      fees: [28,  23,  18,  12, 15] },
+  { max: 1000,     fees: [50,  42,  35,  25, 28] },
+  { max: 5000,     fees: [90,  78,  65,  50, 55] },
+  { max: Infinity, fees: [150, 130, 110, 90, 95] },
+];
 
-const TIER_INDEX: Record<
-  SellerTier,
-  number
-> = {
+const TIER_INDEX: Record<SellerTier, number> = {
   Bronze: 0,
   Silver: 1,
   Gold: 2,
@@ -148,45 +118,25 @@ const TIER_INDEX: Record<
 
 const GOLD_FBF_INDEX = 3;
 
-const SHIPPING_BASE: ShippingBand[] =
-  [
-    {
-      max: 500,
-      fees: [0, 0, 50],
-    },
-    {
-      max: 1000,
-      fees: [20, 35, 65],
-    },
-  ];
+const SHIPPING_BASE: ShippingBand[] = [
+  { max: 500,  fees: [0,  0,  50] },
+  { max: 1000, fees: [20, 35, 65] },
+];
 
-const SHIPPING_ADDITIONAL_PER_500G =
-  [12, 18, 25];
+const SHIPPING_ADDITIONAL_PER_500G = [12, 18, 25];
 
-const ZONE_INDEX: Record<
-  ShippingZone,
-  number
-> = {
+const ZONE_INDEX: Record<ShippingZone, number> = {
   Local: 0,
   Zonal: 1,
   National: 2,
 };
 
-function round2(
-  val: number
-): number {
-  return (
-    Math.round(val * 100) / 100
-  );
+function round2(val: number): number {
+  return Math.round(val * 100) / 100;
 }
 
-function getCommissionRate(
-  category: string
-): number {
-  return (
-    COMMISSION_RATES[category] ??
-    0.1
-  );
+function getCommissionRate(category: string): number {
+  return COMMISSION_RATES[category] ?? 0.1;
 }
 
 function getFixedFee(
@@ -196,65 +146,70 @@ function getFixedFee(
 ): number {
   const isGoldFBF =
     sellerTier === 'Gold' &&
-    fulfillmentMethod ===
-      'Platform Fulfillment';
+    fulfillmentMethod === 'Platform Fulfillment';
 
   const colIndex = isGoldFBF
     ? GOLD_FBF_INDEX
-    : TIER_INDEX[sellerTier] ??
-      0;
+    : TIER_INDEX[sellerTier] ?? 0;
 
   for (const band of FIXED_FEE_TABLE) {
-    if (
-      sellingPrice <= band.max
-    ) {
+    if (sellingPrice <= band.max) {
       return band.fees[colIndex];
     }
   }
 
-  return FIXED_FEE_TABLE[
-    FIXED_FEE_TABLE.length - 1
-  ].fees[colIndex];
+  return FIXED_FEE_TABLE[FIXED_FEE_TABLE.length - 1].fees[colIndex];
 }
 
 function getShippingFee(
   weightGrams: number,
   shippingZone: ShippingZone
 ): number {
-  const zIdx =
-    ZONE_INDEX[shippingZone] ??
-    2;
+  const zIdx = ZONE_INDEX[shippingZone] ?? 2;
 
-  if (weightGrams <= 500) {
-    return SHIPPING_BASE[0].fees[
-      zIdx
-    ];
-  }
+  if (weightGrams <= 500) return SHIPPING_BASE[0].fees[zIdx];
+  if (weightGrams <= 1000) return SHIPPING_BASE[1].fees[zIdx];
 
-  if (weightGrams <= 1000) {
-    return SHIPPING_BASE[1].fees[
-      zIdx
-    ];
-  }
+  const baseFee = SHIPPING_BASE[1].fees[zIdx];
+  const extraGrams = weightGrams - 1000;
+  const extraSlabs = Math.ceil(extraGrams / 500);
 
-  const baseFee =
-    SHIPPING_BASE[1].fees[zIdx];
-
-  const extraGrams =
-    weightGrams - 1000;
-
-  const extraSlabs = Math.ceil(
-    extraGrams / 500
-  );
-
-  return (
-    baseFee +
-    extraSlabs *
-      SHIPPING_ADDITIONAL_PER_500G[
-        zIdx
-      ]
-  );
+  return baseFee + extraSlabs * SHIPPING_ADDITIONAL_PER_500G[zIdx];
 }
+
+// ─── Zero result helper ───────────────────────────────────────────────────────
+
+function zeroResult(adsSpend: number): FlipkartResult {
+  return {
+    platform: 'Flipkart',
+    currency: 'INR',
+    sellingPrice: 0,
+    referralFee: 0,
+    closingFee: 0,
+    weightHandlingFee: 0,
+    fulfillmentFee: 0,
+    shippingFee: 0,
+    collectionFee: 0,
+    codFee: 0,
+    tcs: 0,
+    gstOnFees: 0,
+    adsSpend: round2(adsSpend),
+    returnLogisticsFee: 0,
+    returnImpact: 0,
+    otherFees: 0,
+    totalDeductions: 0,
+    netPayout: 0,
+    grossProfit: 0,
+    netProfit: 0,
+    profitMargin: 0,
+    roi: 0,
+    breakEvenPrice: 0,
+    contributionMargin: 0,
+    effectiveFeePercent: 0,
+  };
+}
+
+// ─── Main calculator ──────────────────────────────────────────────────────────
 
 export function calculateFlipkart(
   product: ProductInput,
@@ -270,250 +225,109 @@ export function calculateFlipkart(
     returnRate = 0,
   } = product;
 
+  // ── Guard: no sale, no fees ──────────────────────────────────────────────
+  if (!sellingPrice || sellingPrice <= 0) {
+    return zeroResult(adsSpend);
+  }
+
   const {
-    fulfillmentMethod =
-      'Self-Ship',
+    fulfillmentMethod = 'Self-Ship',
     orderType = 'Prepaid',
     sellerTier = 'Bronze',
     shippingZone = 'Local',
     includeGSTAsFee = false,
   } = settings;
 
-  const commissionRate =
-    getCommissionRate(category);
+  const commissionRate = getCommissionRate(category);
 
-  const referralFee = round2(
-    sellingPrice *
-      commissionRate
-  );
-
-  const closingFee =
-    getFixedFee(
-      sellingPrice,
-      sellerTier,
-      fulfillmentMethod
-    );
-
-  const shippingFee =
-    getShippingFee(
-      weight,
-      shippingZone
-    );
-
-  const collectionRate =
-    orderType === 'COD'
-      ? 0.025
-      : 0.02;
-
-  const collectionFee = round2(
-    sellingPrice *
-      collectionRate
-  );
-
-  const codFee =
-    orderType === 'COD'
-      ? 20
-      : 0;
-
-  const tcs = round2(
-    sellingPrice * 0.01
-  );
+  const referralFee   = round2(sellingPrice * commissionRate);
+  const closingFee    = getFixedFee(sellingPrice, sellerTier, fulfillmentMethod);
+  const shippingFee   = getShippingFee(weight, shippingZone);
+  const collectionRate = orderType === 'COD' ? 0.025 : 0.02;
+  const collectionFee = round2(sellingPrice * collectionRate);
+  const codFee        = orderType === 'COD' ? 20 : 0;
+  const tcs           = round2(sellingPrice * 0.01);
 
   const platformFees =
-    referralFee +
-    closingFee +
-    shippingFee +
-    collectionFee +
-    codFee;
+    referralFee + closingFee + shippingFee + collectionFee + codFee;
 
-  const gstOnFees = round2(
-    platformFees * 0.18
-  );
-
-  const fulfillmentFee = 0;
+  const gstOnFees         = round2(platformFees * 0.18);
+  const fulfillmentFee    = 0;
   const weightHandlingFee = 0;
-  const otherFees = 0;
+  const otherFees         = 0;
 
-  const returnRateDecimal =
-    (returnRate || 0) / 100;
+  const returnRateDecimal = (returnRate || 0) / 100;
+  const rtoShare          = orderType === 'COD' ? 0.4 : 0.2;
+  const cogsLossRate      = 0.3;
 
-  const rtoShare =
-    orderType === 'COD'
-      ? 0.4
-      : 0.2;
-
-  const cogsLossRate = 0.3;
-
-  const reverseLogisticsPerReturn =
-    shippingFee;
-
-  const rtoPenaltyPerReturn =
-    shippingFee;
-
+  const reverseLogisticsPerReturn = shippingFee;
+  const rtoPenaltyPerReturn       = shippingFee;
   const perReturnLogistics =
-    reverseLogisticsPerReturn +
-    rtoShare *
-      rtoPenaltyPerReturn;
+    reverseLogisticsPerReturn + rtoShare * rtoPenaltyPerReturn;
 
-  const feeClawbackPerReturn =
-    closingFee;
+  const feeClawbackPerReturn = closingFee;
+  const cogsLossPerReturn    = cogs * cogsLossRate;
 
-  const cogsLossPerReturn =
-    cogs * cogsLossRate;
-
-  const returnLogisticsFee =
-    round2(
-      perReturnLogistics *
-        returnRateDecimal
-    );
-
+  const returnLogisticsFee = round2(perReturnLogistics * returnRateDecimal);
   const returnImpact = round2(
-    (perReturnLogistics +
-      feeClawbackPerReturn +
-      cogsLossPerReturn) *
+    (perReturnLogistics + feeClawbackPerReturn + cogsLossPerReturn) *
       returnRateDecimal
   );
 
-  let totalDeductions =
-    round2(
-      referralFee +
-        closingFee +
-        shippingFee +
-        collectionFee +
-        codFee +
-        tcs
-    );
+  let totalDeductions = round2(
+    referralFee + closingFee + shippingFee + collectionFee + codFee + tcs
+  );
 
   if (includeGSTAsFee) {
-    totalDeductions =
-      round2(
-        totalDeductions +
-          gstOnFees
-      );
+    totalDeductions = round2(totalDeductions + gstOnFees);
   }
 
-  const netPayout = round2(
-    sellingPrice -
-      totalDeductions
-  );
+  const netPayout    = round2(sellingPrice - totalDeductions);
+  const totalCost    = round2(cogs + shippingCostToBuyer + adsSpend);
+  const grossProfit  = round2(netPayout - cogs);
+  const netProfit    = round2(netPayout - totalCost - returnImpact);
 
-  const totalCost = round2(
-    cogs +
-      shippingCostToBuyer +
-      adsSpend
-  );
-
-  const grossProfit = round2(
-    netPayout - cogs
-  );
-
-  const netProfit = round2(
-    netPayout -
-      totalCost -
-      returnImpact
-  );
-
-  const profitMargin =
-    sellingPrice > 0
-      ? round2(
-          (netProfit /
-            sellingPrice) *
-            100
-        )
-      : 0;
+  const profitMargin = round2((netProfit / sellingPrice) * 100);
 
   const roi =
-    totalCost > 0
-      ? round2(
-          (netProfit /
-            totalCost) *
-            100
-        )
-      : 0;
+    totalCost > 0 ? round2((netProfit / totalCost) * 100) : 0;
 
-  const proportionalRate =
-    commissionRate +
-    collectionRate +
-    0.01;
-
-  const gstMultiplier =
-    includeGSTAsFee
-      ? 1.18
-      : 1;
+  const proportionalRate = commissionRate + collectionRate + 0.01;
+  const gstMultiplier    = includeGSTAsFee ? 1.18 : 1;
 
   const fixedCosts =
-    closingFee +
-    shippingFee +
-    codFee +
-    shippingCostToBuyer +
-    adsSpend +
-    cogs +
-    returnImpact;
+    closingFee + shippingFee + codFee +
+    shippingCostToBuyer + adsSpend + cogs + returnImpact;
 
-  const fixedGSTCosts =
-    includeGSTAsFee
-      ? round2(
-          (closingFee +
-            shippingFee +
-            codFee) *
-            0.18
-        )
-      : 0;
+  const fixedGSTCosts = includeGSTAsFee
+    ? round2((closingFee + shippingFee + codFee) * 0.18)
+    : 0;
 
   const breakEvenPrice =
-    1 -
-      proportionalRate *
-        gstMultiplier >
-    0
+    1 - proportionalRate * gstMultiplier > 0
       ? round2(
-          (fixedCosts +
-            fixedGSTCosts) /
-            (1 -
-              proportionalRate *
-                gstMultiplier)
+          (fixedCosts + fixedGSTCosts) /
+            (1 - proportionalRate * gstMultiplier)
         )
       : 0;
 
-  const contributionMargin =
-    sellingPrice > 0
-      ? round2(
-          ((netPayout -
-            cogs) /
-            sellingPrice) *
-            100
-        )
-      : 0;
-
-  const effectiveFeePercent =
-    sellingPrice > 0
-      ? round2(
-          (totalDeductions /
-            sellingPrice) *
-            100
-        )
-      : 0;
+  const contributionMargin = round2(((netPayout - cogs) / sellingPrice) * 100);
+  const effectiveFeePercent = round2((totalDeductions / sellingPrice) * 100);
 
   return {
     platform: 'Flipkart',
     currency: 'INR',
-    sellingPrice:
-      round2(sellingPrice),
+    sellingPrice: round2(sellingPrice),
     referralFee,
-    closingFee: round2(
-      closingFee
-    ),
+    closingFee: round2(closingFee),
     weightHandlingFee,
     fulfillmentFee,
-    shippingFee: round2(
-      shippingFee
-    ),
+    shippingFee: round2(shippingFee),
     collectionFee,
     codFee: round2(codFee),
     tcs,
     gstOnFees,
-    adsSpend: round2(
-      adsSpend
-    ),
+    adsSpend: round2(adsSpend),
     returnLogisticsFee,
     returnImpact,
     otherFees,
