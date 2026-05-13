@@ -19,6 +19,7 @@ import {
 } from './components/Icon';
 import HeroSection from './components/hero';
 import ResetButton from './components/ResetButton';
+import LeadCapturePopup from './components/LeadCapture';
 
 declare const __BUILD_DATE__: string | undefined;
 
