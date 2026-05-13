@@ -140,8 +140,9 @@ const ConversionCard = () => {
                   transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut" }}
                   className="flex h-9 w-9 items-center justify-center rounded-full bg-brand text-white shadow-lg"
                 >
-                  {/* Always show right arrow — on mobile it still means "next/better" */}
-                  <ArrowRight className="h-4 w-4" strokeWidth={3} />
+                  {/* Vertical arrow on mobile, horizontal on desktop */}
+                  <ArrowDown className="h-4 w-4 md:hidden" strokeWidth={3} />
+                  <ArrowRight className="hidden h-4 w-4 md:block" strokeWidth={3} />
                 </motion.div>
                 <motion.div
                   initial={{ opacity: 0, y: -6 }}
