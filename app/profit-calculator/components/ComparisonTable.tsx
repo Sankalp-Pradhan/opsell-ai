@@ -113,6 +113,7 @@ function MarginPill({ value }: { value: number }) {
 /* -------------------------------------------------------------------------- */
 
 function SortIcon({ active, dir }: { active: boolean; dir: SortDirection }) {
+
   const Icon = !active ? IconArrowUpDown : dir === "asc" ? IconArrowUp : IconArrowDown;
   return (
     <span
@@ -182,6 +183,7 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
   /* ---------------------------------------------------------------------- */
   /* EXPORT CSV — the actual download, called after lead is captured        */
   /* ---------------------------------------------------------------------- */
+  const [popupOpen, setPopupOpen] = useState(false);
 
   const doExportCSV = useCallback(() => {
     const headers = ["Product", "Platform", "Price", "Fees", "Fee%", "Payout", "Profit", "Margin%", "ROI%"];
@@ -210,33 +212,25 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
   /* ---------------------------------------------------------------------- */
   /* EXPORT BUTTON CLICK — gate behind lead capture                         */
   /* ---------------------------------------------------------------------- */
+  /* ---------------------------------------------------------------------- */
   const handleExportClick = useCallback(() => {
-    // Existing lead → export immediately
     if (isAlreadyCaptured()) {
       doExportCSV();
       return;
     }
-
-    // Reset popup state first
-    setExportGateOpen(false);
-
-    // Re-open cleanly
-    requestAnimationFrame(() => {
-      setExportGateOpen(true);
-    });
+    setPopupOpen(true);
   }, [doExportCSV]);
   /* ---------------------------------------------------------------------- */
   /* AFTER LEAD SUBMITTED — unlock fires, then download                     */
   /* ---------------------------------------------------------------------- */
   const handleUnlock = useCallback(() => {
-    // Close popup immediately
-    setExportGateOpen(false);
-
-    // Export after modal animation finishes
-    setTimeout(() => {
-      doExportCSV();
-    }, 350);
+    setPopupOpen(false);
+    setTimeout(doExportCSV, 350); // wait for close animation
   }, [doExportCSV]);
+
+  const handleClose = useCallback(() => {
+    setPopupOpen(false);
+  }, []);
 
   /* ---------------------------------------------------------------------- */
   /* EMPTY STATE */
@@ -275,14 +269,14 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
   return (
     <>
       {/* ── Lead-gate popup (invisible until exportGateOpen = true) ── */}
-      {exportGateOpen && (
+      {/* ── Lead-gate popup — always mounted when open, parent owns state ── */}
+      {popupOpen && (
         <LeadCapturePopup
-          open={exportGateOpen}
+          open={popupOpen}
+          onClose={handleClose}
           onUnlock={handleUnlock}
           capturedKey={CAPTURED_KEY}
           storageKey="opsell-lead-popup-dismissed"
-          scrollThreshold={999}
-          minTimeSeconds={999}
         />
       )}
       <section className="space-y-5">

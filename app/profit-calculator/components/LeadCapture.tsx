@@ -7,6 +7,7 @@ import {
   useRef,
   type ReactElement,
   type CSSProperties,
+  type RefObject,
 } from "react";
 
 import { supabase } from "@/lib/supabase";
@@ -20,15 +21,7 @@ interface IconProps {
 
 function IconX({ size = 16 }: IconProps): ReactElement {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
       <line x1="3" y1="3" x2="13" y2="13" />
       <line x1="13" y1="3" x2="3" y2="13" />
     </svg>
@@ -45,16 +38,7 @@ function IconSparkle({ size = 14 }: IconProps): ReactElement {
 
 function IconUser({ size = 16 }: IconProps): ReactElement {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <circle cx="8" cy="5.5" r="2.5" />
       <path d="M2.5 13.5c0-3 2-4.5 5.5-4.5s5.5 1.5 5.5 4.5" />
     </svg>
@@ -63,16 +47,7 @@ function IconUser({ size = 16 }: IconProps): ReactElement {
 
 function IconMail({ size = 16 }: IconProps): ReactElement {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <rect x="1.5" y="3.5" width="13" height="9" rx="1.5" />
       <polyline points="1.5,4.5 8,9 14.5,4.5" />
     </svg>
@@ -81,16 +56,7 @@ function IconMail({ size = 16 }: IconProps): ReactElement {
 
 function IconBrandIcon({ size = 16 }: IconProps): ReactElement {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <rect x="2" y="4" width="8" height="9" rx="1.2" />
       <path d="M6 4V2.5A1.5 1.5 0 0 1 7.5 1h5A1.5 1.5 0 0 1 14 2.5V11a1.5 1.5 0 0 1-1.5 1.5H10" />
     </svg>
@@ -99,16 +65,7 @@ function IconBrandIcon({ size = 16 }: IconProps): ReactElement {
 
 function IconBox({ size = 16 }: IconProps): ReactElement {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="1.5,5 8,1.5 14.5,5" />
       <polyline points="1.5,5 1.5,12 8,14.5 14.5,12 14.5,5" />
       <line x1="8" y1="1.5" x2="8" y2="14.5" />
@@ -127,16 +84,7 @@ function IconWhatsApp({ size = 16 }: IconProps): ReactElement {
 
 function IconCheck({ size = 16 }: IconProps): ReactElement {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 16 16"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2.2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
+    <svg width={size} height={size} viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
       <polyline points="2.5,8.5 6,12 13.5,4" />
     </svg>
   );
@@ -174,13 +122,16 @@ type FormValues = Record<FieldId, string>;
 type FormErrors = Partial<Record<FieldId, string>>;
 
 export interface LeadCapturePopupProps {
+  // ── Controlled mode (used as a gate): pass open + onClose ──
+  open?: boolean;
+  onClose?: () => void;
+  onUnlock?: (data: FormValues) => void;
+  capturedKey?: string;
+  // ── Organic mode (scroll/time trigger): omit open ──
   scrollThreshold?: number;
   minTimeSeconds?: number;
   storageKey?: string;
   onSubmit?: (data: FormValues) => void;
-  open?: boolean;
-  onUnlock?: (data: FormValues) => void;
-  capturedKey?: string;
 }
 
 // ─────────────────────────────────────────────
@@ -204,8 +155,7 @@ const FIELDS: FieldConfig[] = [
     icon: IconMail,
     autoComplete: "email",
     required: true,
-    validate: (v: string) =>
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+    validate: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
     errorMsg: "Enter a valid email address",
   },
   {
@@ -240,8 +190,7 @@ const FIELDS: FieldConfig[] = [
     icon: IconWhatsApp,
     autoComplete: "tel",
     required: true,
-    validate: (v: string) =>
-      /^[+\d][\d\s\-().]{7,}$/.test(v.trim()),
+    validate: (v) => /^[+\d][\d\s\-().]{7,}$/.test(v.trim()),
     errorMsg: "Enter a valid WhatsApp number",
   },
 ];
@@ -256,50 +205,16 @@ function safeLocalStorage(
 ): string | null {
   try {
     if (action === "get") return localStorage.getItem(key);
-
-    if (action === "set" && value !== undefined) {
-      localStorage.setItem(key, value);
-    }
-
-    if (action === "remove") {
-      localStorage.removeItem(key);
-    }
+    if (action === "set" && value !== undefined) localStorage.setItem(key, value);
+    if (action === "remove") localStorage.removeItem(key);
   } catch {}
-
   return null;
 }
 
 function getScrollPct(): number {
   if (typeof window === "undefined") return 0;
-
   const el = document.documentElement;
-
-  return (
-    ((window.scrollY + window.innerHeight) /
-      el.scrollHeight) *
-    100
-  );
-}
-
-function useIsMobile(): boolean {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(max-width: 639px)");
-
-    setIsMobile(mq.matches);
-
-    const handler = (e: MediaQueryListEvent) =>
-      setIsMobile(e.matches);
-
-    mq.addEventListener("change", handler);
-
-    return () => {
-      mq.removeEventListener("change", handler);
-    };
-  }, []);
-
-  return isMobile;
+  return ((window.scrollY + window.innerHeight) / el.scrollHeight) * 100;
 }
 
 // ─────────────────────────────────────────────
@@ -309,8 +224,7 @@ const COLOR = {
   brand: "#5046E5",
   brandDark: "#3B32C4",
   brandLight: "rgba(80,70,229,0.12)",
-  brandGradient:
-    "linear-gradient(135deg, #5046E5 0%, #7B73FF 100%)",
+  brandGradient: "linear-gradient(135deg, #5046E5 0%, #7B73FF 100%)",
   error: "#EF4444",
   errorBg: "#FEF2F2",
   success: "#16A34A",
@@ -323,216 +237,157 @@ const COLOR = {
   textLabel: "#4A4F57",
 } as const;
 
-function inputBaseStyle(
-  hasErr: boolean,
-  isMobile: boolean
-): CSSProperties {
+function inputBaseStyle(hasErr: boolean): CSSProperties {
   return {
     width: "100%",
-    fontSize: isMobile ? "16px" : "13.5px",
-    padding: isMobile
-      ? "11px 12px 11px 38px"
-      : "9px 12px 9px 36px",
+    padding: "9px 12px 9px 36px",
     borderRadius: "10px",
-    border: `1.5px solid ${
-      hasErr ? COLOR.error : COLOR.border
-    }`,
-    background: hasErr
-      ? COLOR.errorBg
-      : COLOR.inputBg,
+    border: `1.5px solid ${hasErr ? COLOR.error : COLOR.border}`,
+    background: hasErr ? COLOR.errorBg : COLOR.inputBg,
+    fontSize: "13.5px",
     outline: "none",
-    transition:
-      "border-color 0.15s, box-shadow 0.15s",
-    WebkitAppearance: "none",
-    appearance: "none",
-    boxSizing: "border-box",
+    transition: "border-color 0.15s, box-shadow 0.15s",
   };
 }
+
+const EMPTY_VALUES: FormValues = {
+  fullName: "",
+  workEmail: "",
+  brandName: "",
+  monthlyOrders: "",
+  whatsapp: "",
+};
 
 // ─────────────────────────────────────────────
 // Component
 // ─────────────────────────────────────────────
 export default function LeadCapturePopup({
+  // controlled-mode props
+  open,
+  onClose,
+  onUnlock,
+  capturedKey = "opsell-lead-captured",
+  // organic-mode props
   scrollThreshold = 85,
   minTimeSeconds = 15,
   storageKey = "opsell-lead-popup-dismissed",
   onSubmit,
-  open: forcedOpen = false,
-  onUnlock,
-  capturedKey = "opsell-lead-captured",
 }: LeadCapturePopupProps): ReactElement | null {
+  // open===undefined means organic mode; any boolean means controlled mode
+  const isControlled = open !== undefined;
+
   const [visible, setVisible] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [values, setValues] = useState<FormValues>(EMPTY_VALUES);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [submitError, setSubmitError] = useState("");
 
-  const [values, setValues] = useState<FormValues>({
-    fullName: "",
-    workEmail: "",
-    brandName: "",
-    monthlyOrders: "",
-    whatsapp: "",
-  });
-
-  const [errors, setErrors] =
-    useState<FormErrors>({});
-
-  const [submitError, setSubmitError] =
-    useState("");
-
+  // organic-mode only
   const entryTime = useRef(Date.now());
-  const triggered = useRef(false);
-  const isForcedRef = useRef(false);
+  const organicTriggered = useRef(false);
 
-  const firstInputRef =
-    useRef<HTMLInputElement | HTMLSelectElement | null>(
-      null
-    );
+  const firstInputRef = useRef<HTMLInputElement | HTMLSelectElement | null>(null);
 
-  const isMobile = useIsMobile();
+  // ─────────────────────────────────────────────
+  // Controlled mode: drive visibility from `open` prop
+  // ─────────────────────────────────────────────
+  useEffect(() => {
+    if (!isControlled) return;
 
-  const openPopup = useCallback(
-    (forced = false) => {
-      if (triggered.current) return;
-
-      triggered.current = true;
-      isForcedRef.current = forced;
-
+    if (open) {
       setVisible(true);
-
-      setTimeout(() => {
+      const raf = requestAnimationFrame(() => {
         setAnimateIn(true);
-
-        setTimeout(() => {
-          firstInputRef.current?.focus();
-        }, 300);
-      }, 20);
-    },
-    []
-  );
-
-  useEffect(() => {
-    if (!forcedOpen) return;
-
-    if (
-      safeLocalStorage("get", capturedKey) ===
-      "1"
-    ) {
-      onUnlock?.({} as FormValues);
-      return;
+        setTimeout(() => firstInputRef.current?.focus(), 300);
+      });
+      return () => cancelAnimationFrame(raf);
+    } else {
+      // Animate out, then hide and reset form
+      setAnimateIn(false);
+      const t = setTimeout(() => {
+        setVisible(false);
+        setSubmitted(false);
+        setValues(EMPTY_VALUES);
+        setErrors({});
+        setSubmitError("");
+      }, 300);
+      return () => clearTimeout(t);
     }
+  }, [isControlled, open]);
 
-    triggered.current = false;
-    openPopup(true);
-  }, [
-    forcedOpen,
-    capturedKey,
-    onUnlock,
-    openPopup,
-  ]);
-
+  // ─────────────────────────────────────────────
+  // Organic mode: scroll / time trigger
+  // ─────────────────────────────────────────────
   useEffect(() => {
-    function tryShow() {
-      if (triggered.current) return;
+    if (isControlled) return;
 
-      if (
-        safeLocalStorage("get", storageKey) ===
-        "1"
-      ) {
-        triggered.current = true;
+    function tryShow() {
+      if (organicTriggered.current) return;
+      if (safeLocalStorage("get", storageKey) === "1") {
+        organicTriggered.current = true;
         return;
       }
-
-      const elapsed =
-        (Date.now() - entryTime.current) / 1000;
-
-      const scrollPct = getScrollPct();
-
-      if (
-        elapsed >= minTimeSeconds ||
-        scrollPct >= scrollThreshold
-      ) {
-        openPopup(false);
+      const elapsed = (Date.now() - entryTime.current) / 1000;
+      if (elapsed >= minTimeSeconds || getScrollPct() >= scrollThreshold) {
+        organicTriggered.current = true;
+        setVisible(true);
+        setTimeout(() => {
+          setAnimateIn(true);
+          setTimeout(() => firstInputRef.current?.focus(), 300);
+        }, 20);
       }
     }
 
-    window.addEventListener("scroll", tryShow, {
-      passive: true,
-    });
-
+    window.addEventListener("scroll", tryShow, { passive: true });
     const interval = setInterval(tryShow, 1000);
-
     return () => {
-      window.removeEventListener(
-        "scroll",
-        tryShow
-      );
-
+      window.removeEventListener("scroll", tryShow);
       clearInterval(interval);
     };
-  }, [
-    minTimeSeconds,
-    scrollThreshold,
-    openPopup,
-    storageKey,
-  ]);
+  }, [isControlled, minTimeSeconds, scrollThreshold, storageKey]);
 
+  // ─────────────────────────────────────────────
+  // Dismiss
+  // ─────────────────────────────────────────────
   const dismiss = useCallback(() => {
-    triggered.current = false;
+    if (isControlled) {
+      onClose?.();
+    } else {
+      organicTriggered.current = false;
+      safeLocalStorage("set", storageKey, "1");
+      setAnimateIn(false);
+      setTimeout(() => setVisible(false), 300);
+    }
+  }, [isControlled, onClose, storageKey]);
 
-    setAnimateIn(false);
-
-    setTimeout(() => {
-      setVisible(false);
-    }, 300);
-
-    safeLocalStorage("set", storageKey, "1");
-  }, [storageKey]);
-
+  // ─────────────────────────────────────────────
+  // Form
+  // ─────────────────────────────────────────────
   const validateAll = (): FormErrors => {
     const errs: FormErrors = {};
-
     for (const field of FIELDS) {
       const value = values[field.id];
-
       if (field.required && !value.trim()) {
         errs[field.id] = `${field.label} is required`;
         continue;
       }
-
-      if (
-        field.validate &&
-        !field.validate(value)
-      ) {
+      if (field.validate && !field.validate(value)) {
         errs[field.id] = field.errorMsg;
       }
     }
-
     return errs;
   };
 
-  const handleChange = (
-    id: FieldId,
-    value: string
-  ) => {
-    setValues((prev) => ({
-      ...prev,
-      [id]: value,
-    }));
-
-    if (errors[id]) {
-      setErrors((prev) => ({
-        ...prev,
-        [id]: undefined,
-      }));
-    }
+  const handleChange = (id: FieldId, value: string) => {
+    setValues((prev) => ({ ...prev, [id]: value }));
+    if (errors[id]) setErrors((prev) => ({ ...prev, [id]: undefined }));
   };
 
   const handleSubmit = async (): Promise<void> => {
     setSubmitError("");
-
     const errs = validateAll();
-
     if (Object.keys(errs).length > 0) {
       setErrors(errs);
       return;
@@ -543,55 +398,34 @@ export default function LeadCapturePopup({
 
       const payload = {
         full_name: values.fullName.trim(),
-        work_email: values.workEmail
-          .trim()
-          .toLowerCase(),
+        work_email: values.workEmail.trim().toLowerCase(),
         brand_name: values.brandName.trim(),
         monthly_orders: values.monthlyOrders,
         whatsapp: values.whatsapp.trim(),
       };
 
-      const { error } = await supabase
-        .from("leads")
-        .insert([payload]);
+      const { error } = await supabase.from("leads").insert([payload]);
 
       if (error) {
         console.error(error);
-
-        setSubmitError(
-          "Unable to submit form. Please try again."
-        );
-
+        setSubmitError("Unable to submit form. Please try again.");
         return;
       }
 
-      safeLocalStorage(
-        "set",
-        storageKey,
-        "1"
-      );
-
-      safeLocalStorage(
-        "set",
-        capturedKey,
-        "1"
-      );
-
+      safeLocalStorage("set", storageKey, "1");
+      safeLocalStorage("set", capturedKey, "1");
       onSubmit?.(values);
 
-      if (isForcedRef.current && onUnlock) {
+      if (isControlled && onUnlock) {
+        // Fire unlock — parent will set open=false which triggers the close animation
         onUnlock(values);
-        dismiss();
         return;
       }
 
       setSubmitted(true);
     } catch (err) {
       console.error(err);
-
-      setSubmitError(
-        "Something went wrong. Please try again."
-      );
+      setSubmitError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -599,5 +433,238 @@ export default function LeadCapturePopup({
 
   if (!visible) return null;
 
-  return <div>...</div>;
+  return (
+    <>
+      {/* Backdrop */}
+      <div
+        onClick={dismiss}
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9998,
+          background: "rgba(15,17,20,0.55)",
+          backdropFilter: "blur(3px)",
+          opacity: animateIn ? 1 : 0,
+          transition: "opacity 0.3s ease",
+        }}
+      />
+
+      {/* Modal */}
+      <div
+        style={{
+          position: "fixed",
+          inset: 0,
+          zIndex: 9999,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "16px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: "460px",
+            background: "#fff",
+            borderRadius: "20px",
+            overflow: "hidden",
+            boxShadow: "0 24px 64px rgba(0,0,0,0.18)",
+            opacity: animateIn ? 1 : 0,
+            transform: animateIn ? "translateY(0)" : "translateY(24px)",
+            transition: "all 0.3s cubic-bezier(0.16,1,0.3,1)",
+          }}
+        >
+          {/* Header */}
+          <div
+            style={{
+              background: COLOR.brandGradient,
+              padding: "22px",
+              color: "#fff",
+              position: "relative",
+            }}
+          >
+            <button
+              onClick={dismiss}
+              style={{
+                position: "absolute",
+                top: "14px",
+                right: "14px",
+                width: "30px",
+                height: "30px",
+                borderRadius: "8px",
+                border: "none",
+                background: "rgba(255,255,255,0.15)",
+                color: "#fff",
+                cursor: "pointer",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <IconX size={14} />
+            </button>
+
+            <span
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
+                padding: "4px 10px",
+                borderRadius: "999px",
+                background: "rgba(255,255,255,0.15)",
+                fontSize: "11px",
+                marginBottom: "10px",
+              }}
+            >
+              <IconSparkle size={10} />
+              Opsell AI
+            </span>
+
+            <h2 style={{ margin: 0, fontSize: "20px", fontWeight: 700 }}>
+              {isControlled ? "One last step to export" : "Please enter your details"}
+            </h2>
+
+            <p style={{ margin: "8px 0 0", fontSize: "13px", opacity: 0.8 }}>
+              {isControlled ? "Unlock CSV export instantly." : "Get your free profitability report."}
+            </p>
+          </div>
+
+          {/* Body */}
+          <div style={{ padding: "22px" }}>
+            {submitted ? (
+              <div style={{ textAlign: "center", padding: "20px 0" }}>
+                <div
+                  style={{
+                    width: "60px",
+                    height: "60px",
+                    borderRadius: "50%",
+                    margin: "0 auto 14px",
+                    background: COLOR.successBg,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: COLOR.success,
+                  }}
+                >
+                  <IconCheck size={24} />
+                </div>
+                <h3>You're in!</h3>
+                <p>We'll contact you shortly.</p>
+              </div>
+            ) : (
+              <>
+                <div style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
+                  {FIELDS.map((field, idx) => {
+                    const Icon = field.icon;
+                    const error = errors[field.id];
+                    return (
+                      <div key={field.id}>
+                        <label
+                          style={{
+                            display: "block",
+                            marginBottom: "6px",
+                            fontSize: "12px",
+                            fontWeight: 600,
+                            color: COLOR.textLabel,
+                          }}
+                        >
+                          {field.label}
+                        </label>
+                        <div style={{ position: "relative" }}>
+                          <span
+                            style={{
+                              position: "absolute",
+                              left: "12px",
+                              top: "50%",
+                              transform: "translateY(-50%)",
+                              color: "#8C919A",
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <Icon size={14} />
+                          </span>
+
+                          {field.type === "select" ? (
+                            <select
+                              ref={idx === 0 ? (firstInputRef as RefObject<HTMLSelectElement>) : null}
+                              value={values[field.id]}
+                              onChange={(e) => handleChange(field.id, e.target.value)}
+                              style={{ ...inputBaseStyle(!!error), paddingRight: "32px" }}
+                            >
+                              {field.options?.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </select>
+                          ) : (
+                            <input
+                              ref={idx === 0 ? (firstInputRef as RefObject<HTMLInputElement>) : null}
+                              type={field.type}
+                              placeholder={field.placeholder}
+                              autoComplete={field.autoComplete}
+                              value={values[field.id]}
+                              onChange={(e) => handleChange(field.id, e.target.value)}
+                              style={inputBaseStyle(!!error)}
+                            />
+                          )}
+                        </div>
+                        {error && (
+                          <p style={{ marginTop: "5px", fontSize: "12px", color: COLOR.error }}>
+                            {error}
+                          </p>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {submitError && (
+                  <p style={{ marginTop: "12px", color: COLOR.error, fontSize: "13px" }}>
+                    {submitError}
+                  </p>
+                )}
+
+                <button
+                  onClick={handleSubmit}
+                  disabled={loading}
+                  style={{
+                    width: "100%",
+                    marginTop: "18px",
+                    padding: "13px",
+                    borderRadius: "12px",
+                    border: "none",
+                    background: COLOR.brandGradient,
+                    color: "#fff",
+                    fontWeight: 700,
+                    fontSize: "14px",
+                    cursor: loading ? "not-allowed" : "pointer",
+                    opacity: loading ? 0.7 : 1,
+                  }}
+                >
+                  {loading
+                    ? "Submitting..."
+                    : isControlled
+                    ? "Unlock & Download CSV →"
+                    : "Get my free report →"}
+                </button>
+
+                <p
+                  style={{
+                    textAlign: "center",
+                    marginTop: "12px",
+                    fontSize: "11px",
+                    color: COLOR.textLight,
+                  }}
+                >
+                  🔒 Your details are private.
+                </p>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
