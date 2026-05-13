@@ -795,7 +795,7 @@ export function Hero() {
             Start growing your revenue
           </Link>
           <Link
-            href="Asia%2FKolkata&month=2026-05"
+            href="https://opsell.neetocal.com/meeting-with-shaurya-gupta"
             target="_blank"
             rel="noopener noreferrer"
            className="rounded-[10px] text-center border-[1.5px] border-n-200 bg-white px-6 py-3 font-display text-[15px] font-semibold text-n-700 transition-colors hover:border-n-400 hover:text-n-900">

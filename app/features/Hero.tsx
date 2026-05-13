@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ArrowRight, ShoppingBag, Sparkles, TrendingUp } from "lucide-react";
+import Link from "next/link";
 
 const competitors = [
   {
@@ -55,13 +56,20 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-center lg:justify-start">
+            <Link 
+            href="https://forms.gle/8oyErGWjoFwyHBub7" target="_blank" rel="noopener noreferrer">
             <button className="text-white group font-display inline-flex items-center justify-center gap-2 rounded-md bg-brand px-6 py-3 text-sm font-semibold text-primary-foreground shadow-elev-2 transition-all hover:bg-brand-dark hover:shadow-elev-3 hover:-translate-y-0.5 active:scale-95 sm:px-7 sm:py-3.5 sm:text-base">
               Start Free Trial
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
             </button>
+            </Link>
+            <Link
+            href="https://opsell.neetocal.com/meeting-with-shaurya-gupta" target="_blank" rel="noopener noreferrer"
+            >
             <button className="font-display inline-flex items-center justify-center rounded-md border border-n-border bg-background px-6 py-3 text-sm font-semibold text-n-900 shadow-elev-1 transition-all hover:border-brand hover:text-brand hover:-translate-y-0.5 active:scale-95 sm:px-7 sm:py-3.5 sm:text-base">
               Schedule a Call
             </button>
+            </Link>
           </div>
 
           <div className="font-body flex flex-wrap items-center justify-center gap-x-4 gap-y-1.5 text-ds-caption text-n-400 lg:justify-start">
