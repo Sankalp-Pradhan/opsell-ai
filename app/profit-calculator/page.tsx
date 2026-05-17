@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useCallback } from 'react';
+import { useState, useMemo, useEffect, useCallback, useRef } from 'react';
 import type { ReactElement } from 'react';
 import { useProducts } from './hooks/useProducts';
 import { useCalculations } from './hooks/useCalculations';
@@ -20,6 +20,10 @@ import {
 import HeroSection from './components/hero';
 import ResetButton from './components/ResetButton';
 import LeadCapturePopup from './components/LeadCapture';
+import { Button } from '@/components/ui/button';
+import GhostIcon from '@/components/ui/ghost-icon';
+import { AnimatedIconHandle } from '@/components/ui/types';
+import Link from 'next/link';
 
 declare const __BUILD_DATE__: string | undefined;
 
@@ -101,6 +105,9 @@ function App(): ReactElement {
     } catch { }
     setEmailStatus('ok');
   }, [email, shareUrl]);
+
+  const iconRef = useRef<AnimatedIconHandle>(null);
+
 
   const handleCopy = useCallback((): void => {
     navigator.clipboard?.writeText(shareUrl);
@@ -665,6 +672,93 @@ function App(): ReactElement {
         )}
 
 
+        <Link href="https://docs.google.com/forms/d/e/1FAIpQLScWJb40wRXKQjSbwqNufUxkyGUqGxEZnYrYbaapKSOt0Ezpvw/viewform" target="_blank" rel="noopener noreferrer">
+        <div className="w-full flex justify-center py-16">
+          <button
+          
+            className="
+      group
+      relative
+      overflow-hidden
+
+      flex items-center gap-3
+
+      rounded-2xl
+      border border-white/10
+      bg-gradient-to-b from-zinc-900  to-black
+      
+
+      px-8 py-5
+
+
+      shadow-[0_0_40px_rgba(255,255,255,0.04)]
+
+      transition-all duration-500 ease-out
+
+      hover:scale-[1.02]
+      hover:border-white/20
+      hover:shadow-[0_0_60px_rgba(255,255,255,0.08)]
+    "
+            onMouseEnter={() => iconRef.current?.startAnimation()}
+            onMouseLeave={() => iconRef.current?.stopAnimation()}
+          
+          
+          >
+            {/* glow effect */}
+            <div
+              className="
+        absolute inset-0 opacity-0
+        transition-opacity duration-500
+        group-hover:opacity-100
+        bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.08),transparent_70%)]
+      "
+            
+            />
+
+            {/* text section */}
+            <div className="relative z-10 flex flex-col justify-centero items-center text-left">
+              <span
+                className="
+          text-lg font-semibold text-brand-light font-display
+
+          transition-all duration-300
+
+          group-hover:scale-[1.03]
+          group-hover:translate-x-0.5
+        "
+              >
+                Want deeper analytics?
+              </span>
+
+              <span
+                className="
+          text-xs text-zinc-400
+
+          transition-colors duration-300
+
+          group-hover:text-zinc-300
+        "
+              >
+                Get personalized Dashboards
+              </span>
+            </div>
+
+            {/* icon */}
+            <GhostIcon
+              ref={iconRef}
+              size={24}
+              className="
+        relative z-10
+
+        transition-transform text-white duration-300
+
+        group-hover:scale-110
+        group-hover:-translate-y-0.5
+      "
+            />
+          </button>
+        </div>
+        </Link>
       </main>
     </div>
   );
