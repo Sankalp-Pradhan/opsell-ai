@@ -3,7 +3,7 @@
 import emailjs from "@emailjs/browser";
 import { AnimatePresence, motion } from "framer-motion";
 import React, { useEffect, useRef, useState } from "react";
-import { Sparkles, TrendingUp, X, Send, MessageCircleIcon, Loader2, CheckCircle, Calendar, User, Mail, Phone } from "lucide-react";
+import { TrendingUp, X, Send, MessageCircleIcon, Loader2, CheckCircle, Calendar, User, Mail, Phone } from "lucide-react";
 
 const EMAILJS_SERVICE_ID = process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!;
 const EMAILJS_TEMPLATE_ID = process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!;
@@ -165,78 +165,103 @@ function LeadCaptureForm({ onSubmit }: { onSubmit: () => void }) {
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
-
 const initialActions: QuickAction[] = [
-  { label: "Increase conversions", value: "conversions" },
-  { label: "Track profits", value: "profits" },
-  { label: "Boost listings", value: "listing" },
-  { label: "See live demo", value: "demo" },
+  { label: "Increase Sales", value: "sales" },
+  { label: "Track Competitors", value: "competitors" },
+  { label: "Monitor Buy Box", value: "buybox" },
+  { label: "See Live Demo", value: "demo" },
 ];
 
 const flows: Record<string, { reply: string; actions: QuickAction[] }> = {
-  conversions: {
-    reply: "Opsell helps identify drop-offs, high-performing products, and conversion opportunities in real time.",
+  sales: {
+    reply:
+      "Opsell identifies revenue leaks, low-converting SKUs, and pricing gaps to help you scale sales faster.",
     actions: [
-      { label: "Watch Demo", value: "demo" },
-      { label: "See Dashboard", value: "dashboard" },
-      { label: "Book a Call", value: "book" },
-    ],
-  },
-  profits: {
-    reply: "Track real margins, ad spend, shipping costs, and hidden profit leaks automatically with Opsell.",
-    actions: [
-      { label: "View Analytics", value: "analytics" },
-      { label: "Explore Features", value: "features" },
+      { label: "View Dashboard", value: "dashboard" },
+      { label: "See AI Insights", value: "insights" },
       { label: "Book Demo", value: "book" },
     ],
   },
-  listing: {
-    reply: "Optimize your listings and boost your visibility.",
+
+  competitors: {
+    reply:
+      "Track competitor pricing, stock changes, marketplace movement, and ranking shifts in real time with Opsell.",
     actions: [
-      { label: "See Insights", value: "insights" },
-      { label: "Learn More", value: "features" },
+      { label: "See Competitor Tracking", value: "tracking" },
+      { label: "Explore Features", value: "features" },
+      { label: "Book a Call", value: "book" },
+    ],
+  },
+
+  buybox: {
+    reply:
+      "Monitor Buy Box ownership, seller rankings, and SKU performance live across marketplaces.",
+    actions: [
+      { label: "See Live Metrics", value: "dashboard" },
+      { label: "View Analytics", value: "analytics" },
       { label: "Schedule Demo", value: "book" },
     ],
   },
+
   demo: {
-    reply: "Want a personalized walkthrough of Opsell?",
+    reply:
+      "Get a personalized walkthrough of Opsell’s AI-powered commerce intelligence platform.",
     actions: [
       { label: "Schedule a Call", value: "book" },
       { label: "Watch Product Tour", value: "tour" },
     ],
   },
+
   dashboard: {
-    reply: "Our dashboard surfaces every key metric — revenue, AOV, CAC, LTV — in one premium view.",
+    reply:
+      "Opsell’s dashboard gives you live GMV, revenue, Buy Box %, SKU tracking, pricing intelligence, and campaign performance in one place.",
     actions: [
+      { label: "See AI Insights", value: "insights" },
       { label: "Book Demo", value: "book" },
-      { label: "See Insights", value: "insights" },
     ],
   },
+
   analytics: {
-    reply: "Get cohort retention, channel attribution, and SKU-level profitability — all live.",
+    reply:
+      "Analyze SKU-level profitability, campaign ROI, competitor trends, and marketplace performance in real time.",
     actions: [
-      { label: "Schedule Demo", value: "book" },
-      { label: "Learn More", value: "features" },
+      { label: "Explore Features", value: "features" },
+      { label: "Book a Call", value: "book" },
     ],
   },
+
   insights: {
-    reply: "Opsell's insights engine flags wins and leaks daily so your team acts faster.",
+    reply:
+      "Opsell’s AI engine highlights pricing opportunities, profit leaks, and growth signals before they impact revenue.",
+    actions: [
+      { label: "View Dashboard", value: "dashboard" },
+      { label: "Book Demo", value: "book" },
+    ],
+  },
+
+  tracking: {
+    reply:
+      "Track every marketplace movement including competitor pricing, stock availability, Buy Box shifts, and seller activity.",
+    actions: [
+      { label: "See Analytics", value: "analytics" },
+      { label: "Book Demo", value: "book" },
+    ],
+  },
+
+  features: {
+    reply:
+      "Opsell helps brands track competitors, optimize pricing, monitor Buy Box performance, automate campaigns, and grow faster with AI-driven commerce insights.",
+    actions: [
+      { label: "Watch Product Tour", value: "tour" },
+      { label: "Schedule Demo", value: "book" },
+    ],
+  },
+
+  tour: {
+    reply:
+      "Our quick product tour shows how Opsell helps ecommerce brands monitor competitors, improve visibility, and increase revenue.",
     actions: [
       { label: "Book a Call", value: "book" },
-      { label: "Explore Features", value: "features" },
-    ],
-  },
-  features: {
-    reply: "Profit tracking, ROAS optimization, cohort analytics, attribution, alerts — built for ecommerce growth.",
-    actions: [
-      { label: "Book Demo", value: "book" },
-      { label: "Watch Tour", value: "tour" },
-    ],
-  },
-  tour: {
-    reply: "Our 3-minute product tour walks through every core workflow. Want to book a call after?",
-    actions: [
-      { label: "Yes, book a call", value: "book" },
       { label: "Maybe Later", value: "later" },
     ],
   },
