@@ -1,5 +1,6 @@
 "use client";
 
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import { GrowthOutcomes } from "./growth/growthoutcomes";
 import FAQ from "./home/faq-section";
 import { GrowthSection } from "./home/growth-section";
@@ -19,8 +20,8 @@ export default function OpsellHomePage() {
       <GrowthSection />
       <IntegrateSection />
       <RevenueLeakQuiz />
-      <FAQ />w
-      
+      <FAQ />
+      <ChatWidget />
     </>
   );
 }

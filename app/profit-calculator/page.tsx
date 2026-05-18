@@ -24,6 +24,7 @@ import { Button } from '@/components/ui/button';
 import GhostIcon from '@/components/ui/ghost-icon';
 import { AnimatedIconHandle } from '@/components/ui/types';
 import Link from 'next/link';
+import { ChatWidget } from '@/components/chat/ChatWidget';
 
 declare const __BUILD_DATE__: string | undefined;
 
@@ -760,6 +761,10 @@ function App(): ReactElement {
         </div>
         </Link>
       </main>
+
+
+        <ChatWidget />
+        
     </div>
   );
 }

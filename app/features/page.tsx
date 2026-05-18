@@ -1,3 +1,6 @@
+"use client"
+
+import { ChatWidget } from "@/components/chat/ChatWidget";
 import Benefits from "./Benefits";
 import FeatureBlocks from "./FeatureBlocks";
 import Hero from "./Hero";
@@ -8,7 +11,7 @@ const Index = () => {
       <Hero />
       <FeatureBlocks />
       <Benefits />
-      
+      <ChatWidget />
     </main>
   );
 };

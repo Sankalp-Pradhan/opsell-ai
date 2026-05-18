@@ -5,6 +5,7 @@ import { motion, useInView } from "framer-motion";
 import { ArrowRight, Plug, Brain, Tag, TrendingUp } from "lucide-react";
 import { StepMockup } from "./stepMockup";
 import PlatformMarquee from "./platformMarquee";
+import { ChatWidget } from "@/components/chat/ChatWidget";
 
 /* ---------------------- STEPS DATA ---------------------- */
 const STEPS = [
@@ -219,6 +220,7 @@ export default function HowItWorksPage() {
       </section>
 
       {/* CTA */}
+      <ChatWidget />
 
     </main>
   );

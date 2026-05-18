@@ -144,6 +144,7 @@ export default function RootLayout({
 
         <CTA />
         <Footer />
+        
         {/* Google Analytics */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
