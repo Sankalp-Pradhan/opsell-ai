@@ -168,7 +168,7 @@ function LeadCaptureForm({ onSubmit }: { onSubmit: () => void }) {
 const initialActions: QuickAction[] = [
   { label: "Increase Sales", value: "sales" },
   { label: "Track Competitors", value: "competitors" },
-  { label: "Monitor Buy Box", value: "buybox" },
+  { label: "Optimize listings", value: "listing" },
   { label: "See Live Demo", value: "demo" },
 ];
 
@@ -193,9 +193,9 @@ const flows: Record<string, { reply: string; actions: QuickAction[] }> = {
     ],
   },
 
-  buybox: {
+  listing: {
     reply:
-      "Monitor Buy Box ownership, seller rankings, and SKU performance live across marketplaces.",
+      "Optimize your product listings for better visibility and conversions across marketplaces.",
     actions: [
       { label: "See Live Metrics", value: "dashboard" },
       { label: "View Analytics", value: "analytics" },
