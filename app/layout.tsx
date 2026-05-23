@@ -81,11 +81,11 @@ export const metadata: Metadata = {
     title: "Opsell | AI Powered Product Platform",
     description:
       "Scale smarter with AI-powered workflows, automation, and insights.",
-    url: "https://opsell.in",
+    url: "https://opsell.ai",
     siteName: "Opsell",
     images: [
       {
-        url: "https://opsell.in/opsell-gi.png", // place inside /public
+        url: "https://opsell.ai/opsell-gi.png", // place inside /public
         width: 1200,
         height: 630,
         alt: "Opsell",
@@ -101,7 +101,7 @@ export const metadata: Metadata = {
     description:
       "Scale smarter with AI-powered workflows, automation, and insights.",
     creator: "@opsell", // replace if needed
-    images: ["https://opsell.in/opsell-gi.png"],
+    images: ["https://opsell.ai/opsell-gi.png"],
   },
 
   icons: {
