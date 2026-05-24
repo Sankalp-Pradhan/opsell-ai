@@ -55,8 +55,7 @@ export default function Navbar() {
         className="mx-auto flex w-full items-center justify-between border font-display"
       >
         {/* Logo */}
-          <Link href="/" style={{ display: "flex", alignItems: "baseline", gap: 1, textDecoration: "none" }}>
-          <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#0F1114", letterSpacing: "-0.03em" }}>opsell</span>
+<Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} style={{ display: "flex", alignItems: "baseline", gap: 1, textDecoration: "none" }}>          <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#0F1114", letterSpacing: "-0.03em" }}>opsell</span>
           <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#5046E5" }}>.</span>
         </Link>
 
