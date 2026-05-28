@@ -5,13 +5,14 @@ import { motion } from "framer-motion"
 import { useEffect, useState } from "react"
 import { Menu, X } from "lucide-react"
 import { usePathname } from "next/navigation"
+import Image from "next/image"
 
 const navLinks = [
   { label: "Home", href: "/" },
   { label: "How it works", href: "/works" },
   { label: "Features", href: "/features" },
   { label: "Profit Calculator", href: "/profit-calculator" },
-    // { label: "Pricing", href: "/pricing" },
+  // { label: "Pricing", href: "/pricing" },
 ]
 
 export default function Navbar() {
@@ -55,8 +56,47 @@ export default function Navbar() {
         className="mx-auto flex w-full items-center justify-between border font-display"
       >
         {/* Logo */}
-<Link href="/" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} style={{ display: "flex", alignItems: "baseline", gap: 1, textDecoration: "none" }}>          <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#0F1114", letterSpacing: "-0.03em" }}>opsell</span>
-          <span style={{ fontFamily: "var(--font-display)", fontSize: 20, fontWeight: 800, color: "#5046E5" }}>.</span>
+
+        <Link
+          href="/"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 0,
+            textDecoration: "none",
+          }}
+        >
+          
+          <Image
+            src="/logo-nb.png"
+            alt="Opsell Logo"
+            width={50}
+            height={50}
+          />
+
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 24,
+              fontWeight: 800,
+              color: "#0F1114",
+              letterSpacing: "-0.03em",
+            }}
+          >
+            opsell
+          </span>
+
+          <span
+            style={{
+              fontFamily: "var(--font-display)",
+              fontSize: 20,
+              fontWeight: 800,
+              color: "#5046E5",
+            }}
+          >
+            .
+          </span>
         </Link>
 
         {/* Desktop Nav */}
@@ -68,9 +108,8 @@ export default function Navbar() {
                 <li key={link.href} className="relative">
                   <Link
                     href={link.href}
-                    className={`relative flex h-[38px] items-center justify-center rounded-full px-4 text-ds-body font-semibold transition-colors duration-200 ${
-                      isActive ? "text-n-900" : "text-n-600 hover:text-n-900"
-                    }`}
+                    className={`relative flex h-[38px] items-center justify-center rounded-full px-4 text-ds-body font-semibold transition-colors duration-200 ${isActive ? "text-n-900" : "text-n-600 hover:text-n-900"
+                      }`}
                   >
                     {isActive && (
                       <motion.div
@@ -125,11 +164,10 @@ export default function Navbar() {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileMenuOpen(false)}
-                  className={`rounded-xl px-4 py-3 text-ds-body font-medium transition-colors ${
-                    isActive
-                      ? "bg-brand-light text-brand"
-                      : "text-n-600 hover:bg-n-100 hover:text-n-900"
-                  }`}
+                  className={`rounded-xl px-4 py-3 text-ds-body font-medium transition-colors ${isActive
+                    ? "bg-brand-light text-brand"
+                    : "text-n-600 hover:bg-n-100 hover:text-n-900"
+                    }`}
                 >
                   {link.label}
                 </Link>
