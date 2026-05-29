@@ -95,11 +95,11 @@ function CentralCard() {
       "
     >
       <Image
-        src="/assets/opsell-icon.png"
+        src="/logo-nb.png"
         alt="Analytics"
-        width={50}
-        height={50}
-        className="w-10 h-10 sm:w-[50px] sm:h-[50px]"
+        width={65}
+        height={65}
+        // className="w-12 h-12 sm:w-[50px] sm:h-[50px]"
       />
 
       <div className="w-full flex flex-col gap-1.5">
