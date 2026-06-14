@@ -100,7 +100,22 @@ export const PLATFORMS = {
     hasStoreTier: false,
     settlementDays: 30,
   },
-
+  myntra: {
+    id: 'myntra',
+    name: 'Myntra',
+    currency: 'INR',
+    currencySymbol: '₹',
+    color: '#FF3F6C',
+    fbxProgram: null,
+    hasCOD: true,
+    hasTCS: true,
+    hasGST: true,
+    hasSellerTier: false,
+    hasShippingZone: false,
+    hasWeight: true,
+    hasStoreTier: false,
+    settlementDays: 14,
+  },
   walmart: {
     id: 'walmart',
     name: 'Walmart',
