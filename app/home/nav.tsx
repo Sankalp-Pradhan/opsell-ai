@@ -9,7 +9,8 @@ import Image from "next/image"
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "How it works", href: "/works" },
+  { label: "Free Score", href: "/free-score" },
+  { label: "How it works", href: "/how-it-works" },
   { label: "Features", href: "/features" },
   { label: "Profit Calculator", href: "/profit-calculator" },
   // { label: "Pricing", href: "/pricing" },
