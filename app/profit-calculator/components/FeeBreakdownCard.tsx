@@ -90,33 +90,109 @@ const DEFAULT_CONFIG: PlatformConfig = {
   bgColor: "bg-brand-light",
   currencySymbol: "₹",
 };
+const AMAZON_USA_CONFIG: PlatformConfig = {
+  name: "Amazon USA",
+  logoSrc: "/assets/amazon.png",
+  logoAlt: "Amazon USA",
+  accentColor: "text-[#FF9900]",
+  borderColor: "border-[#FF9900]/20",
+  bgColor: "bg-[#FFFBF0]",
+  currencySymbol: "$",
+};
+
+const SHOPSY_CONFIG: PlatformConfig = {
+  name: "Shopsy",
+  logoSrc: "/assets/shopsy.png",
+  logoAlt: "Shopsy",
+  accentColor: "text-[#E91E63]",
+  borderColor: "border-[#E91E63]/20",
+  bgColor: "bg-[#FFF0F5]",
+  currencySymbol: "₹",
+};
+
+const NOON_CONFIG: PlatformConfig = {
+  name: "Noon UAE",
+  logoSrc: "/assets/noon.png",
+  logoAlt: "Noon",
+  accentColor: "text-[#FEEE00]",  // noon yellow is dark on white — swap if needed
+  borderColor: "border-[#F5C400]/30",
+  bgColor: "bg-[#FFFDE7]",
+  currencySymbol: "AED ",           // space so "AED 120.00" reads naturally
+};
+
+const WALMART_CONFIG: PlatformConfig = {
+  name: "Walmart",
+  logoSrc: "/assets/walmart.png",
+  logoAlt: "Walmart",
+  accentColor: "text-[#0071DC]",
+  borderColor: "border-[#0071DC]/20",
+  bgColor: "bg-[#EFF6FF]",
+  currencySymbol: "$",
+};
+
+const EBAY_CONFIG: PlatformConfig = {
+  name: "eBay",
+  logoSrc: "/assets/ebay.png",
+  logoAlt: "eBay",
+  accentColor: "text-[#E53238]",
+  borderColor: "border-[#E53238]/20",
+  bgColor: "bg-[#FFF0F0]",
+  currencySymbol: "$",
+};
+
+const MYNTRA_CONFIG: PlatformConfig = {
+  name: "Myntra",
+  logoSrc: "/assets/myntra.png",
+  logoAlt: "Myntra",
+  accentColor: "text-[#FF3F6C]",
+  borderColor: "border-[#FF3F6C]/20",
+  bgColor: "bg-[#FFF0F4]",
+  currencySymbol: "₹",
+};
+
+
 
 /* -------------------------------------------------------------------------- */
 /* PLATFORM MAP */
 /* -------------------------------------------------------------------------- */
-
 const PLATFORM_CONFIG: Record<string, PlatformConfig> = {
-  /* AMAZON */
-  /* AMAZON */
+  /* AMAZON INDIA */
   amazon: AMAZON_CONFIG,
   amazonindia: AMAZON_CONFIG,
   amazon_india: AMAZON_CONFIG,
   amazonin: AMAZON_CONFIG,
 
   /* AMAZON USA */
-  amazonusa: AMAZON_CONFIG,
-  amazon_us: AMAZON_CONFIG,
-  amazonus: AMAZON_CONFIG,
-  amazoncom: AMAZON_CONFIG,
-  amazon_usa: AMAZON_CONFIG,
+  amazonusa: AMAZON_USA_CONFIG,
+  amazon_us: AMAZON_USA_CONFIG,
+  amazonus: AMAZON_USA_CONFIG,
+  amazoncom: AMAZON_USA_CONFIG,
+  amazon_usa: AMAZON_USA_CONFIG,
 
   /* FLIPKART */
   flipkart: FLIPKART_CONFIG,
   fk: FLIPKART_CONFIG,
 
+  /* SHOPSY */
+  shopsy: SHOPSY_CONFIG,
+
   /* MEESHO */
   meesho: MEESHO_CONFIG,
   meesho1: MEESHO_CONFIG,
+
+  /* NOON */
+  noon: NOON_CONFIG,
+  noonuae: NOON_CONFIG,
+  noon_uae: NOON_CONFIG,
+
+  /* WALMART */
+  walmart: WALMART_CONFIG,
+
+  /* EBAY */
+  ebay: EBAY_CONFIG,
+
+  /* MYNTRA */
+  myntra: MYNTRA_CONFIG,
 };
 
 /* -------------------------------------------------------------------------- */

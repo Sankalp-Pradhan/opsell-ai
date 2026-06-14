@@ -167,6 +167,9 @@ export default function SummaryStrip({
             ? "—"
             : `₹${fmt(summary.totalRevenue)}`
         }
+
+
+        
         subtext="All calculations"
         accent="bg-yellow-500 text-yellow-600"
         Icon={IconMoneybag}

@@ -6,9 +6,11 @@ import { calculateNoonUAE } from './noonUAE';
 import { calculateWalmart } from './walmart';
 import { calculateEbay } from './ebay';
 import { calculateMeesho } from './meesho';
+import { calculateMyntra } from './calculateMyntra';
 
 export type PlatformId =
   | 'amazonIndia'
+  | 'myntra'
   | 'amazonUSA'
   | 'flipkart'
   | 'shopsy'
@@ -95,6 +97,10 @@ const engineMap: Record<
   shopsy:
     calculateShopsy as EngineFunction,
 
+  myntra:
+    calculateMyntra as EngineFunction,
+
+
   noonUAE:
     calculateNoonUAE as EngineFunction,
 
@@ -134,7 +140,7 @@ export function calculateAll(
     for (const platformId of product.selectedPlatforms) {
       const settings =
         globalSettings?.[
-          platformId
+        platformId
         ] || {};
 
       const result =
