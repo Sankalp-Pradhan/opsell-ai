@@ -9,6 +9,17 @@ import Image from "next/image";
 
 const MARKETPLACE_ICONS = [
   {
+    id: "myntra",
+    href: "",
+    label: "Myntra",
+    img: "/assets/myntra.png",
+    bg: "#FFF0F5",
+    border: "#FFB3CC",
+    style: "bottom-[36%] left-[0%] sm:left-[1%]",
+    size: "w-12 h-12 sm:w-14 sm:h-14",
+    shadow: "shadow-elev-1",
+  },
+  {
     id: "amazon",
     href: "",
     label: "Amazon",
@@ -99,7 +110,7 @@ function CentralCard() {
         alt="Analytics"
         width={65}
         height={65}
-        // className="w-12 h-12 sm:w-[50px] sm:h-[50px]"
+      // className="w-12 h-12 sm:w-[50px] sm:h-[50px]"
       />
 
       <div className="w-full flex flex-col gap-1.5">
@@ -277,7 +288,7 @@ export default function HeroSection() {
               Instant real-profit view
               <br />
               across all{" "}
-              <span className="text-brand">8 marketplaces</span>
+              <span className="text-brand">9 marketplaces</span>
             </h1>
 
             {/* Paragraph */}
@@ -388,8 +399,7 @@ export default function HeroSection() {
 
               <TrustPill
                 color="bg-brand-mid"
-                label="Amazon · Flipkart · Meesho · Noon · Walmart · eBay"
-              />
+                label="Amazon · Flipkart · Myntra · Meesho · Noon · Walmart · eBay" />
             </div>
           </div>
 
