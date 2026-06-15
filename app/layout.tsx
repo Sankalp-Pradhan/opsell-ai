@@ -30,37 +30,43 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
 });
-
 export const metadata: Metadata = {
-  metadataBase: new URL("https://opsell.in"), // replace with actual domain
+  metadataBase: new URL("https://opsell.ai"),
 
   title: {
-    default: "Opsell | AI Powered Product Platform",
-    template: "%s | Opsell",
+    default: "Opsell AI | Agentic Commerce & Marketplace Growth Platform",
+    template: "%s | Opsell AI",
   },
 
   description:
-    "Opsell is an AI-powered product platform designed to help businesses scale smarter with automation, insights, and intelligent workflows.",
+    "Opsell makes consumer brands agent-ready through AI-powered listing optimization, pricing, promotions, and catalog intelligence across Amazon, Flipkart, Myntra, Meesho, Shopify, and quick commerce.",
 
   keywords: [
-    "Opsell",
-    "AI platform",
-    "AI SaaS",
-    "automation",
-    "AI products",
-    "startup",
-    "business automation",
-    "productivity",
-    "analytics",
-    "workflow automation",
+    "Opsell AI",
+    "agentic commerce",
+    "AI shopping agents",
+    "listing optimization",
+    "marketplace optimization",
+    "catalog intelligence",
+    "AI pricing",
+    "dynamic pricing",
+    "Amazon optimization",
+    "Flipkart optimization",
+    "Myntra optimization",
+    "Meesho optimization",
+    "Shopify optimization",
+    "ecommerce growth",
+    "marketplace growth",
+    "consumer brands",
+    "product listing optimization",
+    "agent-ready catalog",
   ],
 
-  authors: [{ name: "Opsell Team" }],
-  creator: "Sankalp Pradhan",
-  publisher: "Sankalp Pradhan",
+  authors: [{ name: "Opsell AI" }],
+  creator: "OPPSELL TECHNOLOGIES PRIVATE LIMITED",
+  publisher: "OPPSELL TECHNOLOGIES PRIVATE LIMITED",
 
-  applicationName: "Opsell",
-
+  applicationName: "Opsell AI",
   category: "technology",
 
   robots: {
@@ -75,50 +81,50 @@ export const metadata: Metadata = {
     },
   },
 
-
-
   openGraph: {
-    title: "Opsell | AI Powered Product Platform",
+    title: "Opsell AI | Agentic Commerce & Marketplace Growth Platform",
     description:
-      "Scale smarter with AI-powered workflows, automation, and insights.",
+      "Make your catalog agent-ready. Optimize listings, pricing, promotions, and catalog quality across marketplaces to increase visibility, conversion, revenue, and margins.",
     url: "https://opsell.ai",
-    siteName: "Opsell",
-    images: [
-      {
-        url: "https://opsell.ai/opsell-gi.png", // place inside /public
-        width: 1200,
-        height: 630,
-        alt: "Opsell",
-      },
-    ],
+    siteName: "Opsell AI",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "https://opsell.ai/opsell-gi.png",
+        width: 1200,
+        height: 630,
+        alt: "Opsell AI - Agentic Commerce Platform",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Opsell | AI Powered Product Platform",
+    title: "Opsell AI | Agentic Commerce & Marketplace Growth Platform",
     description:
-      "Scale smarter with AI-powered workflows, automation, and insights.",
-    creator: "@opsell", // replace if needed
+      "Help AI shopping agents and human shoppers discover, recommend, and buy your products.",
     images: ["https://opsell.ai/opsell-gi.png"],
   },
 
   icons: {
     icon: [
       { url: "/favicon.ico" },
-      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon.png", sizes: "32x32", type: "image/png" },
     ],
     apple: [
-      { url: "/apple-icon.png", sizes: "180x180", type: "image/png" },
+      {
+        url: "/apple-icon.png",
+        sizes: "180x180",
+        type: "image/png",
+      },
     ],
   },
-
 
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",
-    title: "Opsell",
+    title: "Opsell AI",
   },
 
   formatDetection: {
@@ -144,7 +150,27 @@ export default function RootLayout({
 
         <CTA />
         <Footer />
+
         
+        <Script
+          id="organization-schema"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Opsell AI",
+              alternateName: "Opsell",
+              url: "https://opsell.ai",
+              logo: "https://opsell.ai/opsell-gi.png",
+              email: "sales@opsell.ai",
+              description:
+                "AI-led growth and execution platform that makes consumer brands agent-ready for agentic commerce.",
+            }),
+          }}
+        />
+
+
         {/* Google Analytics */}
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`}
