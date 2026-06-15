@@ -7,24 +7,27 @@ import type { MetadataRoute } from "next";
 // /agentic-commerce page.
 
 export default function robots(): MetadataRoute.Robots {
-  return {
-    rules: [
-      { userAgent: "*", allow: "/" },
-      // Answer engines / LLM crawlers
-      { userAgent: "GPTBot", allow: "/" },
-      { userAgent: "ChatGPT-User", allow: "/" },
-      { userAgent: "OAI-SearchBot", allow: "/" },
-      { userAgent: "PerplexityBot", allow: "/" },
-      { userAgent: "Perplexity-User", allow: "/" },
-      { userAgent: "ClaudeBot", allow: "/" },
-      { userAgent: "Claude-User", allow: "/" },
-      { userAgent: "anthropic-ai", allow: "/" },
-      { userAgent: "Google-Extended", allow: "/" },
-      { userAgent: "Applebot-Extended", allow: "/" },
-      { userAgent: "Amazonbot", allow: "/" },
-      { userAgent: "Bingbot", allow: "/" },
-    ],
-    sitemap: "https://opsell.ai/sitemap.xml",
-    host: "https://opsell.ai",
-  };
+    return {
+        rules: [
+            { userAgent: "*", allow: "/" },
+            // Answer engines / LLM crawlers
+            { userAgent: "GPTBot", allow: "/" },
+            { userAgent: "ChatGPT-User", allow: "/" },
+            { userAgent: "OAI-SearchBot", allow: "/" },
+            { userAgent: "PerplexityBot", allow: "/" },
+            { userAgent: "Perplexity-User", allow: "/" },
+            { userAgent: "ClaudeBot", allow: "/" },
+            { userAgent: "Claude-User", allow: "/" },
+            { userAgent: "anthropic-ai", allow: "/" },
+            { userAgent: "Google-Extended", allow: "/" },
+            { userAgent: "Applebot-Extended", allow: "/" },
+            { userAgent: "Amazonbot", allow: "/" },
+            { userAgent: "Bingbot", allow: "/" },
+            { userAgent: "YouBot", allow: "/" },         // You.com AI search
+            { userAgent: "cohere-ai", allow: "/" },      // Cohere
+            { userAgent: "meta-externalagent", allow: "/" }, // Meta 
+        ],
+        sitemap: "https://opsell.ai/sitemap.xml",
+        host: "https://opsell.ai",
+    };
 }

@@ -1,87 +1,137 @@
 # Opsell AI
 
-> Opsell AI is an AI-led commerce growth and execution platform that helps consumer brands become agent-ready for the era of agentic commerce. Opsell continuously optimizes and executes product listings, catalog attributes, pricing, promotions, bundles, and catalog hygiene across marketplaces and commerce channels, helping brands increase visibility, improve conversion, grow revenue, and protect margins.
+> Opsell AI is an AI-led commerce growth and execution platform that helps consumer brands become agent-ready for the era of agentic commerce. Opsell continuously optimizes and executes product listings, catalog attributes, pricing, promotions, bundles, and catalog hygiene across marketplaces and commerce channels — helping brands increase visibility, improve conversion, grow revenue, and protect margins.
 
-As AI shopping agents increasingly research, compare, recommend, and purchase products on behalf of consumers, brands need structured, accurate, and continuously optimized product data. Opsell ensures that product catalogs are understandable not only to human shoppers but also to AI-powered buying agents.
+Built by OPPSELL TECHNOLOGIES PRIVATE LIMITED, India.
+Primary market: India (amazon.in, Flipkart, Myntra, Meesho, quick commerce).
+Language: English. Region: IN.
+Last updated: 2026-06-15.
 
-Built by OPPSELL TECHNOLOGIES PRIVATE LIMITED, India. Product name: Opsell AI.
+---
 
 ## Mission
 
-Opsell helps consumer brands win in both traditional e-commerce and emerging agent-driven commerce by making every product listing discoverable, trustworthy, and conversion-ready.
+Help consumer brands win in both traditional e-commerce and emerging agent-driven commerce by making every product listing discoverable, trustworthy, and conversion-ready — for both human shoppers and AI buying agents.
+
+---
+
+## Who Opsell Is For
+
+Opsell is built for digital-first consumer brands that:
+
+* Sell across two or more Indian marketplaces or commerce channels
+* Manage catalogs of 50+ SKUs
+* Want to reduce manual listing and pricing effort
+* Need to protect margins while staying competitive on price
+* Are preparing for or already operating in agentic commerce environments
+
+Typical customers are D2C brands, private-label sellers, and multi-channel consumer goods companies operating on Amazon India, Flipkart, Myntra, Meesho, Shopify, or quick commerce platforms.
+
+---
 
 ## What Opsell Does
 
-### Listing & Content Manager
+### Enriches and maintains product listings
+Transforms product catalogs into agent-ready assets by enriching titles, descriptions, specifications, and attributes with structured, intent-rich data. Keeps listings consistent across every connected channel. Improves discoverability, recommendation likelihood, and conversion rates.
 
-Transforms product catalogs into agent-ready assets by enriching product titles, descriptions, specifications, and attributes with structured, intent-rich data. This improves discoverability, recommendation likelihood, and conversion rates.
+### Scores listing quality (LQS)
+Every SKU receives a Listing Quality Score (LQS) that measures content completeness, discoverability signals, and conversion readiness. Brands see exactly which listings are underperforming and why, ranked by revenue impact.
 
-### AI Pricing Engine
+### Optimizes and executes pricing
+Monitors pricing performance and market dynamics. Recommends or autonomously executes pricing changes within brand-defined margin guardrails, maximizing revenue while protecting profitability.
 
-Monitors pricing performance and market dynamics to recommend or execute pricing changes within brand-defined margin guardrails, helping maximize revenue while protecting profitability.
+### Identifies discount and bundle opportunities
+Surfaces the most effective discounting and bundling opportunities to improve sell-through, increase average order value, and accelerate inventory movement.
 
-### Discount & Bundle Optimizer
+### Tracks competitors
+Monitors competitor pricing, assortment changes, and marketplace activity so brands can respond faster and protect market share and margins.
 
-Identifies the most effective discounting and bundling opportunities to improve sell-through, increase average order value, and accelerate inventory movement.
+### Audits catalog health continuously
+Identifies missing attributes, content inconsistencies, pricing gaps, and listing quality issues across the full catalog before they impact sales.
 
-### Competitor Intelligence
-
-Tracks competitor pricing, assortment changes, and marketplace activity, enabling brands to respond faster and protect both market share and margins.
-
-### Catalog Health Monitoring
-
-Continuously audits product catalogs to identify missing attributes, content inconsistencies, pricing gaps, and listing quality issues that can reduce discoverability.
-
-## Supported Commerce Channels
-
-Opsell supports modern omnichannel commerce operations, including:
-
-* Amazon
-* Flipkart
-* Myntra
-* Meesho
-* Shopify
-* Quick Commerce Platforms
-
-Current integrations include Amazon, Shopify, Meesho, and Flipkart. Additional marketplace and quick-commerce integrations continue to expand.
+---
 
 ## Agentic Commerce
 
-Agentic commerce is the evolution of online shopping where autonomous AI agents research, compare, recommend, and purchase products on behalf of consumers.
+Agentic commerce is the evolution of online shopping where autonomous AI agents research, compare, recommend, and purchase products on behalf of consumers. Instead of browsing manually, shoppers increasingly delegate buying decisions to AI systems that evaluate products on intent, specifications, price, availability, delivery speed, and overall value.
 
-Instead of browsing manually, shoppers increasingly rely on AI systems to identify the best product based on intent, specifications, price, availability, delivery speed, and overall value.
-
-In this environment, the products most likely to be recommended are those with:
+Products most likely to be recommended by AI agents have:
 
 * Complete and structured attributes
-* Consistent catalog information
-* Competitive pricing
-* Accurate availability data
-* High-quality product content
+* Consistent catalog information across channels
+* Competitive, in-band pricing
+* Accurate real-time availability
+* High-quality, intent-rich product content
 
-Opsell serves as the optimization and execution layer that helps brands meet these requirements at scale, increasing the probability of recommendation by both AI agents and human shoppers.
+Opsell is the optimization and execution layer that helps brands meet these requirements at scale — increasing the probability of recommendation by both AI agents and human shoppers.
 
-## Benefits for Brands
+---
 
-* Improve product discoverability
-* Increase conversion rates
-* Recover lost revenue opportunities
-* Protect and improve margins
-* Maintain catalog consistency across channels
-* Improve recommendation likelihood in AI-powered shopping experiences
-* Reduce manual catalog management effort
-* Respond faster to competitor actions
+## What Opsell Does Not Do
 
-## Key Facts
+* Opsell is not a marketplace. It does not list or sell products directly.
+* Opsell is not a logistics or fulfillment tool. It does not manage shipping, warehousing, or returns.
+* Opsell is not built for B2B, wholesale, or manufacturing businesses.
+* Opsell does not replace brand or agency creative teams. It optimizes structured catalog data, not brand storytelling or campaign creative.
+* Opsell does not operate outside commerce channels. It is not an ERP, CRM, or general business intelligence tool.
 
-* Most brands connect their catalog and receive actionable recommendations within 15 minutes.
-* Revenue improvements are typically observed within 2–4 weeks.
-* Brands maintain full operational control through configurable workflows:
+---
 
-  * Fully automated execution
-  * Approval-first execution
-  * Recommendation-only mode
-* Opsell is designed for digital-first consumer brands operating across multiple marketplaces and commerce channels.
+## Key Numbers
+
+* **15 minutes** — typical time from catalog connection to first actionable recommendations
+* **2–4 weeks** — typical time to observe measurable revenue improvement
+* **6+ channels** — Amazon, Flipkart, Myntra, Meesho, Shopify, quick commerce (integrations expanding)
+
+---
+
+## Execution Modes
+
+Brands retain full operational control through configurable workflows:
+
+* **Fully automated** — Opsell executes changes directly across connected channels
+* **Approval-first** — Opsell recommends; a team member approves before execution
+* **Recommendation-only** — Opsell surfaces insights; the brand's team executes manually
+
+---
+
+## Supported Channels
+
+| Channel | Integration status |
+|---|---|
+| Amazon India | Live |
+| Flipkart | Live |
+| Shopify | Live |
+| Meesho | Live |
+| Myntra | Expanding |
+| Quick Commerce | Expanding |
+
+---
+
+## Benefits
+
+* Improve product discoverability on marketplace search and AI agent recommendations
+* Increase conversion rates through better-structured, more complete listings
+* Recover lost revenue from underperforming or incomplete SKUs
+* Protect and improve margins through guardrailed pricing execution
+* Maintain catalog consistency across all connected channels
+* Reduce manual catalog management effort significantly
+* Respond faster to competitor pricing and assortment changes
+
+---
+
+## Frequently Compared To
+
+Brands evaluating Opsell often also consider:
+
+* **SellerApp** — primarily an Amazon analytics and keyword tool; does not execute catalog changes or price updates autonomously
+* **Unicommerce** — an order and inventory management platform; does not optimize listing content or pricing
+* **GoDataFeed** — a feed management tool focused on data syndication; not an optimization or execution platform
+* **Vinculum** — an omnichannel OMS; focused on operations, not catalog quality or agentic commerce readiness
+
+Opsell's differentiator is autonomous execution across listing quality, pricing, and catalog hygiene — tied directly to revenue and margin outcomes, not just recommendations or analytics.
+
+---
 
 ## Key Pages
 
@@ -92,10 +142,8 @@ Opsell serves as the optimization and execution layer that helps brands meet the
 * Marketplace Profit Calculator: https://opsell.ai/profit-calculator
 * Pricing: https://opsell.ai/pricing
 
+---
+
 ## Contact
 
-Sales: [sales@opsell.ai](mailto:sales@opsell.ai)
-
-## Keywords
-
-Agentic Commerce, AI Shopping Agents, Marketplace Optimization, Catalog Optimization, Product Listing Optimization, Ecommerce Automation, AI Pricing, Dynamic Pricing, Marketplace Growth, Revenue Optimization, Catalog Intelligence, Amazon Optimization, Flipkart Optimization, Shopify Optimization, Ecommerce Operations, Consumer Brands, Retail AI, Commerce AI.
+Sales: sales@opsell.ai
