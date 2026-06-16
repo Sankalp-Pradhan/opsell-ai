@@ -91,7 +91,7 @@ function App(): ReactElement {
     });
     const base = typeof window !== 'undefined'
       ? `${window.location.origin}${window.location.pathname}`
-      : 'https://opsell.in/commcalc';
+      : 'https://opsell.ai/commcalc';
     return `${base}?${params.toString()}`;
   }, [activeProduct]);
 
@@ -445,7 +445,7 @@ function App(): ReactElement {
                   </p>
                 </div>
                 <a
-                  href="https://opsell.in?utm_source=calculator&utm_medium=inline-ai"
+                  href="https://opsell.ai?utm_source=calculator&utm_medium=inline-ai"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto text-center flex-shrink-0 px-4 py-2 rounded-lg

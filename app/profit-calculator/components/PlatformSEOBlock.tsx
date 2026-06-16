@@ -367,7 +367,7 @@ export default function PlatformSEOBlock() {
 
         <link
           rel="canonical"
-          href={`https://opsell.in/${slug}`}
+          href={`https://opsell.ai/${slug}`}
         />
 
         <script
