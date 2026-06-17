@@ -2,7 +2,7 @@ const NAV_LINKS = [
   { label: "Privacy", href: "#" },
   { label: "Terms", href: "#" },
   { label: "Security", href: "#" },
-  { label: "Contact", href: "https://opsell.neetocal.com/meeting-with-shaurya-gupta" },
+  { label: "Contact", href: "https://calendly.com/shaurya-gupta-opsell/30min" },
 ];
 
 export default function Footer() {

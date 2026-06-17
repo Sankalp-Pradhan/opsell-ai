@@ -64,7 +64,7 @@ const Hero = () => {
             </button>
             </Link>
             <Link
-            href="https://opsell.neetocal.com/meeting-with-shaurya-gupta" target="_blank" rel="noopener noreferrer"
+            href="https://calendly.com/shaurya-gupta-opsell/30min" target="_blank" rel="noopener noreferrer"
             >
             <button className="font-display inline-flex items-center justify-center rounded-md border border-n-border bg-background px-6 py-3 text-sm font-semibold text-n-900 shadow-elev-1 transition-all hover:border-brand hover:text-brand hover:-translate-y-0.5 active:scale-95 sm:px-7 sm:py-3.5 sm:text-base">
               Schedule a Call

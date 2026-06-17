@@ -30,6 +30,8 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   weight: ["400", "500"],
 });
+
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://opsell.ai"),
 
@@ -151,7 +153,7 @@ export default function RootLayout({
         <CTA />
         <Footer />
 
-        
+
         <Script
           id="organization-schema"
           type="application/ld+json"
