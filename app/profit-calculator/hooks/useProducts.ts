@@ -35,6 +35,7 @@ export interface PlatformSettings extends Record<string, unknown> {
   ebayStoreTier?: EbayStoreTier;
   includeGSTAsFee?: boolean;
   category?: string;
+  articleType?: string;
 }
 
 export interface Product {
