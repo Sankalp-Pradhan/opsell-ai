@@ -467,7 +467,7 @@ export function calculateMyntra(
     roi, breakEvenPrice, contributionMargin, effectiveFeePercent,
     commissionPercent, commissionSource, configVersion: MYNTRA_CONFIG_VERSION,
     warnings: warnings.length ? warnings : undefined,
-  };c
+  };
 }
 
 // Backward-compatible export (was Object.keys(REFERRAL_FEE_MAP)).
