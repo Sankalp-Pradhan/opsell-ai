@@ -47,6 +47,8 @@ interface PlatformSetting {
   fulfillmentMethod?: string;
   sellerTier?: string;
   shippingZone?: string;
+  articleType?: string;
+  includeGSTAsFee?: boolean;
   orderType?: string;
 }
 
@@ -170,7 +172,7 @@ function InputField({
               focus:ring-brand/10
             `,
             warning &&
-              "border-error bg-error-light focus:ring-error/10"
+            "border-error bg-error-light focus:ring-error/10"
           )}
           placeholder="0"
         />
@@ -574,6 +576,48 @@ function PlatformSettingsPopover({
           }
         />
 
+        {id === "myntra" && (
+          <>
+            <SelectField
+              label="Article Type"
+              value={globalSettings[id]?.articleType ?? ""}
+              onChange={(v) =>
+                onUpdateSetting(id, {
+                  articleType: v,
+                })
+              }
+              options={[
+                "Gold Coin",
+                "Fashion Jewellery",
+                "Handbags",
+                "Belts",
+                "Wallets",
+                "T-Shirts",
+                "Shirts",
+                "Jeans",
+                "Kurtas",
+                "Shoes",
+                "Sports Shoes",
+              ]}
+            />
+
+            <ToggleField
+              label="GST on Fees"
+              options={["Included", "Excluded"]}
+              value={
+                globalSettings[id]?.includeGSTAsFee
+                  ? "Included"
+                  : "Excluded"
+              }
+              onChange={(v) =>
+                onUpdateSetting(id, {
+                  includeGSTAsFee: v === "Included",
+                })
+              }
+            />
+          </>
+        )}
+
         {platform.fbxProgram && (
           <ToggleField
             label="Fulfillment"
@@ -682,7 +726,7 @@ export default function CalculatorForm({
 
   if (
     typeof product.sellingPrice ===
-      "number" &&
+    "number" &&
     typeof product.cogs === "number" &&
     product.cogs > product.sellingPrice
   ) {
@@ -951,7 +995,7 @@ export default function CalculatorForm({
                         anchorRef={{
                           current:
                             gearRefs.current[
-                              id
+                            id
                             ] ?? null,
                         }}
                         onClose={() =>
@@ -972,6 +1016,20 @@ export default function CalculatorForm({
               </div>
             );
           })}
+        </div>
+      </div>
+
+
+      <div className="mt-5   rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm text-blue-800">
+        <div className="flex items-start gap-3">
+          <span className="mt-0.5  text-2xl">💡</span>
+          <p>
+            <strong>Advanced Settings:</strong> Click the{" "}
+            <span className="font-semibold">⚙️ Settings</span> icon next to the
+            any platform to configure category, article type, delivery zone,
+            fulfillment method, order type, and other platform-specific fee settings
+            for more accurate profit calculations.
+          </p>
         </div>
       </div>
     </section>
