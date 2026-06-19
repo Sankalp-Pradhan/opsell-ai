@@ -570,6 +570,7 @@ interface FeeRowProps {
   amount: number;
   platformId: PlatformId;
   iconType: FeeType;
+  tooltip: string;
   badge?: "Reclaimable" | "ITC";
   isLast?: boolean;
 }
@@ -579,6 +580,7 @@ function FeeRow({
   amount,
   platformId,
   iconType,
+  tooltip,
   badge,
   isLast,
 }: FeeRowProps) {
@@ -603,9 +605,16 @@ function FeeRow({
           {label}
         </span>
 
-        <button className="text-n-300 hover:text-n-500">
-          <InfoIcon size={12} />
-        </button>
+        <div className="relative group flex-shrink-0">
+          <button className="text-n-300 hover:text-n-500">
+            <InfoIcon size={12} />
+          </button>
+          <div className="pointer-events-none absolute bottom-full left-1/2 -translate-x-1/2 mb-1.5 z-50
+    hidden group-hover:block
+    w-48 rounded-lg border border-n-100 bg-white px-2.5 py-2 shadow-elev-2">
+            <p className="text-[11px] leading-relaxed text-n-600">{tooltip}</p>
+          </div>
+        </div>
 
         {badge === "Reclaimable" && (
           <span className="hidden sm:inline-flex rounded-full border border-success/20 bg-success-light px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-success">
@@ -644,58 +653,69 @@ function PlatformPanel({ r }: { r: ResultItem }) {
       label: "Referral / Commission",
       amount: r.referralFee,
       iconType: "referral" as FeeType,
+      tooltip: "Percentage of selling price charged by the marketplace as their commission.",
     },
     {
       label: "Closing / Fixed Fee",
       amount: r.closingFee,
       iconType: "closing" as FeeType,
+      tooltip: "Fixed per-order fee charged on top of referral, varies by price band.",
     },
     {
       label: "Weight Handling",
       amount: r.weightHandlingFee,
       iconType: "weight" as FeeType,
+      tooltip: "Fee based on the dead or volumetric weight of the shipment, whichever is higher.",
     },
     {
       label: "Fulfillment Fee",
       amount: r.fulfillmentFee,
       iconType: "fulfillment" as FeeType,
+      tooltip: "Fee for pick, pack & dispatch when using the platform's fulfillment center (e.g. FBA).",
     },
     {
       label: "Shipping",
       amount: r.shippingFee,
       iconType: "shipping" as FeeType,
+      tooltip: "Last-mile delivery cost charged for self-ship or easy-ship orders.",
     },
     {
       label: "Collection Fee",
       amount: r.collectionFee,
       iconType: "collection" as FeeType,
+      tooltip: "Fee for collecting payment from the buyer on your behalf.",
     },
     {
       label: "COD Fee",
       amount: r.codFee,
       iconType: "cod" as FeeType,
+      tooltip: "Additional fee charged when the buyer opts for Cash on Delivery.",
     },
     {
       label: "TCS (1%)",
       amount: r.tcs,
       iconType: "tcs" as FeeType,
       badge: "Reclaimable" as const,
+      tooltip: "Tax Collected at Source at 1% of taxable value. Fully reclaimable when filing GST returns.",
     },
     {
       label: "GST on Fees",
       amount: r.gstOnFees,
       iconType: "gst" as FeeType,
       badge: "ITC" as const,
+      tooltip: "18% GST levied on marketplace fees. Claimable as Input Tax Credit if you're GST registered.",
     },
     {
       label: "Ads Spend",
       amount: r.adsSpend,
       iconType: "ads" as FeeType,
+      tooltip: "Estimated spend on sponsored ads / PPC campaigns for this product.",
     },
     {
       label: "Return Impact",
       amount: r.returnImpact,
       iconType: "return" as FeeType,
+      tooltip: "Estimated loss from returns — reverse logistics, re-packaging, and unsellable units.",
     },
   ].filter((row) => row.amount > 0);
 
@@ -761,6 +781,7 @@ function PlatformPanel({ r }: { r: ResultItem }) {
             amount={row.amount}
             platformId={r.platform}
             iconType={row.iconType}
+            tooltip={row.tooltip}
             badge={row.badge}
             isLast={i === feeRows.length - 1}
           />
