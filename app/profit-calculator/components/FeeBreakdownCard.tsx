@@ -650,7 +650,7 @@ function PlatformPanel({ r }: { r: ResultItem }) {
 
   const feeRows = [
     {
-      label: "Referral / Commission",
+      label: "Commission on ArticleType",
       amount: r.referralFee,
       iconType: "referral" as FeeType,
       tooltip: "Percentage of selling price charged by the marketplace as their commission.",
