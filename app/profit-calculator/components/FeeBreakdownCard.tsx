@@ -699,7 +699,7 @@ function PlatformPanel({ r }: { r: ResultItem }) {
       tooltip: "Tax Collected at Source at 1% of taxable value. Fully reclaimable when filing GST returns.",
     },
     {
-      label: "GST on Fees",
+      label: "18% GST on Fees",
       amount: r.gstOnFees,
       iconType: "gst" as FeeType,
       badge: "ITC" as const,

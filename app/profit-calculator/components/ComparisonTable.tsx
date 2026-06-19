@@ -257,9 +257,9 @@ export default function ComparisonTable({ results, summary }: ComparisonTablePro
   const columns = [
     { key: "productName", label: "Product" },
     { key: "platform", label: "Platform" },
-    { key: "sellingPrice", label: "Price" },
-    { key: "totalDeductions", label: "Fees" },
-    { key: "effectiveFeePercent", label: "Fee %" },
+    { key: "sellingPrice", label: "Selling Price" },
+    { key: "totalDeductions", label: "Total Deduction(TD)" },
+    { key: "effectiveFeePercent", label: "TD%" },
     { key: "netPayout", label: "Payout" },
     { key: "netProfit", label: "Profit" },
     { key: "profitMargin", label: "Margin" },

@@ -27,6 +27,7 @@ import {
   IconPlus,
   IconMinus,
 } from "./Icon";
+import { articleTypesFor } from "../config/myntra";
 
 /* -------------------------------------------------------------------------- */
 /* TYPES */
@@ -477,17 +478,21 @@ function PlatformSettingsPopover({
     left: 0,
   });
 
+
+
+
   const computePosition = useCallback(() => {
     const anchor = anchorRef.current;
-
     if (!anchor) return;
-
-    const rect =
-      anchor.getBoundingClientRect();
-
+    const rect = anchor.getBoundingClientRect();
+    const popoverHeight = 420;
+    const spaceBelow = window.innerHeight - rect.bottom;
+    const top = spaceBelow < popoverHeight
+      ? Math.max(8, rect.top - popoverHeight - 10)
+      : rect.bottom + 10;
     setPos({
-      top: rect.bottom + 10,
-      left: rect.left,
+      top,
+      left: Math.min(rect.left, window.innerWidth - 440),
     });
   }, [anchorRef]);
 
@@ -522,98 +527,48 @@ function PlatformSettingsPopover({
   return createPortal(
     <div
       ref={popoverRef}
-      className="
-        fixed z-50
-        w-80
-        rounded-3xl
-        border border-n-border
-        bg-white
-        p-5
-        shadow-elev-3
-        animate-fade-up
-      "
+      className="fixed z-50 [w-420px] rounded-3xl border border-n-border bg-white shadow-elev-3 animate-fade-up flex flex-col"
       style={{
         top: pos.top,
         left: pos.left,
+        maxHeight: 'calc(100vh - 120px)',
       }}
     >
-      <div className="mb-5 flex items-center justify-between">
+      {/* Sticky header */}
+      <div className="flex items-center justify-between px-5 pt-5 pb-4 border-b border-n-100 shrink-0">
         <h3 className="font-display text-ds-h3 text-n-900">
           {platform.name} Settings
         </h3>
-
         <button
           onClick={onClose}
-          className="
-            flex h-8 w-8 items-center justify-center
-            rounded-lg
-            text-n-500
-            transition-colors
-            hover:bg-n-100
-            hover:text-n-900
-          "
+          className="flex h-8 w-8 items-center justify-center rounded-lg text-n-500 transition-colors hover:bg-n-100 hover:text-n-900"
         >
           <IconClose size={14} />
         </button>
       </div>
 
-      <div className="space-y-4">
+      {/* Scrollable fields */}
+      <div className="overflow-y-auto overscroll-contain px-5 py-4 grid grid-cols-2 gap-3">
         <SelectField
           label="Category"
-          value={
-            globalSettings[id]?.category ?? ""
-          }
-          onChange={(v) =>
-            onUpdateSetting(id, {
-              category: v,
-            })
-          }
-          options={
-            (CATEGORIES as Record<
-              string,
-              string[]
-            >)[id] ?? []
-          }
+          value={globalSettings[id]?.category ?? ""}
+          onChange={(v) => onUpdateSetting(id, { category: v })}
+          options={(CATEGORIES as Record<string, string[]>)[id] ?? []}
         />
 
         {id === "myntra" && (
           <>
             <SelectField
               label="Article Type"
-              value={globalSettings[id]?.articleType ?? ""}
-              onChange={(v) =>
-                onUpdateSetting(id, {
-                  articleType: v,
-                })
-              }
-              options={[
-                "Gold Coin",
-                "Fashion Jewellery",
-                "Handbags",
-                "Belts",
-                "Wallets",
-                "T-Shirts",
-                "Shirts",
-                "Jeans",
-                "Kurtas",
-                "Shoes",
-                "Sports Shoes",
-              ]}
+              value={globalSettings[id]?.articleType ?? "Apparel"}
+              onChange={(v) => onUpdateSetting(id, { articleType: v })}
+              options={articleTypesFor(globalSettings[id]?.category || '')}
             />
-
             <ToggleField
-              label="GST on Fees"
+              label="18% GST on Fees"
               options={["Included", "Excluded"]}
-              value={
-                globalSettings[id]?.includeGSTAsFee
-                  ? "Included"
-                  : "Excluded"
-              }
-              onChange={(v) =>
-                onUpdateSetting(id, {
-                  includeGSTAsFee: v === "Included",
-                })
-              }
+              value={globalSettings[id]?.includeGSTAsFee !== false ? "Included" : "Excluded"}
+              onChange={(v) => onUpdateSetting(id, { includeGSTAsFee: v === "Included" })}
             />
           </>
         )}
@@ -621,35 +576,17 @@ function PlatformSettingsPopover({
         {platform.fbxProgram && (
           <ToggleField
             label="Fulfillment"
-            options={[
-              "Self-Ship",
-              "Platform Fulfillment",
-            ]}
-            value={
-              globalSettings[id]
-                ?.fulfillmentMethod ??
-              "Self-Ship"
-            }
-            onChange={(v) =>
-              onUpdateSetting(id, {
-                fulfillmentMethod: v,
-              })
-            }
+            options={["Self-Ship", "Platform Fulfillment"]}
+            value={globalSettings[id]?.fulfillmentMethod ?? "Self-Ship"}
+            onChange={(v) => onUpdateSetting(id, { fulfillmentMethod: v })}
           />
         )}
 
         {platform.hasSellerTier && (
           <SelectField
             label="Tier"
-            value={
-              globalSettings[id]
-                ?.sellerTier ?? "Gold"
-            }
-            onChange={(v) =>
-              onUpdateSetting(id, {
-                sellerTier: v,
-              })
-            }
+            value={globalSettings[id]?.sellerTier ?? "Gold"}
+            onChange={(v) => onUpdateSetting(id, { sellerTier: v })}
             options={SELLER_TIERS}
           />
         )}
@@ -657,15 +594,8 @@ function PlatformSettingsPopover({
         {platform.hasShippingZone && (
           <SelectField
             label="Zone"
-            value={
-              globalSettings[id]
-                ?.shippingZone ?? "Local"
-            }
-            onChange={(v) =>
-              onUpdateSetting(id, {
-                shippingZone: v,
-              })
-            }
+            value={globalSettings[id]?.shippingZone ?? "Local"}
+            onChange={(v) => onUpdateSetting(id, { shippingZone: v })}
             options={SHIPPING_ZONES}
           />
         )}
@@ -674,21 +604,14 @@ function PlatformSettingsPopover({
           <ToggleField
             label="Order Type"
             options={ORDER_TYPES}
-            value={
-              globalSettings[id]
-                ?.orderType ?? "Prepaid"
-            }
-            onChange={(v) =>
-              onUpdateSetting(id, {
-                orderType: v,
-              })
-            }
+            value={globalSettings[id]?.orderType ?? "Prepaid"}
+            onChange={(v) => onUpdateSetting(id, { orderType: v })}
           />
         )}
       </div>
     </div>,
     document.body
-  );
+  )
 }
 
 /* -------------------------------------------------------------------------- */
@@ -814,7 +737,7 @@ export default function CalculatorForm({
         />
 
         <InputField
-          label="Cost of Goods"
+          label="Product Cost/COGS"
           value={product.cogs}
           onChange={(v) =>
             onUpdate({ cogs: v })
@@ -995,6 +918,7 @@ export default function CalculatorForm({
                         anchorRef={{
                           current:
                             gearRefs.current[
+
                             id
                             ] ?? null,
                         }}

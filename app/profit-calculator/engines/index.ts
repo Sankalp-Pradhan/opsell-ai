@@ -119,6 +119,38 @@ export function calculateForPlatform(
   product: ProductInput,
   settings: PlatformSettings = {}
 ): CalculationResult | null {
+
+  if (platformId === 'myntra') {
+    const s = settings as Record<string, unknown>;
+
+
+  console.log('[Myntra] settings:', s);
+  console.log('[Myntra] category:', (s.category as string) || product.category);
+  
+
+    return calculateMyntra(
+      {
+        sellingPrice:        product.sellingPrice,
+        cogs:                product.cogs,
+        shippingCostToBuyer: product.shippingCostToBuyer,
+        weight:              product.weight,
+        adsSpend:            product.adsSpend,
+        returnRate:          product.returnRate,
+        category:            (s.category  as string)  || product.category,
+        articleType:         (s.articleType as string) || undefined,
+      },
+      {
+        shippingZone:      (s.shippingZone      as 'Local' | 'Zonal' | 'National') ?? 'Zonal',
+        orderType:         (s.orderType         as 'Prepaid' | 'COD')              ?? 'Prepaid',
+        fulfillmentMethod: (s.fulfillmentMethod as 'Self-Ship' | 'Platform Fulfillment') ?? 'Self-Ship',
+        includeGSTAsFee:   s.includeGSTAsFee !== undefined
+                             ? Boolean(s.includeGSTAsFee)
+                             : true,  // match engine config default
+      }
+    ) as CalculationResult;
+  }
+
+
   const engine =
     engineMap[platformId];
 

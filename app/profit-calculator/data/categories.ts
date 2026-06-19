@@ -1,3 +1,5 @@
+import { MYNTRA_MASTER_CATEGORIES } from "../config/myntra";
+
 export const CATEGORIES = {
   amazonIndia: [
     'Helmets & Riding Gloves',
@@ -324,21 +326,8 @@ export const CATEGORIES = {
     'Guitars & Basses',
     'Athletic Shoes (≥$150)',
   ],
-  myntra: [
-    'Women Western',
-    'Women Ethnic',
-    'Men',
-    'Kids',
-    'Footwear',
-    'Sports & Active Wear',
-    'Beauty & Personal Care',
-    'Accessories',
-    'Home & Living',
-    'Luggage & Bags',
-    'Jewellery',
-    'Watches',
-    'Sunglasses',
-  ],
+  myntra: MYNTRA_MASTER_CATEGORIES,
+
   meesho: [
     'Women Ethnic',
     'Women Western',
