@@ -49,7 +49,7 @@ const GLOSSARY = {
   },
 
   gstFees: {
-    label: 'GST on Fees (18%)',
+    label: '18 GST on Fees ',
     text: '18% GST the platform charges on top of its own fees. Reclaimable as Input Tax Credit if you file GST.',
   },
 
