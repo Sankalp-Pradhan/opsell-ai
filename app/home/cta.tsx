@@ -44,7 +44,7 @@ export default function CTA() {
                 Get my revenue audit <ArrowRight className="h-4 w-4" />
               </a>
               <Link
-                href="https://forms.gle/8oyErGWjoFwyHBub7" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-transparent px-7 py-4 font-display text-[15px] font-semibold text-white/80 transition-colors hover:border-white/40 hover:text-white w-full lg:w-auto"
+                href="https://dev.opsell.ai/" className="inline-flex items-center justify-center rounded-xl border border-white/15 bg-transparent px-7 py-4 font-display text-[15px] font-semibold text-white/80 transition-colors hover:border-white/40 hover:text-white w-full lg:w-auto"
               >
                 See it execute
               </Link>
