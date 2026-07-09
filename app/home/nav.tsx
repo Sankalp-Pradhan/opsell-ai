@@ -131,7 +131,7 @@ export default function Navbar() {
                 href="https://dev.opsell.ai/"
                 className="hidden h-[38px] items-center rounded-md bg-brand px-5 text-ds-body font-semibold text-white shadow-[0_4px_14px_rgba(80,70,229,0.35)] transition-all hover:bg-brand-dark hover:shadow-[0_6px_20px_rgba(80,70,229,0.45)] hover:-translate-y-px md:inline-flex"
               >
-                Get my revenue audit
+                Log In
               </Link>
 
               <button
@@ -189,7 +189,7 @@ export default function Navbar() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="mt-2 flex items-center justify-center rounded-xl bg-brand px-4 py-3 text-ds-body font-semibold text-white transition hover:bg-brand-dark"
               >
-                Get my revenue audit
+                Log In
               </Link>
             </div>
           </motion.div>
